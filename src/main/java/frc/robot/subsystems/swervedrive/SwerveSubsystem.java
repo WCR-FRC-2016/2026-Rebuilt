@@ -62,7 +62,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean     visionDriveTest = false;
+  private final boolean     visionDriveTest = true;
  
   /**
    * PhotonVision class to keep an accurate odometry.
@@ -462,7 +462,7 @@ public class SwerveSubsystem extends SubsystemBase
    * @param fieldRelative Drive mode.  True for field-relative, false for robot-relative.
    */
   public void drive(Translation2d translation, double rotation, boolean fieldRelative)
-  {
+  { 
     swerveDrive.drive(translation,
                       rotation,
                       fieldRelative,
