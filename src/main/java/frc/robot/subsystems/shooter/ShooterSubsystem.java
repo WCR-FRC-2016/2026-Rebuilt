@@ -1,6 +1,10 @@
 package frc.robot.subsystems.shooter;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -19,13 +23,36 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterWheelsM = new SparkMax(shooterWheelsMCanId,MotorType.kBrushed);
         shooterWheelsS = new SparkMax(shooterWheelsSCanId,MotorType.kBrushed);
         shooterPivot = new SparkMax(shooterPivotCanId,MotorType.kBrushless);
-    }
+
+        SparkMaxConfig globalConfig = new SparkMaxConfig();
+        SparkMaxConfig shooterWheelsMConfig = new SparkMaxConfig();
+        SparkMaxConfig shooterWheelsSConfig = new SparkMaxConfig();
+
+        globalConfig
+          .smartCurrentLimit(50)
+          .idleMode(IdleMode.kBrake);
+          
+          shooterWheelsMConfig
+          .apply(globalConfig)
+          .inverted(true);
+          
+          shooterWheelsSConfig
+          .apply(globalConfig)
+          .follow(shooterWheelsS);
+          
+          shooterWheelsM.configure(shooterWheelsMConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
+          shooterWheelsS.configure(shooterWheelsSConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters); 
+
+      }
+    
     public void shoot(){
-      //  shooterWheels.set(shooterPower);
+      shooterWheelsM.set(shooterPower);
     }
 
-    public void shooterPivot(){
-
+    public void shooterAnglePivot(){
+      
     }
     }
 

@@ -11,57 +11,82 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CollectorSubsystem extends SubsystemBase {
-    private final SparkMax collectorWheels;
-    private final SparkMax collectorPivotM;
-    private final SparkMax collectorPivotS;
-    private static int collectorWheelsCanId = -1;
-    private static int collectorPivotMCanId = -1;
-    private static int collectorPivotSCanId = -1;
-    private static double collectPower = -1;
-    private static double uncollectPower = -1;
+    private final SparkMax collectorWheelsL;
+    private final SparkMax collectorWheelsF;
+    private final SparkMax collectorPivotL;
+    private final SparkMax collectorPivotF;
+    private static int collectorWheelsLCanId = 8;
+    private static int collectorWheelsFCanId = 9;
+    private static int collectorPivotLCanId = 14;
+    private static int collectorPivotFCanId = 15;  
+    private static double collectPower = 0.2;
+    private static double uncollectPower = 0.2;
 
     PIDController pid = new PIDController(0, 0, 0);
 
     public CollectorSubsystem() {
-        collectorWheels = new SparkMax(collectorWheelsCanId, MotorType.kBrushed);
-        collectorPivotM = new SparkMax(collectorPivotMCanId, MotorType.kBrushless);
-        collectorPivotS = new SparkMax(collectorPivotSCanId, MotorType.kBrushless);
+        collectorWheelsL = new SparkMax(collectorWheelsLCanId, MotorType.kBrushless);
+        collectorWheelsF = new SparkMax(collectorWheelsFCanId, MotorType.kBrushless);
+        collectorPivotL = new SparkMax(collectorPivotLCanId, MotorType.kBrushed);
+        collectorPivotF = new SparkMax(collectorPivotFCanId, MotorType.kBrushed);
 
         
           SparkMaxConfig globalConfig = new SparkMaxConfig();
-          SparkMaxConfig collectorPivotMConfig = new SparkMaxConfig();
-          SparkMaxConfig collectorPivotSConfig = new SparkMaxConfig();
-          
+          SparkMaxConfig collectorPivotLConfig = new SparkMaxConfig();
+          SparkMaxConfig collectorPivotFConfig = new SparkMaxConfig();
+          SparkMaxConfig collectorWheelsLConfig = new SparkMaxConfig();
+          SparkMaxConfig collectorWheelsFConfig = new SparkMaxConfig();
           
           globalConfig
           .smartCurrentLimit(50)
           .idleMode(IdleMode.kBrake);
           
-          collectorPivotMConfig
+          collectorPivotLConfig
           .apply(globalConfig)
           .inverted(true);
           
-          collectorPivotSConfig
+          collectorPivotFConfig
           .apply(globalConfig)
-          .follow(collectorPivotM);
+          .follow(collectorPivotL, true);
           
-          collectorPivotM.configure(collectorPivotMConfig, ResetMode.kResetSafeParameters,
+        collectorWheelsLConfig
+          .apply(globalConfig)
+          .inverted(false);
+          
+          collectorWheelsFConfig
+          .apply(globalConfig)
+          .follow(collectorWheelsL, true);
+          
+
+          collectorPivotL.configure(collectorPivotLConfig, ResetMode.kResetSafeParameters,
           PersistMode.kPersistParameters);
-          collectorPivotS.configure(collectorPivotSConfig, ResetMode.kResetSafeParameters,
+          collectorPivotF.configure(collectorPivotFConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
+            collectorWheelsL.configure(collectorWheelsLConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
+          collectorWheelsF.configure(collectorWheelsFConfig, ResetMode.kResetSafeParameters,
           PersistMode.kPersistParameters);
          
     }
 
     public void collect() {
-        collectorWheels.set(collectPower);
+        collectorWheelsL.set(collectPower);
+    }
+
+    public void stopCollect() {
+        collectorWheelsL.set(0);
     }
 
     public void uncollect() {
-        collectorWheels.set(uncollectPower);
+        collectorWheelsL.set(-uncollectPower);
     }
 
+    // has to pivot more than 90 degrees
     public void collectorPivot() {
-        // has to pivot more than 90 degrees
+        collectorPivotL.set(0.1);
+    }
 
+    public void stopCollectorPivot() {
+        collectorPivotL.set(0);
     }
 }
