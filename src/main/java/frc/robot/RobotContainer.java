@@ -165,33 +165,20 @@ public class RobotContainer {
 
     {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
       driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
       driverCommandXbox.back().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      manipulatorCommandXbox.a().onTrue(new InstantCommand(() -> {
-        collector.collectorPivot();
-      })).onFalse(new InstantCommand(() -> {
-        collector.stopCollectorPivot();
-      }));
-      manipulatorCommandXbox.leftTrigger(0.5).whileTrue(new InstantCommand(() -> {
-        System.out.println("started collecting!!!");
-        collector.collect();
-      })).whileFalse(new InstantCommand(() -> {
-        System.out.println("Stoped collectinging :(");
-        collector.stopCollect();
-      }));
 
-      manipulatorCommandXbox.rightTrigger(0.5).whileTrue(new InstantCommand(() -> {
-        System.out.println("started UNcollecting!!!");
-        collector.uncollect();
-      })).whileFalse(new InstantCommand(() -> {
-        System.out.println("Stoped UNcollectinging :(");
-        
-        collector.stopCollect();
-      }));
-
-    }
-  
-   
+      manipulatorCommandXbox.a()
+        .onTrue(Commands.runOnce(collector::pivotCollectorDown))
+        .onFalse(Commands.runOnce(collector::pivotCollectorUp));
+      manipulatorCommandXbox.leftTrigger(0.5)
+        .onTrue(Commands.runOnce(collector::startCollecting))
+        .onFalse(Commands.runOnce(collector::stopCollecting));
+      manipulatorCommandXbox.rightTrigger(0.5)
+        .onTrue(Commands.runOnce(collector::startReleasing))
+        .onFalse(Commands.runOnce(collector::stopCollecting));
+    } 
   }
 
   /**
