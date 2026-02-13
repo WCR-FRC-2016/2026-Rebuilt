@@ -167,9 +167,9 @@ public class RobotContainer {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
       driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
       driverCommandXbox.back().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      manipulatorCommandXbox.a().whileTrue(new InstantCommand(() -> {
+      manipulatorCommandXbox.a().onTrue(new InstantCommand(() -> {
         collector.collectorPivot();
-      })).whileFalse(new InstantCommand(() -> {
+      })).onFalse(new InstantCommand(() -> {
         collector.stopCollectorPivot();
       }));
       manipulatorCommandXbox.leftTrigger(0.5).whileTrue(new InstantCommand(() -> {
@@ -185,6 +185,7 @@ public class RobotContainer {
         collector.uncollect();
       })).whileFalse(new InstantCommand(() -> {
         System.out.println("Stoped UNcollectinging :(");
+        
         collector.stopCollect();
       }));
 

@@ -8,7 +8,9 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.DebugHelpers;
 
 public class CollectorSubsystem extends SubsystemBase {
     private final SparkMax collectorWheelsL;
@@ -19,8 +21,13 @@ public class CollectorSubsystem extends SubsystemBase {
     private static int collectorWheelsFCanId = 9;
     private static int collectorPivotLCanId = 14;
     private static int collectorPivotFCanId = 15;  
-    private static double collectPower = 0.2;
-    private static double uncollectPower = 0.2;
+    private static double collectPower = 0.7;
+    private static double uncollectPower = 0.7;
+    private final DigitalInput toplimitSwitch = new DigitalInput(0);
+    private final DigitalInput bottomlimitSwitch = new DigitalInput(1);
+    private boolean pivotUp = true;
+
+
 
     PIDController pid = new PIDController(0, 0, 0);
 
@@ -43,9 +50,8 @@ public class CollectorSubsystem extends SubsystemBase {
           
           collectorPivotLConfig
           .apply(globalConfig)
-          .inverted(true);
-          
-          collectorPivotFConfig
+          .inverted(true);    
+               collectorPivotFConfig
           .apply(globalConfig)
           .follow(collectorPivotL, true);
           
@@ -83,10 +89,44 @@ public class CollectorSubsystem extends SubsystemBase {
 
     // has to pivot more than 90 degrees
     public void collectorPivot() {
-        collectorPivotL.set(0.1);
+        /*DebugHelpers.printMagneticLimitSwitchValue("Bottom limit switch value: ", bottomlimitSwitch);
+        DebugHelpers.printMagneticLimitSwitchValue("Top limit switch value: ", toplimitSwitch);
+
+        boolean bottomLimitSwitchValue =  bottomlimitSwitch.get();
+        if (bottomLimitSwitchValue == true) {
+            collectorPivotL.set(0);
+        } else {
+            collectorPivotL.set(0.1);
+        }*/
+
+        pivotUp = false;
+    }
+
+    @Override
+    public void periodic() {
+        if (pivotUp == true) {
+//            DebugHelpers.printMagneticLimitSwitchValue("Limit Switch Val top: ", toplimitSwitch);
+            boolean topLimitSwitchValue = toplimitSwitch.get();
+            collectorPivotL.set(topLimitSwitchValue ? -0.25 : 0);
+            //collectorPivotF.set(topLimitSwitchValue ? -0.25 : 0);
+
+        }
+        else {
+//            DebugHelpers.printMagneticLimitSwitchValue("Limit Switch Val bottom: ", bottomlimitSwitch);
+            boolean bottomLimitSwitchValue = bottomlimitSwitch.get();
+            collectorPivotL.set(bottomLimitSwitchValue ? 0.25 : 0);
+            //collectorPivotF.set(bottomLimitSwitchValue ? 0.25 : 0);
+        }
     }
 
     public void stopCollectorPivot() {
-        collectorPivotL.set(0);
+        /*boolean topLimitSwitchValue =  toplimitSwitch.get();
+        if (topLimitSwitchValue == true) {
+            collectorPivotL.set(0);
+        } else {
+            collectorPivotL.set(-0.1);
+        }*/
+
+        pivotUp = true;
     }
 }
