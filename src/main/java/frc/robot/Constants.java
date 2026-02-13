@@ -48,4 +48,8 @@ public final class Constants
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT    = 6;
   }
+  public static class SpeedConstants
+  {
+    public static final double AGITATOR_SPEED = 0.75;
+  }
 }
