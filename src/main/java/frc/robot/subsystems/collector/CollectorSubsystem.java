@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CollectorSubsystem extends SubsystemBase {
-    private static final int COLLECTOR_WHEELS_L_CAN_ID = 8;
-    private static final int COLLECTOR_WHEELS_F_CAN_ID = 9;
+    private static final int COLLECTOR_WHEELS_L_CAN_ID = 21;
+    private static final int COLLECTOR_WHEELS_F_CAN_ID = 22;
     private static final int COLLECTOR_PIVOT_L_CAN_ID = 14;
     private static final int COLLECTOR_PIVOT_F_CAN_ID = 15;  
     private static final double COLLECT_POWER = 0.7;    

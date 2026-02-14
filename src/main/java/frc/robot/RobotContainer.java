@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 import frc.robot.subsystems.collector.CollectorSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -51,6 +52,8 @@ public class RobotContainer {
       "swerve/neo"));
 
   private final CollectorSubsystem collector = new CollectorSubsystem(); 
+    private final ShooterSubsystem shooter = new ShooterSubsystem(); 
+
 
   // Establish a Sendable Chooser that will be able to be sent to the
   // SmartDashboard, allowing selection of desired auto
@@ -169,6 +172,7 @@ public class RobotContainer {
       driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
       driverCommandXbox.back().onTrue((Commands.runOnce(drivebase::zeroGyro)));
 
+// collector bindings
       manipulatorCommandXbox.a()
         .onTrue(Commands.runOnce(collector::pivotCollectorDown))
         .onFalse(Commands.runOnce(collector::pivotCollectorUp));
@@ -178,10 +182,13 @@ public class RobotContainer {
       manipulatorCommandXbox.rightTrigger(0.5)
         .onTrue(Commands.runOnce(collector::startReleasing))
         .onFalse(Commands.runOnce(collector::stopCollecting));
-    } 
-  }
-
-  /**
+// shooter bindings
+        manipulatorCommandXbox.b()
+        .onTrue(Commands.runOnce(shooter::shoot))
+        .onFalse(Commands.runOnce(shooter::stopShooting));
+            } 
+          }
+          /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous

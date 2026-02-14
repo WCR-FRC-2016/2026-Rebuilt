@@ -14,24 +14,25 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+
 public class ShooterSubsystem extends SubsystemBase {
-    private final SparkMax shooterWheelsM;
-    private final SparkMax shooterWheelsS;
+    private final SparkMax shooterWheelsL;
+    private final SparkMax shooterWheelsF;
     private final SparkMax shooterPivot;
-    private static int shooterWheelsMCanId = -1;
-    private static int shooterWheelsSCanId = -1;
+    private static int shooterWheelsLCanId = 8;
+    private static int shooterWheelsFCanId = 9;
     private static int shooterPivotCanId = -1;
-    public static double shooterPower = -1;
+    public static double shooterPower = 0.5;
     public static double IdealShootSpeed = 0; //rotations per minute
     public boolean GoodSpeed = UpToSpeed();
   
     
     PIDController pid = new PIDController (0,0,0);
     public ShooterSubsystem(){
-        shooterWheelsM = new SparkMax(shooterWheelsMCanId,MotorType.kBrushed);
-        shooterWheelsS = new SparkMax(shooterWheelsSCanId,MotorType.kBrushed);
+        shooterWheelsL = new SparkMax(shooterWheelsLCanId,MotorType.kBrushed);
+        shooterWheelsF = new SparkMax(shooterWheelsFCanId,MotorType.kBrushed);
         shooterPivot = new SparkMax(shooterPivotCanId,MotorType.kBrushless);
-        double ShooterVelocity = shooterWheelsM.getAbsoluteEncoder().getVelocity();
+        double ShooterVelocity = shooterWheelsL.getAbsoluteEncoder().getVelocity();
         
         SparkMaxConfig globalConfig = new SparkMaxConfig();
         SparkMaxConfig shooterWheelsMConfig = new SparkMaxConfig();
@@ -47,23 +48,24 @@ public class ShooterSubsystem extends SubsystemBase {
           
           shooterWheelsSConfig
           .apply(globalConfig)
-          .follow(shooterWheelsS);
+          .follow(shooterWheelsF);
           
-          shooterWheelsM.configure(shooterWheelsMConfig, ResetMode.kResetSafeParameters,
+          shooterWheelsL.configure(shooterWheelsMConfig, ResetMode.kResetSafeParameters,
           PersistMode.kPersistParameters);
-          shooterWheelsS.configure(shooterWheelsSConfig, ResetMode.kResetSafeParameters,
+          shooterWheelsF.configure(shooterWheelsSConfig, ResetMode.kResetSafeParameters,
           PersistMode.kPersistParameters); 
 
       }
     
     public void shoot(){
-      
-      shooterWheelsM.set(shooterPower);
+      shooterWheelsL.set(shooterPower);
+    }
+    public void stopShooting(){
+      shooterWheelsL.set(0);
     }
     public double ShooterSpeed(){
-     return shooterWheelsM.getAbsoluteEncoder().getVelocity(); //Rotations per minute
+     return shooterWheelsL.getAbsoluteEncoder().getVelocity(); //Rotations per minute
     }
-    
     public boolean UpToSpeed(){
       if (ShooterSpeed()- IdealShootSpeed == 0) {
         return true;
