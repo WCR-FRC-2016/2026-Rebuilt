@@ -8,11 +8,11 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class AgitatorSubsystem extends SubsystemBase {
     private final SparkMax agitatorTread;
-    private static int agitatorTreadCanId = -1;
+    //private static int agitatorTreadCanId = -1;
    // public static double treadPower = -1;
 
     public AgitatorSubsystem() {
-        agitatorTread = new SparkMax(agitatorTreadCanId, MotorType.kBrushless);
+        agitatorTread = null;//new SparkMax(agitatorTreadCanId, MotorType.kBrushless);
     }
  
     public void agitate(double x) {
