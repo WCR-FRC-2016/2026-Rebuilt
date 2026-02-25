@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
+import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.collector.CollectorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -56,6 +57,8 @@ public class RobotContainer {
 
   private final CollectorSubsystem collector = new CollectorSubsystem();
   private final ShooterSubsystem shooter = new ShooterSubsystem();
+    private final LedSubsystem led = new LedSubsystem();
+
 
   // Establish a Sendable Chooser that will be able to be sent to the
   // SmartDashboard, allowing selection of desired auto
@@ -221,14 +224,16 @@ public class RobotContainer {
       manipulatorCommandXbox.b()
           .whileTrue(
               Commands.run(
-                  () -> shooter.pivotDown(-0.2),
+                  () -> shooter.pivotDown(-0.1),
                   shooter))
           .onFalse(
               Commands.runOnce(
                   () -> shooter.stopPivotizing(),
                   shooter));
-    }
+   
+                }
 
+    // Inside RobotContainer.java
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
