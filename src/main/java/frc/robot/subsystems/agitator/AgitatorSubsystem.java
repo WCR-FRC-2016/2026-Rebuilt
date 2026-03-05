@@ -4,7 +4,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
+//import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class AgitatorSubsystem extends SubsystemBase {
     private final SparkMax agitatorTread;
@@ -19,7 +19,7 @@ public class AgitatorSubsystem extends SubsystemBase {
         
         agitatorTread.set(x);
     }
-    public void stop(){
+    public void stopAgitate(){
         agitatorTread.set(0.0);
     }
 }

@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.CollectorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-public class StartCollecting extends Command {
+public class StartReleasing extends Command {
      private CollectorSubsystem collectorSubsystem;
     double speed;
 
-    public StartCollecting(CollectorSubsystem collectorSubsystem, double speed){
+    public StartReleasing(CollectorSubsystem collectorSubsystem, double speed){
         this.collectorSubsystem = collectorSubsystem;
         this.speed = speed;
         addRequirements(collectorSubsystem);
@@ -16,7 +16,7 @@ public class StartCollecting extends Command {
 
     @Override
     public void execute(){
-        collectorSubsystem.startCollecting();
+        collectorSubsystem.startReleasing();
     }
 
     @Override

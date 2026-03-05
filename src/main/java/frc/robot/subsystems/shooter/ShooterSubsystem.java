@@ -61,27 +61,27 @@ public class ShooterSubsystem extends SubsystemBase {
     private final Follower follower = new Follower(21, MotorAlignmentValue.Opposed);
     private final TalonFX motor2 = new TalonFX(22);
     private final StatusSignal<AngularVelocity> velocitySignal = motor1.getVelocity();
-
+    
 
     
 
-    public void periodic() {
+   /*   public void periodic() {
         currentTriggerTarget = manipulatorXbox.getRightTriggerAxis() * 100;
         rampedSetpoint = limiter.calculate(currentTriggerTarget);
         motorOutput = pid.calculate(currentTriggerValue, rampedSetpoint);
         shooterWheelsL.set(motorOutput);
         velocitySignal.refresh();
-      }
+      }*/
+    
 
 
-
-    public ShooterSubsystem(){
-        shooterWheelsL = new SparkMax(shooterWheelsLCanId,MotorType.kBrushless);
+    public ShooterSubsystem() {
+       shooterWheelsL = new SparkMax(shooterWheelsLCanId,MotorType.kBrushless);
         shooterWheelsF = new SparkMax(shooterWheelsFCanId,MotorType.kBrushless);
         pivotWheel = new SparkMax(pivotWheelCanId,MotorType.kBrushed);
 
         shooterPivot = null;// new SparkMax(shooterPivotCanId,MotorType.kBrushless);
-        double ShooterVelocity = shooterWheelsL.getAbsoluteEncoder().getVelocity();
+       // double ShooterVelocity = shooterWheelsL.getAbsoluteEncoder().getVelocity();
         
         SparkMaxConfig globalConfig = new SparkMaxConfig();
         SparkMaxConfig shooterWheelsLConfig = new SparkMaxConfig();
@@ -109,24 +109,25 @@ public class ShooterSubsystem extends SubsystemBase {
         motor1.getConfigurator().apply(configuration);
         motor2.getConfigurator().apply(configuration);
     }
-      
 
+  
+  
 //these two are used for the x button trigger in robot container
-  public void setPower(double power) {
+ /*  public void setPower(double power) {
     shooterWheelsL.set(power);
   }
 
   public void stop() {  
       shooterWheelsL.set(0);
-  }
-    public Command ShooterWheelsRun(double speed) {
+  }*/
+    public void ShooterWheelsRun(double speed) {
         motor1.set(speed);
-                return null;
+                
     }
 
-    public Command ShooterWheelsStop() {
+    public void ShooterWheelsStop() {
         motor1.set(0);
-                return null;
+                
     }
     
   
@@ -137,11 +138,11 @@ public class ShooterSubsystem extends SubsystemBase {
       shooterWheelsF.set(shooterPowerB);
     }
 
-    public void pivotUp(double speed) {
+    public void pivotShooterUp(double speed) {
       pivotWheel.set(speed);
     }
 
-    public void pivotDown(double speed) {
+    public void pivotShooterDown(double speed) {
       pivotWheel.set(speed);
     }
 
@@ -153,7 +154,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void stopPivotizing(){
       pivotWheel.set(0);
    }
-
+  
     public double calculateHighArcAngle(double distance, double velocity, double targetHeight) {
       double g = 9.80665;
     

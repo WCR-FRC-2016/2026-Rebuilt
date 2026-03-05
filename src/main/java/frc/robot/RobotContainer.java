@@ -26,6 +26,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.collector.StartCollecting;
+import frc.robot.commands.collector.StartReleasing;
+import frc.robot.commands.shooter.PivotShooterDown;
+import frc.robot.commands.shooter.PivotShooterUp;
+import frc.robot.commands.shooter.ShooterWheelsRun;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.collector.CollectorSubsystem;
@@ -55,8 +60,8 @@ public class RobotContainer {
   // File(Filesystem.getDeployDirectory(),
   // "swerve/neo"));
 
-  private final CollectorSubsystem collector = new CollectorSubsystem();
-  private final ShooterSubsystem shooter = new ShooterSubsystem();
+  private final CollectorSubsystem collectorSubsystem = new CollectorSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final LedSubsystem led = new LedSubsystem();
 
 
@@ -184,54 +189,40 @@ public class RobotContainer {
     // drivebase.driveWithSetpointGeneratorFieldRelative(
     // driveDirectAngleKeyboard);
 
-    {
+    
       // drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
       // driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
       // driverCommandXbox.back().onTrue((Commands.runOnce(drivebase::zeroGyro)));
 
       // collector bindings
-      // manipulatorCommandXbox.a()
-      // .onTrue(Commands.runOnce(collector::pivotCollectorDown))
-      // .onFalse(Commands.runOnce(collector::pivotCollectorUp));
-      // manipulatorCommandXbox.leftTrigger(0.5)
-      // .onTrue(Commands.runOnce(collector::startCollecting))
-      // .onFalse(Commands.runOnce(collector::stopCollecting));
-      // manipulatorCommandXbox.rightTrigger(0.5)
-      // .onTrue(Commands.runOnce(collector::startReleasing))
-      // .onFalse(Commands.runOnce(collector::stopCollecting));
+    /*    manipulatorCommandXbox.a()
+       .onTrue(Commands.runOnce(collectorSubsystem::pivotCollectorDown));
+      
+       manipulatorCommandXbox.leftTrigger(0.5)
+       .onTrue(new StartCollecting(collectorSubsystem, Constants.SpeedConstants.COLLECTOR_SPEED));
+       
+       manipulatorCommandXbox.rightTrigger(0.5)
+       .onTrue(new StartReleasing(collectorSubsystem, -Constants.SpeedConstants.COLLECTOR_SPEED));
+    */  
+      
       // shooter bindings
 
       manipulatorCommandXbox.rightTrigger(0)
-          .whileTrue(
-              Commands.run(
-                  () -> shooter.ShooterWheelsRun(1),
-                  shooter))
-          .onFalse(
-              Commands.runOnce(
-                  () -> shooter.ShooterWheelsStop(),
-                  shooter));
-    }
+          .whileTrue( new ShooterWheelsRun(shooterSubsystem, Constants.SpeedConstants.SHOOTER_SPEED));
+             
+          
+    
       manipulatorCommandXbox.a()
           .whileTrue(
-              Commands.run(
-                  () -> shooter.pivotUp(0.2),
-                  shooter))
-          .onFalse(
-              Commands.runOnce(
-                  () -> shooter.stopPivotizing(),
-                  shooter));
+              new PivotShooterUp(shooterSubsystem, Constants.SpeedConstants.PIVOTUP_SPEED));
+                 
+          
       manipulatorCommandXbox.b()
           .whileTrue(
-              Commands.run(
-                  () -> shooter.pivotDown(-0.1),
-                  shooter))
-          .onFalse(
-              Commands.runOnce(
-                  () -> shooter.stopPivotizing(),
-                  shooter));
-   
-                }
+              new PivotShooterDown(shooterSubsystem, Constants.SpeedConstants.PIVOTDOWN_SPEED));
+                  
+  }
 
     // Inside RobotContainer.java
 

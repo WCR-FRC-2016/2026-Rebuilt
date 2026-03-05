@@ -51,5 +51,10 @@ public final class Constants
   public static class SpeedConstants
   {
     public static final double AGITATOR_SPEED = 0.75;
+    public static final double CLIMBER_SPEED = 0.5;
+    public static final double COLLECTOR_SPEED = 0.7;
+    public static final double SHOOTER_SPEED = 0.5;
+    public static final double PIVOTUP_SPEED = 0.2;
+    public static final double PIVOTDOWN_SPEED = -0.1;
   }
 }
