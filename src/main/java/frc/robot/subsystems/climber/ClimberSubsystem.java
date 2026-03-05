@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ClimberSubsystem extends SubsystemBase {
     private final SparkMax climberMotor;
@@ -24,7 +25,7 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void runClimber() {
-        climberMotor.set(0.5);
+        climberMotor.set(Constants.SpeedConstants.CLIMBER_SPEED);
     }
 
     public void stopClimbing() {

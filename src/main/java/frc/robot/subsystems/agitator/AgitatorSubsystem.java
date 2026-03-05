@@ -15,9 +15,9 @@ public class AgitatorSubsystem extends SubsystemBase {
         agitatorTread = null;//new SparkMax(agitatorTreadCanId, MotorType.kBrushless);
     }
  
-    public void agitate(double x) {
+    public void agitate(double speed) {
         
-        agitatorTread.set(x);
+        agitatorTread.set(speed);
     }
     public void stopAgitate(){
         agitatorTread.set(0.0);

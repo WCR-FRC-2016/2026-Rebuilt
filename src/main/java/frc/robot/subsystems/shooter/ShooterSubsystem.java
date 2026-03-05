@@ -65,13 +65,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
     
 
-   /*   public void periodic() {
+      public void periodic() {
         currentTriggerTarget = manipulatorXbox.getRightTriggerAxis() * 100;
         rampedSetpoint = limiter.calculate(currentTriggerTarget);
         motorOutput = pid.calculate(currentTriggerValue, rampedSetpoint);
         shooterWheelsL.set(motorOutput);
         velocitySignal.refresh();
-      }*/
+      }
     
 
 
