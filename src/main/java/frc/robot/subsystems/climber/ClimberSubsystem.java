@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ClimberSubsystem extends SubsystemBase {
     private final SparkMax climberMotor;
     private final SparkMaxConfig motorConfig = new SparkMaxConfig();
-    private static final int CLIMBER_MOTOR_CAN_ID = 59;
+    private static final int CLIMBER_MOTOR_CAN_ID = 6;
 
     @SuppressWarnings("removal")
     public ClimberSubsystem() {
@@ -28,6 +28,6 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void stop() {
-        climberMotor.stopMotor();
+        climberMotor.set(0);
     }
 }

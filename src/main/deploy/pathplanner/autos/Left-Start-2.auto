@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left_Start-Shoot"
+            "pathName": "Left_Start-Shoot-Collect"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot-Climb"
+            "pathName": "Left-Collect-Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot-Collect-Shoot-Climb"
           }
         }
       ]

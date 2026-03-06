@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 2.0084216867519014,
+        "y": 6.318891566269439
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.166759036144578,
-        "y": 5.521168674698795
+        "x": 5.177457831330215,
+        "y": 8.690204819281485
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.4894698795180723,
-        "y": 6.034771084337349
+        "x": 7.83289156626506,
+        "y": 5.12777108433735
       },
       "prevControl": {
-        "x": 1.1997710843373492,
-        "y": 6.023843373493976
+        "x": 7.800108433734941,
+        "y": 6.756
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,12 +30,20 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.36265560165975885,
-      "rotationDegrees": -40.43292601505468
+      "waypointRelativePos": 0.034024896265557325,
+      "rotationDegrees": -47.55691825125637
     },
     {
-      "waypointRelativePos": 0.6547717842323655,
-      "rotationDegrees": -177.67189499855408
+      "waypointRelativePos": 0.13360995850622115,
+      "rotationDegrees": 21.225383938321563
+    },
+    {
+      "waypointRelativePos": 0.2680497925311185,
+      "rotationDegrees": -1.4901420794156774
+    },
+    {
+      "waypointRelativePos": 0.6863070539419147,
+      "rotationDegrees": -53.453491989871786
     }
   ],
   "constraintZones": [],
@@ -43,13 +51,13 @@
   "eventMarkers": [
     {
       "name": "Shoot",
-      "waypointRelativePos": 0.3483870967741772,
+      "waypointRelativePos": 0.03870967741935291,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "Start-Collecting",
-      "waypointRelativePos": 0.5409429280396845,
+      "waypointRelativePos": 0.43374689826303015,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -64,7 +72,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.77242116786545
+    "rotation": -91.39718102729637
   },
   "reversed": false,
   "folder": null,

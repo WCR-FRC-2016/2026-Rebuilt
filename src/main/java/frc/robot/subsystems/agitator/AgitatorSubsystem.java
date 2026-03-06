@@ -2,24 +2,36 @@ package frc.robot.subsystems.agitator;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class AgitatorSubsystem extends SubsystemBase {
+    
+    private static final int AGITATOR_TREAD_CAN_ID = 5;
     private final SparkMax agitatorTread;
-    //private static int agitatorTreadCanId = -1;
-   // public static double treadPower = -1;
 
+    @SuppressWarnings("removal")
     public AgitatorSubsystem() {
-        agitatorTread = null;//new SparkMax(agitatorTreadCanId, MotorType.kBrushless);
+        agitatorTread = new SparkMax(AGITATOR_TREAD_CAN_ID, MotorType.kBrushless);
+
+        SparkMaxConfig config = new SparkMaxConfig();
+
+        config
+            .smartCurrentLimit(50)
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
+
+        agitatorTread.configure(config, SparkMax.ResetMode.kResetSafeParameters, 
+                                SparkMax.PersistMode.kPersistParameters);
     }
- 
-    public void agitate(double x) {
-        
-        agitatorTread.set(x);
+
+    public void agitate(double speed) {
+        agitatorTread.set(speed);
     }
-    public void stop(){
+
+    public void stop() {
         agitatorTread.set(0.0);
     }
 }

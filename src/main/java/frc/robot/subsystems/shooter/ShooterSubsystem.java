@@ -1,8 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -11,16 +8,12 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
-
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -35,15 +28,10 @@ public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterWheelsL;
     private final SparkMax shooterWheelsF;
     private final SparkMax pivotWheel;
-    private final SparkMax shooterPivot;
-    private static int shooterWheelsLCanId = 10;
-    private static int shooterWheelsFCanId = 14;
-    private static int pivotWheelCanId = 8;
-    public static double shooterPowerRT = 0.85;
-    public static double shooterPowerB = 0.5;
-    public static double shooterPowerA = 0.8;
-    public static double shooterPowerX = 0.9;
-    public static double shooterPowerY = 0.15;
+    private static int shooterWheelsLCanId = 8;
+    private static int shooterWheelsFCanId = 9;
+    private static int pivotWheelCanId = 7;
+
 
     public static double IdealShootSpeed = 0; //rotations per minute
     //public boolean GoodSpeed = UpToSpeed();
@@ -57,10 +45,10 @@ public class ShooterSubsystem extends SubsystemBase {
     double motorOutput = 0;
     int currentMotorVelocity = 0;
     //shooterWheelVelocity = shooterWheelsL.getVelocity();
-    private final TalonFX motor1 = new TalonFX(21);
+    private final TalonFX shooterLeader = new TalonFX(shooterWheelsLCanId);
     private final Follower follower = new Follower(21, MotorAlignmentValue.Opposed);
-    private final TalonFX motor2 = new TalonFX(22);
-    private final StatusSignal<AngularVelocity> velocitySignal = motor1.getVelocity();
+    private final TalonFX shooterFollower = new TalonFX(shooterWheelsFCanId);
+    private final StatusSignal<AngularVelocity> velocitySignal = shooterLeader.getVelocity();
 
 
     
@@ -79,9 +67,6 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterWheelsL = new SparkMax(shooterWheelsLCanId,MotorType.kBrushless);
         shooterWheelsF = new SparkMax(shooterWheelsFCanId,MotorType.kBrushless);
         pivotWheel = new SparkMax(pivotWheelCanId,MotorType.kBrushed);
-
-        shooterPivot = null;// new SparkMax(shooterPivotCanId,MotorType.kBrushless);
-        double ShooterVelocity = shooterWheelsL.getAbsoluteEncoder().getVelocity();
         
         SparkMaxConfig globalConfig = new SparkMaxConfig();
         SparkMaxConfig shooterWheelsLConfig = new SparkMaxConfig();
@@ -104,37 +89,21 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterWheelsF.configure(shooterWheelsFConfig, ResetMode.kResetSafeParameters,
           PersistMode.kPersistParameters); 
 
-        motor2.setControl(follower);
+        shooterFollower.setControl(follower);
         TalonFXConfiguration configuration = new TalonFXConfiguration().withCurrentLimits(new CurrentLimitsConfigs().withStatorCurrentLimit(Amps.of(40)).withStatorCurrentLimitEnable(true)).withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
-        motor1.getConfigurator().apply(configuration);
-        motor2.getConfigurator().apply(configuration);
+        shooterLeader.getConfigurator().apply(configuration);
+        shooterFollower.getConfigurator().apply(configuration);
     }
       
-
-//these two are used for the x button trigger in robot container
-  public void setPower(double power) {
-    shooterWheelsL.set(power);
-  }
-
-  public void stop() {  
-      shooterWheelsL.set(0);
-  }
-    public Command ShooterWheelsRun(double speed) {
-        motor1.set(speed);
-                return null;
+    public double ShooterWheelsRun(double speed) {
+        shooterLeader.set(speed);
+        double x = shooterLeader.getVelocity().getValueAsDouble();
+        return x;
     }
 
     public Command ShooterWheelsStop() {
-        motor1.set(0);
+        shooterLeader.set(0);
                 return null;
-    }
-    
-  
-
-    public void anglePivotUp() {
-      System.out.println("it's uh shooting with B");
-      shooterWheelsL.set(shooterPowerB);
-      shooterWheelsF.set(shooterPowerB);
     }
 
     public void pivotUp(double speed) {
@@ -145,11 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
       pivotWheel.set(speed);
     }
 
-    public void stopShooting(){
-      shooterWheelsL.set(0);
-      shooterWheelsF.set(0);
-    }
-
+   
     public void stopPivotizing(){
       pivotWheel.set(0);
    }
