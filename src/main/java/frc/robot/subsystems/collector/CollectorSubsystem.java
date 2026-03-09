@@ -12,15 +12,15 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CollectorSubsystem extends SubsystemBase {
-    private static final int COLLECTOR_WHEELS_L_CAN_ID = 21;
-    private static final int COLLECTOR_WHEELS_F_CAN_ID = 22;
+    private static final int COLLECTOR_WHEELS_L_CAN_ID = 8;
+    private static final int COLLECTOR_WHEELS_F_CAN_ID = 9;
     private static final int COLLECTOR_PIVOT_L_CAN_ID = 14;
     private static final int COLLECTOR_PIVOT_F_CAN_ID = 15;
     private static final double COLLECT_POWER = 0.7;
 
     private final SparkMax collectorWheelsL;
     private final SparkMax collectorWheelsF;
-    private final SparkMax collectorPivotL;
+   private final SparkMax collectorPivotL;
     private final SparkMax collectorPivotF;
 
     private final DigitalInput toplimitSwitch = new DigitalInput(0);
@@ -29,18 +29,18 @@ public class CollectorSubsystem extends SubsystemBase {
     private boolean pivotUp = true;
 
     public CollectorSubsystem() {
-         collectorWheelsL = new SparkMax(COLLECTOR_WHEELS_L_CAN_ID, MotorType.kBrushless);
-         collectorWheelsF = new SparkMax(COLLECTOR_WHEELS_F_CAN_ID, MotorType.kBrushless);
-        collectorPivotL = new SparkMax(COLLECTOR_PIVOT_L_CAN_ID, MotorType.kBrushed);
+       collectorWheelsL = new SparkMax(COLLECTOR_WHEELS_L_CAN_ID, MotorType.kBrushless);
+        collectorWheelsF = new SparkMax(COLLECTOR_WHEELS_F_CAN_ID, MotorType.kBrushless);
+       collectorPivotL = new SparkMax(COLLECTOR_PIVOT_L_CAN_ID, MotorType.kBrushed);
         collectorPivotF = new SparkMax(COLLECTOR_PIVOT_F_CAN_ID, MotorType.kBrushed);
 
-          SparkMaxConfig globalConfig = new SparkMaxConfig();
+         SparkMaxConfig globalConfig = new SparkMaxConfig();
           SparkMaxConfig collectorPivotLConfig = new SparkMaxConfig();
           SparkMaxConfig collectorPivotFConfig = new SparkMaxConfig();
           SparkMaxConfig collectorWheelsLConfig = new SparkMaxConfig();
           SparkMaxConfig collectorWheelsFConfig = new SparkMaxConfig();
-          
-          globalConfig
+    
+           globalConfig
           .smartCurrentLimit(50)
           .idleMode(IdleMode.kBrake);
           

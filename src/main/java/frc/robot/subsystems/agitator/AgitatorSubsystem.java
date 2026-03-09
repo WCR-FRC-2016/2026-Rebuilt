@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AgitatorSubsystem extends SubsystemBase {
     
-    private static final int AGITATOR_TREAD_CAN_ID = 5;
+  private static final int AGITATOR_TREAD_CAN_ID = 2;
     private final SparkMax agitatorTread;
 
     @SuppressWarnings("removal")

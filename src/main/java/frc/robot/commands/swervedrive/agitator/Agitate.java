@@ -20,13 +20,13 @@ public class Agitate extends Command {
 }
  @Override
 public void execute() {
-    agitatorSubsystem.agitate(speed);
+  //  agitatorSubsystem.agitate(speed);
     
 
 }
 @Override
 public void end(boolean interupted){
-agitatorSubsystem.stop();//when set up a command add the uptospeed requirements
+//agitatorSubsystem.stop();//when set up a command add the uptospeed requirements
 
 
 

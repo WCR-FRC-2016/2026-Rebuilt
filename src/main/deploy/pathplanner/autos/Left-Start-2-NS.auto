@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Start-Shoot-NS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Shoot-Collect-1-NS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Shoot-Collect-2-NS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Collect-Shoot-3-NS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Shoot-Collect-2.2-NS-1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Shoot-Collect-2.2-NS-2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Collect-Shoot-2.2-NS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Shoot-Climb-2-NS"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

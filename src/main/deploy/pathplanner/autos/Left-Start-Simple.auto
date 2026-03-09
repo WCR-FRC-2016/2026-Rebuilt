@@ -7,13 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Start-Collect-Diff"
+            "pathName": "Left-Start-Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Collect-shoot"
+            "pathName": "Left-Shoot-Collect"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Collect-Shoot"
           }
         },
         {

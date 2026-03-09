@@ -7,19 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right-Start-Collect"
+            "pathName": "Left-Start-Shoot-NS"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Right-Collect-Shoot"
+            "pathName": "Copy of Left-Shoot-Collect-1-NS"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Right-Shoot-Climb"
+            "pathName": "Left-Shoot-Collect-2-NS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Collect-Shoot-3-NS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Shoot-Climb-NS"
           }
         }
       ]
