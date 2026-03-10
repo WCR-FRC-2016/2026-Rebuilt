@@ -94,8 +94,13 @@ public class RobotContainer {
         // Collector pivot
         manipulatorCommandXbox
                 .x()
-                .onTrue(Commands.runOnce(() -> collector.pivotCollectorDown(), collector))
-                .onFalse(Commands.runOnce(() -> collector.pivotCollectorUp(), collector));
+                .whileTrue(Commands.run(() -> collector.pivotCollectorUp(), collector))
+                .onFalse(Commands.runOnce(() -> collector.stopPivotizing(), collector));
+
+        manipulatorCommandXbox
+                .y()
+                .whileTrue(Commands.run(() -> collector.pivotCollectorDown(), collector))
+                .onFalse(Commands.runOnce(() -> collector.stopPivotizing(), collector));
 
         // Intake
         manipulatorCommandXbox
@@ -120,11 +125,11 @@ public class RobotContainer {
         // Reverse intake
         manipulatorCommandXbox
                 .leftBumper()
-                .onTrue(
+                .whileTrue(
                         Commands.runOnce(
                                 () -> {
                                     collector.startReleasing();
-                                    agitatorSubsystem.agitate(-0.5);
+                                    agitatorSubsystem.agitate(0.5);
                                 },
                                 collector,
                                 agitatorSubsystem))
@@ -136,6 +141,37 @@ public class RobotContainer {
                                 },
                                 collector,
                                 agitatorSubsystem));
+        driverCommandXbox
+                .x()
+                .whileTrue(
+                        Commands.run(
+                                () -> {
+                                    agitatorSubsystem.agitate(0.5);
+                                },
+                                shooter))
+                .onFalse(
+                        Commands.run(
+                                () -> {
+                                    agitatorSubsystem.stop();
+                                },
+                                shooter)
+                                );
+        driverCommandXbox
+                .y()
+                .whileTrue(
+                        Commands.run(
+                                () -> {
+                                    agitatorSubsystem.agitate(-0.5);
+                                },
+                                shooter))
+                .onFalse(
+                        Commands.run(
+                                () -> {
+                                    agitatorSubsystem.stop();
+                                },
+                                shooter)
+                                );
+                                
 
         // Shooter wheels
         driverCommandXbox
@@ -143,8 +179,8 @@ public class RobotContainer {
                 .whileTrue(
                         Commands.run(
                                 () -> {
-                                    double shooterSpeed = shooter.ShooterWheelsRun(-1);
-                                    if (shooterSpeed >= 2500) {
+                                    double velocity = shooter.ShooterWheelsRun(-1);    
+                                    if (velocity >= 41.6) {
                                         agitatorSubsystem.agitate(0.5);
                                     }
                                 },

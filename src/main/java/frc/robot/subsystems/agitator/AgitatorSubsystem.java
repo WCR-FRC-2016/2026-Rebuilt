@@ -14,7 +14,7 @@ public class AgitatorSubsystem extends SubsystemBase {
 
     @SuppressWarnings("removal")
     public AgitatorSubsystem() {
-        agitatorTread = new SparkMax(AGITATOR_TREAD_CAN_ID, MotorType.kBrushless);
+        agitatorTread = new SparkMax(AGITATOR_TREAD_CAN_ID, MotorType.kBrushed);
 
         SparkMaxConfig config = new SparkMaxConfig();
 

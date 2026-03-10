@@ -89,23 +89,17 @@ public class ShooterSubsystem extends SubsystemBase {
   public double calculateHighArcAngle(double distance, double velocity, double targetHeight) {
     double g = 9.80665;
 
-    // Calculate the core components of the trajectory formula
-    double v2 = Math.pow(velocity, 2); // 2 meaning squared
+    double v2 = Math.pow(velocity, 2);
     double v4 = Math.pow(velocity, 4);
     double x2 = Math.pow(distance, 2);
 
-    // The term inside the square root determines if the target is reachable
     // Formula: v^4 - g(g*x^2 + 2*y*v^2)
     double rootContent = v4 - g * (g * x2 + 2 * targetHeight * v2);
 
     if (rootContent < 0) {
-      return Double.NaN; // Target is out of range for this velocity
+      return Double.NaN; 
     }
 
-    // Solving for tan(theta) using the derived projectile formula:
-    // tan(theta) = (v^2 ± sqrt(v^4 - g(gx^2 + 2yv^2))) / (gx)
-
-    // Use the plus (+) for the high arc (the "lob" shot)
     double tanThetaHigh = (v2 + Math.sqrt(rootContent)) / (g * distance);
 
     return Math.toDegrees(Math.atan(tanThetaHigh));

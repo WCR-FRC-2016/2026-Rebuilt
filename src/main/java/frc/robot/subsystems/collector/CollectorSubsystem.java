@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CollectorSubsystem extends SubsystemBase {
-    private static final int COLLECTOR_WHEELS_L_CAN_ID = 8;
-    private static final int COLLECTOR_WHEELS_F_CAN_ID = 9;
+    private static final int COLLECTOR_WHEELS_L_CAN_ID = 9;
+    private static final int COLLECTOR_WHEELS_F_CAN_ID = 8;
     private static final int COLLECTOR_PIVOT_L_CAN_ID = 14;
     private static final int COLLECTOR_PIVOT_F_CAN_ID = 15;
-    private static final double COLLECT_POWER = 0.7;
+    private static final double COLLECT_POWER = 0.9;
 
     private final SparkMax collectorWheelsL;
     private final SparkMax collectorWheelsF;
@@ -68,7 +68,7 @@ public class CollectorSubsystem extends SubsystemBase {
           collectorWheelsF.configure(collectorWheelsFConfig, ResetMode.kResetSafeParameters,
           PersistMode.kPersistParameters);        
     }
-
+/* 
     @Override
     public void periodic() {
         if (pivotUp == true) {
@@ -79,7 +79,7 @@ public class CollectorSubsystem extends SubsystemBase {
             collectorPivotL.set(bottomLimitSwitchValue ? 0.25 : 0);
         }
     }
-
+*/
     public void startCollecting() {
         collectorWheelsL.set(COLLECT_POWER);
     }
@@ -94,10 +94,14 @@ public class CollectorSubsystem extends SubsystemBase {
 
     // has to pivot more than 90 degrees
     public void pivotCollectorDown() {
-        pivotUp = false;
-    }
+        collectorPivotL.set(0.3);
+        }
 
     public void pivotCollectorUp() {
-        pivotUp = true;
+        collectorPivotL.set(-0.3);
+    }
+
+    public void stopPivotizing() {
+        collectorPivotL.set(0);
     }
 }

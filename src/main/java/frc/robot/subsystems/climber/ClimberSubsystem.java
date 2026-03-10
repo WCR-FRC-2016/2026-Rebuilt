@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class ClimberSubsystem extends SubsystemBase {
 
-    private static final int CLIMBER_MOTOR_CAN_ID = 6;
+    private static final int CLIMBER_MOTOR_CAN_ID = 3;
 
     private final SparkMax climberMotor;
     private final SparkMaxConfig motorConfig = new SparkMaxConfig();
