@@ -68,7 +68,7 @@ public class CollectorSubsystem extends SubsystemBase {
           collectorWheelsF.configure(collectorWheelsFConfig, ResetMode.kResetSafeParameters,
           PersistMode.kPersistParameters);        
     }
-/* 
+
     @Override
     public void periodic() {
         if (pivotUp == true) {
@@ -79,16 +79,17 @@ public class CollectorSubsystem extends SubsystemBase {
             collectorPivotL.set(bottomLimitSwitchValue ? 0.25 : 0);
         }
     }
-*/
-    public void startCollecting() {
+
+    public void Collect() {
+        pivotUp = false;
         collectorWheelsL.set(COLLECT_POWER);
     }
 
-    public void stopCollecting() {
+    public void stopCollect() {
         collectorWheelsL.set(0);
     }
 
-    public void startReleasing() {
+    public void Release() {
         collectorWheelsL.set(-COLLECT_POWER);
     }
 
@@ -101,7 +102,12 @@ public class CollectorSubsystem extends SubsystemBase {
         collectorPivotL.set(-0.3);
     }
 
+    public void manualCollectorPivot() {
+        
+    }
+
     public void stopPivotizing() {
         collectorPivotL.set(0);
     }
+
 }

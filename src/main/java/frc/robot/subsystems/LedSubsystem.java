@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Random;
 
 public class LedSubsystem extends SubsystemBase {
-
+/* 
     // ---------------- LED SETUP ----------------
 
     private final AddressableLED led;
@@ -252,4 +252,5 @@ public class LedSubsystem extends SubsystemBase {
         initializeSnake();
         spawnFood();
     }
+        */
 }

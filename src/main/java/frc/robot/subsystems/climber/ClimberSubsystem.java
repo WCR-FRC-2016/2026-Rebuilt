@@ -37,19 +37,11 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void runClimber() {
+        climberMotor.set(0.3);
+    }
 
-        if (!climberRunning) {
-            climberTimer.reset();
-            climberTimer.start();
-            climberRunning = true;
-        }
-
-        if (climberTimer.get() < 5.0) {
-            climberMotor.set(0.5);
-        } else {
-            climberMotor.stopMotor();
-            climberRunning = false;
-        }
+    public void runClimberDown() {
+        climberMotor.set(-0.3);
     }
 
     public void stop() {

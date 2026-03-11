@@ -29,6 +29,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static double IdealShootSpeed = 0; // rotations per minute
   // public boolean GoodSpeed = UpToSpeed();
+  public final double SHOOTERSPEED = 0.8;
+  public final double PIVOTSPEED = 0.2;
+
 
   private final TalonFX shooterLeader = new TalonFX(shooterWheelsLCanId);
   private final Follower follower = new Follower(shooterWheelsLCanId, MotorAlignmentValue.Opposed);
@@ -63,23 +66,24 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterFollower.getConfigurator().apply(configuration);
   }
 
-  public double ShooterWheelsRun(double speed) {
+  public void ShooterWheelsRun() {
+    shooterLeader.set(SHOOTERSPEED);
+  }
+
+  public void ShooterWheelsRunAuto(double speed) {
     shooterLeader.set(speed);
-    double x = shooterLeader.getVelocity().getValueAsDouble();
-    return x;
   }
 
-  public Command ShooterWheelsStop() {
+  public void ShooterWheelsStop() {
     shooterLeader.set(0);
-    return null;
   }
 
-  public void pivotUp(double speed) {
-    pivotWheel.set(speed);
+  public void pivotUp() {
+    pivotWheel.set(PIVOTSPEED);
   }
 
-  public void pivotDown(double speed) {
-    pivotWheel.set(speed);
+  public void pivotDown() {
+    pivotWheel.set(PIVOTSPEED);
   }
 
   public void stopPivotizing() {

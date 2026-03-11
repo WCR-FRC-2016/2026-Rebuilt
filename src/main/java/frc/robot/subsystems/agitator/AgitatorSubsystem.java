@@ -11,6 +11,7 @@ public class AgitatorSubsystem extends SubsystemBase {
     
   private static final int AGITATOR_TREAD_CAN_ID = 2;
     private final SparkMax agitatorTread;
+    public final double AGITATESPEED = 0.5;
 
     @SuppressWarnings("removal")
     public AgitatorSubsystem() {
@@ -27,8 +28,8 @@ public class AgitatorSubsystem extends SubsystemBase {
                                 SparkMax.PersistMode.kPersistParameters);
     }
 
-    public void agitate(double speed) {
-        agitatorTread.set(speed);
+    public void agitate() {
+        agitatorTread.set(AGITATESPEED);
     }
 
     public void stop() {

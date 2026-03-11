@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.collector.StartCollectingAuto;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 
 import frc.robot.subsystems.LedSubsystem;
@@ -37,6 +38,7 @@ public class RobotContainer {
     final XboxController manipulatorXbox = new XboxController(1);
 
     private final XboxController controller = new XboxController(2);
+    // for possible leds dont touch unless neccisary
 
     private final SwerveSubsystem drivebase = new SwerveSubsystem(
             new File(Filesystem.getDeployDirectory(), "swerve/neo"));
@@ -72,150 +74,23 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("test", Commands.print("I EXIST"));
         NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
+//        NamedCommands.registerCommand("startCollecting", StartCollecting());
+
+
+
     }
 
     @SuppressWarnings("unused")
     private void configureBindings() {
 
-        Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
-
-        Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-
-        Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
-
-        Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
-
-        drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-
-        driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
-
-        driverCommandXbox.back().onTrue(Commands.runOnce(drivebase::zeroGyro));
-
-        // Collector pivot
-        manipulatorCommandXbox
-                .x()
-                .whileTrue(Commands.run(() -> collector.pivotCollectorUp(), collector))
-                .onFalse(Commands.runOnce(() -> collector.stopPivotizing(), collector));
-
-        manipulatorCommandXbox
-                .y()
-                .whileTrue(Commands.run(() -> collector.pivotCollectorDown(), collector))
-                .onFalse(Commands.runOnce(() -> collector.stopPivotizing(), collector));
-
-        // Intake
-        manipulatorCommandXbox
-                .leftTrigger(0.5)
-                .onTrue(
-                        Commands.runOnce(
-                                () -> {
-                                    collector.startCollecting();
-                                    agitatorSubsystem.agitate(0.5);
-                                },
-                                collector,
-                                agitatorSubsystem))
-                .onFalse(
-                        Commands.runOnce(
-                                () -> {
-                                    collector.stopCollecting();
-                                    agitatorSubsystem.stop();
-                                },
-                                collector,
-                                agitatorSubsystem));
-
-        // Reverse intake
-        manipulatorCommandXbox
-                .leftBumper()
-                .whileTrue(
-                        Commands.runOnce(
-                                () -> {
-                                    collector.startReleasing();
-                                    agitatorSubsystem.agitate(0.5);
-                                },
-                                collector,
-                                agitatorSubsystem))
-                .onFalse(
-                        Commands.runOnce(
-                                () -> {
-                                    collector.stopCollecting();
-                                    agitatorSubsystem.stop();
-                                },
-                                collector,
-                                agitatorSubsystem));
-        driverCommandXbox
-                .x()
-                .whileTrue(
-                        Commands.run(
-                                () -> {
-                                    agitatorSubsystem.agitate(0.5);
-                                },
-                                shooter))
-                .onFalse(
-                        Commands.run(
-                                () -> {
-                                    agitatorSubsystem.stop();
-                                },
-                                shooter)
-                                );
-        driverCommandXbox
-                .y()
-                .whileTrue(
-                        Commands.run(
-                                () -> {
-                                    agitatorSubsystem.agitate(-0.5);
-                                },
-                                shooter))
-                .onFalse(
-                        Commands.run(
-                                () -> {
-                                    agitatorSubsystem.stop();
-                                },
-                                shooter)
-                                );
-                                
-
-        // Shooter wheels
-        driverCommandXbox
-                .rightTrigger(0.1)
-                .whileTrue(
-                        Commands.run(
-                                () -> {
-                                    double velocity = shooter.ShooterWheelsRun(-1);    
-                                    if (velocity >= 41.6) {
-                                        agitatorSubsystem.agitate(0.5);
-                                    }
-                                },
-                                shooter))
-                .onFalse(Commands.runOnce(() -> shooter.ShooterWheelsStop(), shooter));
-
-        // Shooter pivot up
-        driverCommandXbox
-                .a()
-                .whileTrue(Commands.run(() -> shooter.pivotUp(0.2), shooter))
-                .onFalse(Commands.runOnce(() -> shooter.stopPivotizing(), shooter));
-
-        // Shooter pivot down
-        driverCommandXbox
-                .b()
-                .whileTrue(Commands.run(() -> shooter.pivotDown(-0.1), shooter))
-                .onFalse(Commands.runOnce(() -> shooter.stopPivotizing(), shooter));
-
-        // Climber
-        manipulatorCommandXbox
-                .povUp()
-                .whileTrue(
-                        Commands.startEnd(
-                                () -> climberSubsystem.runClimber(),
-                                () -> climberSubsystem.stop(),
-                                climberSubsystem));
-
-        manipulatorCommandXbox
-                .povDown()
-                .whileTrue(
-                        Commands.startEnd(
-                                () -> climberSubsystem.runClimber(),
-                                () -> climberSubsystem.stop(),
-                                climberSubsystem));
-
+        if (DriverStation.isTest()) {
+            bindTestingControls();
+        }
+        else {
+            bindCompetitionControls();
+        }
+        
+        /* 
         // ---------------- LED controls ----------------
         new JoystickButton(controller, XboxController.Button.kY.value)
                 .onTrue(new InstantCommand(() -> ledSubsystem.setUp()));
@@ -234,7 +109,9 @@ public class RobotContainer {
 
         new JoystickButton(controller, XboxController.Button.kRightBumper.value)
                 .onTrue(new InstantCommand(() -> ledSubsystem.decreaseSpeed()));
-    }
+        */
+                }
+                
 
     public LedSubsystem getLedSubsystem() {
         return ledSubsystem;
@@ -247,4 +124,93 @@ public class RobotContainer {
     public void setMotorBrake(boolean brake) {
         // drivebase.setMotorBrake(brake);
     }
+
+    private void bindTestingControls() {
+        
+        Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+
+        Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+
+        Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
+
+        Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+
+        drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+
+        //driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
+
+        driverCommandXbox.back().onTrue(Commands.runOnce(drivebase::zeroGyro));
+
+        
+        // Shooter wheels ramp up
+        driverCommandXbox
+                .leftTrigger(0.1)
+                .whileTrue(Commands.run(shooter::ShooterWheelsRun, shooter))
+                .onFalse(Commands.runOnce(shooter::ShooterWheelsStop, shooter));
+        
+        // Agitate to shoot
+        driverCommandXbox
+                .rightTrigger(0.1)
+                .whileTrue(Commands.run(agitatorSubsystem::agitate, agitatorSubsystem))
+                .onFalse(Commands.runOnce(agitatorSubsystem::stop, agitatorSubsystem));
+
+        // Shooter pivot up
+        driverCommandXbox
+                .povUp()
+                .whileTrue(Commands.run(shooter::pivotUp, shooter))
+                .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
+
+        // Shooter pivot down
+        driverCommandXbox
+                .povDown()
+                .whileTrue(Commands.run(shooter::pivotDown, shooter))
+                .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
+
+        // Collector pivot up
+        manipulatorCommandXbox
+                .leftBumper()
+                .whileTrue(Commands.run(collector::pivotCollectorUp, collector))
+                .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
+
+        // Collector pivot down
+        manipulatorCommandXbox
+                .rightBumper()
+                .whileTrue(Commands.run(collector::pivotCollectorDown, collector))
+                .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
+
+        // Intake
+        manipulatorCommandXbox
+                .leftTrigger(0.1)
+                .whileTrue(Commands.runOnce(collector::Collect, collector))      
+                .onFalse(Commands.runOnce(collector::stopCollect, collector));
+
+        // Reverse intake
+        manipulatorCommandXbox
+                .rightTrigger(0.1)
+                .whileTrue(Commands.runOnce(collector::Release, collector))     
+                .onFalse(Commands.runOnce(collector::stopCollect, collector));
+                
+        // Climber
+        manipulatorCommandXbox
+                .povUp()
+                .whileTrue(Commands.run(climberSubsystem::runClimber, climberSubsystem))
+                .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
+
+
+        manipulatorCommandXbox
+                .povDown()
+                .whileTrue(Commands.run(climberSubsystem::runClimberDown, climberSubsystem))
+                .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
+
+        manipulatorCommandXbox
+                .leftStick()
+                .whileTrue(Commands.run(() -> {
+                    System.out.println("Joystick value: " + manipulatorCommandXbox.getLeftY());
+                }));
+    }
+
+    private void bindCompetitionControls() {
+        System.out.println("To do: bind competition controls.");
+    }
+
 }
