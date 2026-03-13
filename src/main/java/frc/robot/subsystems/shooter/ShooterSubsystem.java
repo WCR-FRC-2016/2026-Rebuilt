@@ -5,6 +5,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,26 +20,40 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 import static edu.wpi.first.units.Units.Amps;
 
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final SparkMax pivotWheel;
   private static int shooterWheelsLCanId = 0;
   private static int shooterWheelsFCanId = 1;
-  private static int pivotWheelCanId = 7;
+  private static int pivotWheelCanId = 4;
 
   public static double IdealShootSpeed = 0; // rotations per minute
   // public boolean GoodSpeed = UpToSpeed();
-  public final double SHOOTERSPEED = 0.8;
-  public final double PIVOTSPEED = 0.2;
+  public double SHOOTERSPEED = -0.7;// currently runs at 6.2 perfect for 2.5 distance
+  public final double PIVOTSPEED = 0.4;
+
+  int wantedVelocity = 60;
+
+  private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(wantedVelocity).withSlot(0);
+  private final NeutralOut m_brake = new NeutralOut();
 
 
   private final TalonFX shooterLeader = new TalonFX(shooterWheelsLCanId);
   private final Follower follower = new Follower(shooterWheelsLCanId, MotorAlignmentValue.Opposed);
   private final TalonFX shooterFollower = new TalonFX(shooterWheelsFCanId);
-  //private final StatusSignal<AngularVelocity> velocitySignal = shooterLeader.getVelocity();
+  private final SparkMax pivotWheel = new SparkMax(pivotWheelCanId, MotorType.kBrushed);
 
+  private final StatusSignal<AngularVelocity> velocitySignal = shooterLeader.getVelocity();
+
+  @Override
+  public void periodic() {
+      System.out.println(velocitySignal.getValueAsDouble()); 
+      velocitySignal.refresh(); 
+  }
+  
   /*
    * private DoubleSupplier getRampSpeed = null;
    * private double currentTriggerValue = 0;
@@ -47,7 +63,6 @@ public class ShooterSubsystem extends SubsystemBase {
    * private int currentMotorVelocity = 0;
    */
   public ShooterSubsystem() {
-    pivotWheel = new SparkMax(pivotWheelCanId, MotorType.kBrushed);
 
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
 
@@ -68,6 +83,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void ShooterWheelsRun() {
     shooterLeader.set(SHOOTERSPEED);
+
   }
 
   public void ShooterWheelsRunAuto(double speed) {
@@ -75,11 +91,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void ShooterWheelsStop() {
-    shooterLeader.set(0);
+    shooterLeader.setControl(m_brake);
   }
 
   public void pivotUp() {
-    pivotWheel.set(PIVOTSPEED);
+    pivotWheel.set(-PIVOTSPEED);
   }
 
   public void pivotDown() {
@@ -89,6 +105,19 @@ public class ShooterSubsystem extends SubsystemBase {
   public void stopPivotizing() {
     pivotWheel.set(0);
   }
+
+ public void changeSpeedUp() {
+    // Limits speed so it doesn't go below -1.0
+    if (SHOOTERSPEED > -1.0) { 
+        SHOOTERSPEED -= 0.05;
+    }
+}
+
+public void changeSpeedDown() {
+    // Limits speed so it doesn't go above 0
+      SHOOTERSPEED += 0.05;
+    }
+
 
   public double calculateHighArcAngle(double distance, double velocity, double targetHeight) {
     double g = 9.80665;

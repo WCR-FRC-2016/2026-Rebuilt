@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.collector.StartCollectingAuto;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
@@ -31,186 +31,199 @@ import swervelib.SwerveInputStream;
 
 public class RobotContainer {
 
-    final CommandXboxController driverCommandXbox = new CommandXboxController(0);
-    final XboxController driverXbox = new XboxController(0);
+        final CommandXboxController driverCommandXbox = new CommandXboxController(0);
+        final XboxController driverXbox = new XboxController(0);
 
-    final CommandXboxController manipulatorCommandXbox = new CommandXboxController(1);
-    final XboxController manipulatorXbox = new XboxController(1);
+        final CommandXboxController manipulatorCommandXbox = new CommandXboxController(1);
+        final XboxController manipulatorXbox = new XboxController(1);
 
-    private final XboxController controller = new XboxController(2);
-    // for possible leds dont touch unless neccisary
+        private final XboxController controller = new XboxController(2);
+        // for possible leds dont touch unless neccisary
 
-    private final SwerveSubsystem drivebase = new SwerveSubsystem(
-            new File(Filesystem.getDeployDirectory(), "swerve/neo"));
+        private final SwerveSubsystem drivebase = new SwerveSubsystem(
+                        new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
-    private final CollectorSubsystem collector = new CollectorSubsystem();
-    private final ShooterSubsystem shooter = new ShooterSubsystem();
-    private final LedSubsystem ledSubsystem = new LedSubsystem();
-    private final AgitatorSubsystem agitatorSubsystem = new AgitatorSubsystem();
-    private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+        private final CollectorSubsystem collector = new CollectorSubsystem();
+        private final ShooterSubsystem shooter = new ShooterSubsystem();
+        private final LedSubsystem ledSubsystem = new LedSubsystem();
+        private final AgitatorSubsystem agitatorSubsystem = new AgitatorSubsystem();
+        private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
-    SwerveInputStream driveAngularVelocity = SwerveInputStream.of(
-            drivebase.getSwerveDrive(),
-            () -> driverXbox.getLeftY() * -1,
-            () -> driverXbox.getLeftX() * -1)
-            .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
-            .deadband(OperatorConstants.DEADBAND)
-            .scaleTranslation(0.8)
-            .allianceRelativeControl(true);
+        Trigger leftJoystickManualTrigger = new Trigger(() -> manipulatorCommandXbox.getLeftY() > 0.4);
 
-    SwerveInputStream driveDirectAngle = driveAngularVelocity
-            .copy()
-            .withControllerHeadingAxis(driverXbox::getRightX, driverXbox::getRightY)
-            .headingWhile(true);
+        SwerveInputStream driveAngularVelocity = SwerveInputStream.of(
+                        drivebase.getSwerveDrive(),
+                        () -> driverXbox.getLeftY() * -1,
+                        () -> driverXbox.getLeftX() * -1)
+                        .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
+                        .deadband(OperatorConstants.DEADBAND)
+                        .scaleTranslation(0.8)
+                        .allianceRelativeControl(true);
 
-    SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
-            .allianceRelativeControl(false);
+        SwerveInputStream driveDirectAngle = driveAngularVelocity
+                        .copy()
+                        .withControllerHeadingAxis(driverXbox::getRightX, driverXbox::getRightY)
+                        .headingWhile(true);
 
-    public RobotContainer() {
+        SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+                        .allianceRelativeControl(false);
 
-        configureBindings();
+        boolean ifDone = false;
 
-        DriverStation.silenceJoystickConnectionWarning(true);
+        public RobotContainer() {
 
-        NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-        NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
-//        NamedCommands.registerCommand("startCollecting", StartCollecting());
+                configureBindings();
 
+                DriverStation.silenceJoystickConnectionWarning(true);
 
+                NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+                NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
+                // NamedCommands.registerCommand("startCollecting", StartCollecting());
 
-    }
-
-    @SuppressWarnings("unused")
-    private void configureBindings() {
-
-        if (DriverStation.isTest()) {
-            bindTestingControls();
         }
-        else {
-            bindCompetitionControls();
+
+        @SuppressWarnings("unused")
+        private void configureBindings() {
+
+                // if (DriverStation.isTest()) {
+                bindTestingControls();
+                // } else {
+                // bindCompetitionControls();
+                // }
+
+                /*
+                 * // ---------------- LED controls ----------------
+                 * new JoystickButton(controller, XboxController.Button.kY.value)
+                 * .onTrue(new InstantCommand(() -> ledSubsystem.setUp()));
+                 * 
+                 * new JoystickButton(controller, XboxController.Button.kA.value)
+                 * .onTrue(new InstantCommand(() -> ledSubsystem.setDown()));
+                 * 
+                 * new JoystickButton(controller, XboxController.Button.kX.value)
+                 * .onTrue(new InstantCommand(() -> ledSubsystem.setLeft()));
+                 * 
+                 * new JoystickButton(controller, XboxController.Button.kB.value)
+                 * .onTrue(new InstantCommand(() -> ledSubsystem.setRight()));
+                 * 
+                 * new JoystickButton(controller, XboxController.Button.kLeftBumper.value)
+                 * .onTrue(new InstantCommand(() -> ledSubsystem.increaseSpeed()));
+                 * 
+                 * new JoystickButton(controller, XboxController.Button.kRightBumper.value)
+                 * .onTrue(new InstantCommand(() -> ledSubsystem.decreaseSpeed()));
+                 */
         }
-        
-        /* 
-        // ---------------- LED controls ----------------
-        new JoystickButton(controller, XboxController.Button.kY.value)
-                .onTrue(new InstantCommand(() -> ledSubsystem.setUp()));
 
-        new JoystickButton(controller, XboxController.Button.kA.value)
-                .onTrue(new InstantCommand(() -> ledSubsystem.setDown()));
+        public LedSubsystem getLedSubsystem() {
+                return ledSubsystem;
+        }
 
-        new JoystickButton(controller, XboxController.Button.kX.value)
-                .onTrue(new InstantCommand(() -> ledSubsystem.setLeft()));
+        public Command getAutonomousCommand() {
+                return AutoBuilder.buildAuto("Left-Start");
+        }
 
-        new JoystickButton(controller, XboxController.Button.kB.value)
-                .onTrue(new InstantCommand(() -> ledSubsystem.setRight()));
+        public void setMotorBrake(boolean brake) {
+                // drivebase.setMotorBrake(brake);
+        }
 
-        new JoystickButton(controller, XboxController.Button.kLeftBumper.value)
-                .onTrue(new InstantCommand(() -> ledSubsystem.increaseSpeed()));
+        private void bindTestingControls() {
 
-        new JoystickButton(controller, XboxController.Button.kRightBumper.value)
-                .onTrue(new InstantCommand(() -> ledSubsystem.decreaseSpeed()));
-        */
-                }
-                
+                Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
 
-    public LedSubsystem getLedSubsystem() {
-        return ledSubsystem;
-    }
+                Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
-    public Command getAutonomousCommand() {
-        return AutoBuilder.buildAuto("Left-Start");
-    }
+                Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
 
-    public void setMotorBrake(boolean brake) {
-        // drivebase.setMotorBrake(brake);
-    }
+                Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
 
-    private void bindTestingControls() {
-        
-        Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+                drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
-        Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+                driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
 
-        Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
+                driverCommandXbox.back().onTrue(Commands.runOnce(drivebase::zeroGyro));
 
-        Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+                // Shooter wheels ramp up
+                driverCommandXbox
+                                .leftTrigger(0.1)
+                                .whileTrue(Commands.run(shooter::ShooterWheelsRun, shooter))
+                                .onFalse(Commands.runOnce(shooter::ShooterWheelsStop, shooter));
 
-        drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+                // Agitate to shoot
+                driverCommandXbox
+                                .rightTrigger(0.1)
+                                .whileTrue(Commands.run(agitatorSubsystem::agitate, agitatorSubsystem))
+                                .onFalse(Commands.runOnce(agitatorSubsystem::stop, agitatorSubsystem));
 
-        //driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
+                // Shooter pivot up
+                driverCommandXbox
+                                .povUp()
+                                .whileTrue(Commands.run(shooter::pivotUp, shooter))
+                                .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
 
-        driverCommandXbox.back().onTrue(Commands.runOnce(drivebase::zeroGyro));
+                // Shooter pivot down
+                driverCommandXbox
+                                .povDown()
+                                .whileTrue(Commands.run(shooter::pivotDown, shooter))
+                                .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
+                // Shooter speed up
+              /*   driverCommandXbox
+                                .a()
+                                .onTrue(Commands.runOnce(() -> shooter.changeSpeedUp(), shooter));
 
-        
-        // Shooter wheels ramp up
-        driverCommandXbox
-                .leftTrigger(0.1)
-                .whileTrue(Commands.run(shooter::ShooterWheelsRun, shooter))
-                .onFalse(Commands.runOnce(shooter::ShooterWheelsStop, shooter));
-        
-        // Agitate to shoot
-        driverCommandXbox
-                .rightTrigger(0.1)
-                .whileTrue(Commands.run(agitatorSubsystem::agitate, agitatorSubsystem))
-                .onFalse(Commands.runOnce(agitatorSubsystem::stop, agitatorSubsystem));
+                // Shooter speed down
+                driverCommandXbox.b()
+                .onTrue(Commands.runOnce(() -> shooter.changeSpeedDown(), shooter));
+                        */
+                // Collector pivot up
+                manipulatorCommandXbox
+                                .leftBumper()
+                                .whileTrue(Commands.run(collector::pivotCollectorUp, collector))
+                                .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
 
-        // Shooter pivot up
-        driverCommandXbox
-                .povUp()
-                .whileTrue(Commands.run(shooter::pivotUp, shooter))
-                .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
+                // Collector pivot down
+                manipulatorCommandXbox
+                                .rightBumper()
+                                .whileTrue(Commands.run(collector::pivotCollectorDown, collector))
+                                .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
 
-        // Shooter pivot down
-        driverCommandXbox
-                .povDown()
-                .whileTrue(Commands.run(shooter::pivotDown, shooter))
-                .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
+                // Intake
+                manipulatorCommandXbox
+                                .leftTrigger(0.1)
+                                .whileTrue(Commands.runOnce(collector::Collect, collector))
+                                .onFalse(Commands.runOnce(collector::stopCollect, collector));
 
-        // Collector pivot up
-        manipulatorCommandXbox
-                .leftBumper()
-                .whileTrue(Commands.run(collector::pivotCollectorUp, collector))
-                .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
+                // Reverse intake
+                manipulatorCommandXbox
+                                .rightTrigger(0.1)
+                                .whileTrue(Commands.runOnce(collector::Release, collector))
+                                .onFalse(Commands.runOnce(collector::stopCollect, collector));
 
-        // Collector pivot down
-        manipulatorCommandXbox
-                .rightBumper()
-                .whileTrue(Commands.run(collector::pivotCollectorDown, collector))
-                .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
+                // Climber
+                manipulatorCommandXbox
+                                .povUp()
+                                .whileTrue(Commands.run(climberSubsystem::runClimber, climberSubsystem))
+                                .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
 
-        // Intake
-        manipulatorCommandXbox
-                .leftTrigger(0.1)
-                .whileTrue(Commands.runOnce(collector::Collect, collector))      
-                .onFalse(Commands.runOnce(collector::stopCollect, collector));
+                manipulatorCommandXbox
+                                .povDown()
+                                .whileTrue(Commands.run(climberSubsystem::runClimberDown, climberSubsystem))
+                                .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
 
-        // Reverse intake
-        manipulatorCommandXbox
-                .rightTrigger(0.1)
-                .whileTrue(Commands.runOnce(collector::Release, collector))     
-                .onFalse(Commands.runOnce(collector::stopCollect, collector));
-                
-        // Climber
-        manipulatorCommandXbox
-                .povUp()
-                .whileTrue(Commands.run(climberSubsystem::runClimber, climberSubsystem))
-                .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
+                leftJoystickManualTrigger
+                                .onTrue(Commands.runOnce(() -> System.out.println("Works!!")));
+                // () -> collector.manualCollectorPivot()));
+                /*
+                 * if (manipulatorCommandXbox.getLeftY() > 0.4) {
+                 * collector.manualCollectorPivot(manipulatorCommandXbox.getLeftY());
+                 * }
+                 * else {
+                 * collector.stopPivotizing();
+                 * }
+                 */
 
+        }
 
-        manipulatorCommandXbox
-                .povDown()
-                .whileTrue(Commands.run(climberSubsystem::runClimberDown, climberSubsystem))
-                .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
-
-        manipulatorCommandXbox
-                .leftStick()
-                .whileTrue(Commands.run(() -> {
-                    System.out.println("Joystick value: " + manipulatorCommandXbox.getLeftY());
-                }));
-    }
-
-    private void bindCompetitionControls() {
-        System.out.println("To do: bind competition controls.");
-    }
+        private void bindCompetitionControls() {
+                System.out.println("To do: bind competition controls.");
+        }
 
 }

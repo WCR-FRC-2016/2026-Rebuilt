@@ -11,7 +11,7 @@ public class AgitatorSubsystem extends SubsystemBase {
     
   private static final int AGITATOR_TREAD_CAN_ID = 2;
     private final SparkMax agitatorTread;
-    public final double AGITATESPEED = 0.5;
+    public final double AGITATESPEED = 0.75;
 
     @SuppressWarnings("removal")
     public AgitatorSubsystem() {

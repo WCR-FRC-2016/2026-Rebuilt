@@ -50,6 +50,6 @@ public final class Constants
   }
   public static class SpeedConstants
   {
-    public static final double AGITATOR_SPEED = 0.75;
+    public static final double AGITATOR_SPEED = 0.90;
   }
 }
