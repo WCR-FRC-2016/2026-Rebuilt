@@ -1,0 +1,29 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/Middle-Start-Simple.auto
+            "pathName": "Start-Shoot-Climb"
+========
+            "pathName": "left Start to Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to climb right"
+>>>>>>>> bc360d45af86a6025461a02caf528f2a44516745:src/main/deploy/pathplanner/autos/left start to climb right.auto
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

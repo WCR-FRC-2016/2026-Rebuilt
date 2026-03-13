@@ -1,0 +1,111 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.27,
+        "y": 1.401
+      },
+      "prevControl": null,
+      "nextControl": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Collect_shoot.path
+        "x": 5.789753689562929,
+        "y": 0.6557053476746134
+========
+        "x": 1.8397422108006853,
+        "y": 6.808121285701232
+>>>>>>>> bc360d45af86a6025461a02caf528f2a44516745:src/main/deploy/pathplanner/paths/left Start to Shoot.path
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Collect_shoot.path
+        "x": 4.237674698795181,
+        "y": 0.5818433734939765
+      },
+      "prevControl": {
+        "x": 5.264879518072289,
+        "y": 0.516277108433735
+      },
+      "nextControl": {
+        "x": 3.401711216230529,
+        "y": 0.6352027447215078
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.838927710843373,
+        "y": 0.8768915662650603
+      },
+      "prevControl": {
+        "x": 3.1012252307655763,
+        "y": 0.7780130084880974
+========
+        "x": 2.455,
+        "y": 4.055
+      },
+      "prevControl": {
+        "x": 2.6087759017083805,
+        "y": 3.377137409289668
+>>>>>>>> bc360d45af86a6025461a02caf528f2a44516745:src/main/deploy/pathplanner/paths/left Start to Shoot.path
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Collect_shoot.path
+      "waypointRelativePos": 0.951037344398335,
+      "rotationDegrees": 175.98825648713515
+========
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0.0
+>>>>>>>> bc360d45af86a6025461a02caf528f2a44516745:src/main/deploy/pathplanner/paths/left Start to Shoot.path
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "climb",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Collect_shoot.path
+    "rotation": 66.92958775017527
+========
+    "rotation": -1.363927531602957
+>>>>>>>> bc360d45af86a6025461a02caf528f2a44516745:src/main/deploy/pathplanner/paths/left Start to Shoot.path
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
