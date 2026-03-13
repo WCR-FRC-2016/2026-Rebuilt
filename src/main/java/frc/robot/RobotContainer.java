@@ -150,8 +150,8 @@ public class RobotContainer {
                 // Agitate to shoot
                 driverCommandXbox
                                 .rightTrigger(0.1)
-                                .whileTrue(Commands.run(agitatorSubsystem::agitate, agitatorSubsystem))
-                                .onFalse(Commands.runOnce(agitatorSubsystem::stop, agitatorSubsystem));
+                                .whileTrue(Commands.run(agitatorSubsystem::startAgitating, agitatorSubsystem))
+                                .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating, agitatorSubsystem));
 
                 // Shooter pivot up
                 driverCommandXbox
