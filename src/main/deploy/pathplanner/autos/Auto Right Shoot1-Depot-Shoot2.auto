@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Start to Shoot1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Shoot1 to Depot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Depot to Shoot2"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
