@@ -28,11 +28,11 @@ public class AgitatorSubsystem extends SubsystemBase {
                                 SparkMax.PersistMode.kPersistParameters);
     }
 
-    public void agitate() {
+    public void startAgitating() {
         agitatorTread.set(AGITATESPEED);
     }
 
-    public void stop() {
+    public void stopAgitating() {
         agitatorTread.set(0.0);
     }
 }

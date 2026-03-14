@@ -7,11 +7,19 @@
         {
           "type": "path",
           "data": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/Auto Right Shoot.auto
             "pathName": "Right Start to Shoot1"
-========
-            "pathName": "Left-Start-Shoot-NS"
->>>>>>>> 3b692d1a95d3cd902af3ec903f9855d7a98bdb17:src/main/deploy/pathplanner/autos/Left-Start-No-Climb.auto
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Shoot1 to Collect"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Collect to Shoot2"
           }
         }
       ]
