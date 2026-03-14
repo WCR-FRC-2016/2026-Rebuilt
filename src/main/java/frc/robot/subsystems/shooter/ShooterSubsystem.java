@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static edu.wpi.first.units.Units.Amps;
 
-
 public class ShooterSubsystem extends SubsystemBase {
   private static int shooterWheelsLCanId = 0;
   private static int shooterWheelsFCanId = 1;
@@ -35,11 +34,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public double SHOOTERSPEED = -0.7;// currently runs at 6.2 perfect for 2.5 distance
   public final double PIVOTSPEED = 0.4;
 
-  int wantedVelocity = 60;
+  double wantedVelocity = -50; //60
 
   private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(wantedVelocity).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
-
 
   private final TalonFX shooterLeader = new TalonFX(shooterWheelsLCanId);
   private final Follower follower = new Follower(shooterWheelsLCanId, MotorAlignmentValue.Opposed);
@@ -50,10 +48,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-      //System.out.println(velocitySignal.getValueAsDouble()); 
-      velocitySignal.refresh(); 
+    System.out.println(velocitySignal.getValueAsDouble());
+    velocitySignal.refresh();
   }
-  
+
   /*
    * private DoubleSupplier getRampSpeed = null;
    * private double currentTriggerValue = 0;
@@ -77,13 +75,14 @@ public class ShooterSubsystem extends SubsystemBase {
         .withCurrentLimits(
             new CurrentLimitsConfigs().withStatorCurrentLimit(Amps.of(40)).withStatorCurrentLimitEnable(true))
         .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
+    configuration.Slot0.kP = 20;
     shooterLeader.getConfigurator().apply(configuration);
     shooterFollower.getConfigurator().apply(configuration);
   }
 
   public void ShooterWheelsRun() {
-    shooterLeader.set(SHOOTERSPEED);
-
+    // shooterLeader.set(SHOOTERSPEED);
+    shooterLeader.setControl(m_velocityVoltage.withVelocity(wantedVelocity));
   }
 
   public void ShooterWheelsRunAuto(double speed) {
@@ -106,18 +105,17 @@ public class ShooterSubsystem extends SubsystemBase {
     pivotWheel.set(0);
   }
 
- public void changeSpeedUp() {
+  public void changeSpeedUp() {
     // Limits speed so it doesn't go below -1.0
-    if (SHOOTERSPEED > -1.0) { 
-        SHOOTERSPEED -= 0.05;
+    if (SHOOTERSPEED > -1.0) {
+      SHOOTERSPEED -= 0.05;
     }
-}
+  }
 
-public void changeSpeedDown() {
+  public void changeSpeedDown() {
     // Limits speed so it doesn't go above 0
-      SHOOTERSPEED += 0.05;
-    }
-
+    SHOOTERSPEED += 0.05;
+  }
 
   public double calculateHighArcAngle(double distance, double velocity, double targetHeight) {
     double g = 9.80665;
@@ -130,7 +128,7 @@ public void changeSpeedDown() {
     double rootContent = v4 - g * (g * x2 + 2 * targetHeight * v2);
 
     if (rootContent < 0) {
-      return Double.NaN; 
+      return Double.NaN;
     }
 
     double tanThetaHigh = (v2 + Math.sqrt(rootContent)) / (g * distance);

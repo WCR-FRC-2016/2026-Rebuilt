@@ -23,7 +23,7 @@ public class ClimberSubsystem extends SubsystemBase {
     @SuppressWarnings("removal")
     public ClimberSubsystem() {
 
-        climberMotor = new SparkMax(CLIMBER_MOTOR_CAN_ID, MotorType.kBrushed);
+        climberMotor = new SparkMax(CLIMBER_MOTOR_CAN_ID, MotorType.kBrushless);
 
         motorConfig
             .idleMode(IdleMode.kBrake)

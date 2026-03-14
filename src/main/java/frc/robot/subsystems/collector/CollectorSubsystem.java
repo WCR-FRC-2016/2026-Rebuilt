@@ -92,8 +92,8 @@ public class CollectorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
-                + collectorPivotL.getAlternateEncoder().getPosition());
+       // System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
+          //      + collectorPivotL.getAlternateEncoder().getPosition());
     }
 
     public void startCollecting() {

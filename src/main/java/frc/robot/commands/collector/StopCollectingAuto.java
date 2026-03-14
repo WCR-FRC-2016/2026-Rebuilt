@@ -12,6 +12,6 @@ public class StopCollectingAuto extends Command{
     }
 
     public void initialize() {
-        collectorSubsystem.stopCollect();
+        collectorSubsystem.stopCollection();
     }
 }

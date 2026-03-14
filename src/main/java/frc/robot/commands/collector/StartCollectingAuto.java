@@ -12,7 +12,7 @@ public class StartCollectingAuto extends Command{
     }
 
     public void initialize() {
-     //   collectorSubsystem.pivotCollectorDown();
-       // collectorSubsystem.Collect();
+        collectorSubsystem.setPivotDown();
+        collectorSubsystem.startCollecting();
     }
 }
