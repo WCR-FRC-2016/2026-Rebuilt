@@ -50,7 +50,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-      System.out.println(velocitySignal.getValueAsDouble()); 
+      //System.out.println(velocitySignal.getValueAsDouble()); 
       velocitySignal.refresh(); 
   }
   
