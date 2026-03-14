@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -24,6 +25,7 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.collector.CollectorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.commands.PlayMusicCommand;
 
 import java.io.File;
 
@@ -165,25 +167,27 @@ public class RobotContainer {
                                 .whileTrue(Commands.run(shooter::pivotDown, shooter))
                                 .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
                 // Shooter speed up
-              /* */  driverCommandXbox
+                /* */ driverCommandXbox
                                 .a()
                                 .onTrue(Commands.runOnce(() -> shooter.changeSpeedUp(), shooter));
 
                 // Shooter speed down
                 driverCommandXbox.b()
-                .onTrue(Commands.runOnce(() -> shooter.changeSpeedDown(), shooter));
+                                .onTrue(Commands.runOnce(() -> shooter.changeSpeedDown(), shooter));
 
                 // Collector pivot up
-                /* manipulatorCommandXbox
-                                .leftBumper()
-                                .whileTrue(Commands.run(collector::pivotCollectorUp, collector))
-                                .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
-
-                // Collector pivot down
-                manipulatorCommandXbox
-                                .rightBumper()
-                                .whileTrue(Commands.run(collector::pivotCollectorDown, collector))
-                                .onFalse(Commands.runOnce(collector::stopPivotizing, collector)); */
+                /*
+                 * manipulatorCommandXbox
+                 * .leftBumper()
+                 * .whileTrue(Commands.run(collector::pivotCollectorUp, collector))
+                 * .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
+                 * 
+                 * // Collector pivot down
+                 * manipulatorCommandXbox
+                 * .rightBumper()
+                 * .whileTrue(Commands.run(collector::pivotCollectorDown, collector))
+                 * .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
+                 */
 
                 manipulatorCommandXbox.leftBumper().onTrue(Commands.runOnce(collector::setPivotDown));
                 manipulatorCommandXbox.rightBumper().onTrue(Commands.runOnce(collector::setPivotUp));
@@ -227,6 +231,10 @@ public class RobotContainer {
 
         private void bindCompetitionControls() {
                 System.out.println("To do: bind competition controls.");
+        }
+
+        public void robotInit() {
+                new PlayMusicCommand(new TalonFX(0)).schedule();
         }
 
 }
