@@ -165,16 +165,16 @@ public class RobotContainer {
                                 .whileTrue(Commands.run(shooter::pivotDown, shooter))
                                 .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
                 // Shooter speed up
-              /*   driverCommandXbox
+              /* */  driverCommandXbox
                                 .a()
                                 .onTrue(Commands.runOnce(() -> shooter.changeSpeedUp(), shooter));
 
                 // Shooter speed down
                 driverCommandXbox.b()
                 .onTrue(Commands.runOnce(() -> shooter.changeSpeedDown(), shooter));
-                        */
+
                 // Collector pivot up
-                manipulatorCommandXbox
+                /* manipulatorCommandXbox
                                 .leftBumper()
                                 .whileTrue(Commands.run(collector::pivotCollectorUp, collector))
                                 .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
@@ -183,19 +183,22 @@ public class RobotContainer {
                 manipulatorCommandXbox
                                 .rightBumper()
                                 .whileTrue(Commands.run(collector::pivotCollectorDown, collector))
-                                .onFalse(Commands.runOnce(collector::stopPivotizing, collector));
+                                .onFalse(Commands.runOnce(collector::stopPivotizing, collector)); */
+
+                manipulatorCommandXbox.leftBumper().onTrue(Commands.runOnce(collector::setPivotDown));
+                manipulatorCommandXbox.rightBumper().onTrue(Commands.runOnce(collector::setPivotUp));
 
                 // Intake
                 manipulatorCommandXbox
                                 .leftTrigger(0.1)
-                                .whileTrue(Commands.runOnce(collector::Collect, collector))
-                                .onFalse(Commands.runOnce(collector::stopCollect, collector));
+                                .whileTrue(Commands.runOnce(collector::startCollecting, collector))
+                                .onFalse(Commands.runOnce(collector::stopCollection, collector));
 
                 // Reverse intake
                 manipulatorCommandXbox
                                 .rightTrigger(0.1)
-                                .whileTrue(Commands.runOnce(collector::Release, collector))
-                                .onFalse(Commands.runOnce(collector::stopCollect, collector));
+                                .whileTrue(Commands.runOnce(collector::startSpiting, collector))
+                                .onFalse(Commands.runOnce(collector::stopCollection, collector));
 
                 // Climber
                 manipulatorCommandXbox
