@@ -188,12 +188,16 @@ public class RobotContainer {
                                 .onFalse(Commands.runOnce(collector::stopPivotizing, collector)); */
                 manipulatorCommandXbox.a().onTrue(Commands.runOnce(collector:: zeroPivotEncoder));
                 manipulatorCommandXbox.leftBumper().onTrue(Commands.runOnce(collector::setPivotDown));
-                manipulatorCommandXbox.rightBumper().onTrue(Commands.runOnce(collector::setPivotUp));
+                manipulatorCommandXbox.rightBumper()
+                .onTrue(Commands.runOnce(collector::setPivotUp))
+                .whileTrue(Commands.runOnce(collector::startSpiting))
+                .onFalse(Commands.runOnce(collector:: stopCollection));
                 leftJoystickManualTrigger. whileTrue(Commands.run(collector::setPivotManually));
 
                 // Intake
                 manipulatorCommandXbox
                                 .leftTrigger(0.1)
+                                .onTrue(Commands.runOnce(collector:: setPivotDown))
                                 .whileTrue(Commands.runOnce(collector::startCollecting, collector))
                                 .onFalse(Commands.runOnce(collector::stopCollection, collector));
 
