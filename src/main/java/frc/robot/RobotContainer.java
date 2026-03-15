@@ -3,6 +3,8 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.jni.WPIMathJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
@@ -43,13 +45,13 @@ public class RobotContainer {
         private final SwerveSubsystem drivebase = new SwerveSubsystem(
                         new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
-        private final CollectorSubsystem collector = new CollectorSubsystem();
+        private final CollectorSubsystem collector = new CollectorSubsystem(() -> MathUtil.applyDeadband(manipulatorCommandXbox.getLeftY(), 0.4)*-1);
         private final ShooterSubsystem shooter = new ShooterSubsystem();
         private final LedSubsystem ledSubsystem = new LedSubsystem();
         private final AgitatorSubsystem agitatorSubsystem = new AgitatorSubsystem();
         private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
-        Trigger leftJoystickManualTrigger = new Trigger(() -> manipulatorCommandXbox.getLeftY() > 0.4);
+        private final Trigger leftJoystickManualTrigger = new Trigger(() -> Math.abs(manipulatorCommandXbox.getLeftY()) > 0.4);
 
         SwerveInputStream driveAngularVelocity = SwerveInputStream.of(
                         drivebase.getSwerveDrive(),
@@ -184,9 +186,10 @@ public class RobotContainer {
                                 .rightBumper()
                                 .whileTrue(Commands.run(collector::pivotCollectorDown, collector))
                                 .onFalse(Commands.runOnce(collector::stopPivotizing, collector)); */
-
+                manipulatorCommandXbox.a().onTrue(Commands.runOnce(collector:: zeroPivotEncoder));
                 manipulatorCommandXbox.leftBumper().onTrue(Commands.runOnce(collector::setPivotDown));
                 manipulatorCommandXbox.rightBumper().onTrue(Commands.runOnce(collector::setPivotUp));
+                leftJoystickManualTrigger. whileTrue(Commands.run(collector::setPivotManually));
 
                 // Intake
                 manipulatorCommandXbox

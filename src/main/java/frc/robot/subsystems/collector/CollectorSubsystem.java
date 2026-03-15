@@ -1,5 +1,7 @@
 package frc.robot.subsystems.collector;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -7,6 +9,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -34,21 +37,26 @@ public class CollectorSubsystem extends SubsystemBase {
     private static final int COLLECTOR_PIVOT_L_CAN_ID = 14;
     private static final int COLLECTOR_PIVOT_F_CAN_ID = 15;
     private static final double COLLECT_POWER = 0.6;
-    private static final double PIVOT_DOWN = -2; // -2.282;
-    private static final double PIVOT_UP = -0.5; // 0.0;
+    private static final double PIVOT_DOWN =  -2.282;
+    private static final double PIVOT_UP =  0.0;
 
     private final SparkMax collectorWheelsL;
     private final SparkMax collectorWheelsF;
     private final SparkMax collectorPivotL;
     private final SparkMax collectorPivotF;
+
     private PivotState desiredPivotState = PivotState.up;
     private WheelState currentWheelState = WheelState.off;
 
-    public CollectorSubsystem() {
+    private DoubleSupplier manualControlInput = null;
+
+    public CollectorSubsystem(DoubleSupplier manualControlInput) {
         collectorWheelsL = new SparkMax(COLLECTOR_WHEELS_L_CAN_ID, MotorType.kBrushless);
         collectorWheelsF = new SparkMax(COLLECTOR_WHEELS_F_CAN_ID, MotorType.kBrushless);
         collectorPivotL = new SparkMax(COLLECTOR_PIVOT_L_CAN_ID, MotorType.kBrushed);
         collectorPivotF = new SparkMax(COLLECTOR_PIVOT_F_CAN_ID, MotorType.kBrushed);
+
+        this.manualControlInput = manualControlInput;
 
         SparkMaxConfig globalConfig = new SparkMaxConfig();
         AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig().countsPerRevolution(280);
@@ -92,6 +100,14 @@ public class CollectorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if(desiredPivotState != PivotState.manual){
+            return;
+        }
+       final SparkClosedLoopController closedLoopController = collectorPivotL.getClosedLoopController();
+       final double currentSetpoint = closedLoopController.getSetpoint();
+       final double movementInput = manualControlInput.getAsDouble();
+       final double newSetpoint = currentSetpoint + (movementInput / 20);
+       closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
        // System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
           //      + collectorPivotL.getAlternateEncoder().getPosition());
     }
@@ -124,6 +140,17 @@ public class CollectorSubsystem extends SubsystemBase {
     public void setPivotManually() {
         desiredPivotState = PivotState.manual;
         updatePivot();
+    }
+
+    public void zeroPivotEncoder() {
+
+        if (desiredPivotState == PivotState.manual) {
+             collectorPivotL.getAlternateEncoder().setPosition(0.0);
+            collectorPivotL.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            collectorPivotL.getClosedLoopController();
+        } else {
+            System.out.println("Cannot reset collector pivot encoder outside of manual mode!");
+        }
     }
 
     private void updatePivot() {
