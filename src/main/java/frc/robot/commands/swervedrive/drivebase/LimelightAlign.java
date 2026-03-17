@@ -2,6 +2,8 @@ package frc.robot.commands.swervedrive.drivebase;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.NetworkTables;
 
@@ -11,14 +13,14 @@ public class LimelightAlign extends Command {
     private double offsetDistanceZ = 0.0;
 
     private final double DESIRED_DISTANCE_X = 0.0;
-    private final double DESIRED_DISTANCE_Z21 = 2.1;
-    private final double DESIRED_DISTANCE_Z3 = 3;
-    private final double DESIRED_DISTANCE_Z41 = 4.1;
-    private final double DESIRED_DISTANCE_Z53 = 5.3;
-    private final double DESIRED_DISTANCE_Z63 = 6.3;
-    private  double desiredDistanceFromTag;
-
+    private  double DESIRED_DISTANCE_Z =3;// 60?
+   // private double desiredDistance;
     
+    // 2.1;//speed 60
+    // 3 ?
+    // 4.1 ?
+    // 5.3 ?
+    // 6.3 ?
 
     private double desiredAngle;
 
@@ -26,9 +28,11 @@ public class LimelightAlign extends Command {
     private Translation2d translation;
 
     private SwerveSubsystem driveBase;
+    private ShooterSubsystem shooterSubsystem;
 
     public LimelightAlign(SwerveSubsystem swerve) {
         driveBase = swerve;
+        
         translation = new Translation2d();
         translationZero = new Translation2d();
         addRequirements(driveBase);
@@ -44,8 +48,9 @@ public class LimelightAlign extends Command {
 
         // checks if limelight has a target:
         if (tv) {
-            updatePositioningState(desiredDistanceFromTag);
             System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
+            updatePositioningState();
+           // System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
             // System.out.println(tx);
             
             
@@ -72,15 +77,25 @@ public class LimelightAlign extends Command {
     }
 
     // Target Distance For Shoot : 2.5 m
-
-    private void updatePositioningState(double desiredDistanceFromTag) {
+   
+    private void updatePositioningState( ) {
         double[] targetPos_BotSpace = NetworkTables.getTargetPos_BotSpace();
         if (targetPos_BotSpace == null || targetPos_BotSpace.length != 6) {
             System.out.println("faliure");
             return;
         }
+        
         final double tagX = targetPos_BotSpace[0];
         final double tagZ = targetPos_BotSpace[2];
+         if (tagZ >=0 && tagZ <= 2.55) {
+            DESIRED_DISTANCE_Z = 2.1;
+            ShooterState desiredShooterState = ShooterState.TwoMeters;
+            shooterSubsystem.updateShooterPivot();
+        }
+        else {         ShooterState desiredShooterState = ShooterState.ThreeMeters;
+            DESIRED_DISTANCE_Z = 3.0;
+            shooterSubsystem.updateShooterPivot();
+        }
         final double tagYaw = Math.toRadians(targetPos_BotSpace[4]);
         final double CENTER_OFFSET_Z = 0.736;
         final double centerOffsetRotateZ = CENTER_OFFSET_Z * Math.cos(tagYaw);
@@ -90,8 +105,8 @@ public class LimelightAlign extends Command {
         final double targetAngle = Math.atan2(targetPosX, targetPosZ);
         tx = Math.toDegrees(targetAngle);
 
-        final double desiredRotatedZ = desiredDistanceFromTag * Math.cos(targetAngle) - DESIRED_DISTANCE_X * Math.sin(targetAngle);
-        final double desiredRotatedX = desiredDistanceFromTag * Math.sin(targetAngle) + DESIRED_DISTANCE_X * Math.cos(targetAngle);
+        final double desiredRotatedZ = DESIRED_DISTANCE_Z * Math.cos(targetAngle) - DESIRED_DISTANCE_X * Math.sin(targetAngle);
+        final double desiredRotatedX = DESIRED_DISTANCE_Z * Math.sin(targetAngle) + DESIRED_DISTANCE_X * Math.cos(targetAngle);
         offsetDistanceX = targetPosX - desiredRotatedX;
         offsetDistanceZ = targetPosZ - desiredRotatedZ;
         final double velocityX = Math.min(Math.max(offsetDistanceX / 1.5, -2), 2);

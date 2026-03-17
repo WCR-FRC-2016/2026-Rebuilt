@@ -12,7 +12,12 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
@@ -21,6 +26,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.collector.CollectorSubsystem.PivotState;
 
 import static edu.wpi.first.units.Units.Amps;
 
@@ -33,8 +39,16 @@ public class ShooterSubsystem extends SubsystemBase {
   // public boolean GoodSpeed = UpToSpeed();
   public double SHOOTERSPEED = -0.62;// currently runs at 6.2 perfect for 2.5 distance
   public final double PIVOTSPEED = 0.4;
+    private static final double SHOOTER_DOWN =  0.0;
+    private static final double SHOOTER_UP =  -0.11;//THAT IS MAX TO CHANGE LATER
 
-  double wantedVelocity = -60; //60
+
+  public enum ShooterState {
+    ThreeMeters,TwoMeters
+  }
+
+  public ShooterState desiredShooterState = ShooterState.TwoMeters;
+  double wantedVelocity = -65; //60
 
   private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(wantedVelocity).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
@@ -48,9 +62,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(velocitySignal.getValueAsDouble());
-    velocitySignal.refresh();
-    //if (shooterWheelsLCanId.getVElocity().getValueAsDouble())
+   // System.out.println(velocitySignal.getValueAsDouble());
+      final SparkClosedLoopController closedLoopController = pivotWheel.getClosedLoopController();
+       final double currentSetpoint = closedLoopController.getSetpoint();
+     //  final double movementInput = manualControlInput.getAsDouble();
+     //  final double newSetpoint = currentSetpoint + (movementInput / 20);
+      // closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+   
+   velocitySignal.refresh();
   }
 
   /*
@@ -64,6 +83,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
 
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
+    ClosedLoopConfig pivotClosedLoopConfig = new ClosedLoopConfig().pid(0.85, 0.0, 0.0, ClosedLoopSlot.kSlot0)
+                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder).positionWrappingEnabled(false).outputRange(-1,1);
 
     pivotConfig
         .smartCurrentLimit(40)
@@ -79,6 +100,8 @@ public class ShooterSubsystem extends SubsystemBase {
     configuration.Slot0.kP = 20;
     shooterLeader.getConfigurator().apply(configuration);
     shooterFollower.getConfigurator().apply(configuration);
+   pivotWheel.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
   }
 
   public void ShooterWheelsRun() {
@@ -144,4 +167,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     return Math.toDegrees(Math.atan(tanThetaHigh));
   }
+
+  public void updateShooterPivot() {
+        
+            final double PIVOT_POSITON = (desiredShooterState == ShooterState.TwoMeters) ? SHOOTER_DOWN : SHOOTER_UP;
+        pivotWheel.getClosedLoopController().setSetpoint(PIVOT_POSITON, ControlType.kPosition,
+                ClosedLoopSlot.kSlot0);
+    }
 }

@@ -27,7 +27,7 @@ public void execute() {
 }
 @Override
 public void end(boolean interupted){
-//agitatorSubsystem.stop();//when set up a command add the uptospeed requirements
+agitatorSubsystem.stopAgitating();//when set up a command add the uptospeed requirements
 
 
 

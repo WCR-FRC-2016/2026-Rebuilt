@@ -41,6 +41,10 @@ public class AgitatorSubsystem extends SubsystemBase {
         agitatorTread.set(0.0);
     }
 
+    public void reverseAgitating() {
+        agitatorTread.set(-AGITATESPEED);
+    }
+
     public void stopAgitating() {
         agitatorTread.set(0.0);
     }
