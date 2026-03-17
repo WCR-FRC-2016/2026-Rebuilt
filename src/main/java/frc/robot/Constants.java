@@ -52,4 +52,35 @@ public final class Constants
   {
     public static final double AGITATOR_SPEED = 0.90;
   }
+
+  public static final class Auton {
+    public static final String DEFAULT_AUTO_NAME = "Test";
+
+    public static final String[] AUTO_NAMES = {
+      "Auto Right Shoot-Climb",
+      "Auto Right Shoot",
+      "Test",
+      "Auto Right Shoot1-Collect-Shoot2-Climb",
+      "Auto Right Shoot1-Collect-Shoot2-Depot-Shoot3-Climb",
+      "Auto Right Shoot1-Collect-Shoot2-Depot-Shoot3",
+      "Auto Right Shoot1-Collect-Shoot2",
+      "Auto Right Shoot1-Collect1-Shoot2-Collect2-Shoot3",
+      "Auto Right Shoot1-Depot-Shoot2-Climb",
+      "Auto Right Shoot1-Depot-Shoot2",
+      "left start to climb right",
+      "Left-Start-2-NS",
+      "Left-Start-No-Climb",
+      "Left-Start-NS",
+      "Left-Start-Simple",
+      "Middle-Depot-Shoot-LeftClimb",
+      "Middle-Depot-Shoot-RightClimb",
+      "Middle-LeftNeutral-Shoot-LeftClimb",
+      "Middle-LeftNeutral-Shoot-RightClimb",
+      "Middle-Shoot-LeftClimb",
+      "Middle-Shoot-RightClimb",
+      "Middle-Start-Simple",
+
+    };
+  }
+
 }

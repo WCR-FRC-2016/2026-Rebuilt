@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class CollectorSubsystem extends SubsystemBase {
-    private enum PivotState {
-        up, down, manual
+    public enum PivotState {
+        up, down, manual, shoot
     }
 
     private enum WheelState {
@@ -36,16 +36,18 @@ public class CollectorSubsystem extends SubsystemBase {
     private static final int COLLECTOR_WHEELS_F_CAN_ID = 8;
     private static final int COLLECTOR_PIVOT_L_CAN_ID = 14;
     private static final int COLLECTOR_PIVOT_F_CAN_ID = 15;
-    private static final double COLLECT_POWER = 0.6;
+    private static final double COLLECT_POWER = 0.8;
     private static final double PIVOT_DOWN =  -2.282;
     private static final double PIVOT_UP =  0.0;
+    private static final double PIVOT_SHOOT =  -1.214;
+    
 
     private final SparkMax collectorWheelsL;
     private final SparkMax collectorWheelsF;
-    private final SparkMax collectorPivotL;
+    public final SparkMax collectorPivotL;
     private final SparkMax collectorPivotF;
 
-    private PivotState desiredPivotState = PivotState.up;
+    public PivotState desiredPivotState = PivotState.up;
     private WheelState currentWheelState = WheelState.off;
 
     private DoubleSupplier manualControlInput = null;
@@ -108,9 +110,9 @@ public class CollectorSubsystem extends SubsystemBase {
        final double movementInput = manualControlInput.getAsDouble();
        final double newSetpoint = currentSetpoint + (movementInput / 20);
        closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-       // System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
+       //System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
           //      + collectorPivotL.getAlternateEncoder().getPosition());
-    }
+        }
 
     public void startCollecting() {
         currentWheelState = WheelState.collect;
@@ -130,15 +132,22 @@ public class CollectorSubsystem extends SubsystemBase {
     public void setPivotUp() {
         desiredPivotState = PivotState.up;
         updatePivot();
+        System.out.println("Going up");
     }
 
     public void setPivotDown() {
         desiredPivotState = PivotState.down;
         updatePivot();
+        System.out.println("Going down");
     }
 
     public void setPivotManually() {
         desiredPivotState = PivotState.manual;
+        updatePivot();
+    }
+
+    public void setPivotShoot() {
+        desiredPivotState = PivotState.shoot;
         updatePivot();
     }
 
@@ -151,6 +160,10 @@ public class CollectorSubsystem extends SubsystemBase {
         } else {
             System.out.println("Cannot reset collector pivot encoder outside of manual mode!");
         }
+    }
+
+    public void print() {
+        System.out.println("encoder: " + collectorPivotL.getAlternateEncoder().getPosition());
     }
 
     private void updatePivot() {

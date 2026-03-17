@@ -19,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Collect to Shoot2"
+            "pathName": null
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "New Folder",
   "choreoAuto": false
 }
