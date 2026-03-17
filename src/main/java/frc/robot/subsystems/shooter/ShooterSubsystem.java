@@ -39,7 +39,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static double IdealShootSpeed = 0; // rotations per minute
   // public boolean GoodSpeed = UpToSpeed();
-  public double SHOOTERSPEED = -0.6;// currently runs at 6.2 perfect for 2.5 distance
+  public double SHOOTERSPEED = -0.62;// currently runs at 6.2 perfect for 2.5 distance
   public final double PIVOTSPEED = 0.4;
     private static final double SHOOTER_DOWN =  0.0;
     private static final double SHOOTER_UP =  -0.11;//THAT IS MAX TO CHANGE LATER
@@ -149,6 +149,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public void changeSpeedDown() {
     // Limits speed so it doesn't go above 0
     SHOOTERSPEED += 0.05;
+  }
+  public boolean isUpToSpeed() {
+    if (velocitySignal.getValueAsDouble() == SHOOTERSPEED){
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   public double calculateHighArcAngle(double distance, double velocity, double targetHeight) {

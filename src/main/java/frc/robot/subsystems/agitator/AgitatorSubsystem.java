@@ -6,12 +6,15 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class AgitatorSubsystem extends SubsystemBase {
     
   private static final int AGITATOR_TREAD_CAN_ID = 2;
     private final SparkMax agitatorTread;
     public final double AGITATESPEED = 0.75;
+     private ShooterSubsystem shooterSubsystem;
+
 
     @SuppressWarnings("removal")
     public AgitatorSubsystem() {
@@ -30,6 +33,12 @@ public class AgitatorSubsystem extends SubsystemBase {
 
     public void startAgitating() {
         agitatorTread.set(AGITATESPEED);
+    }
+    public void agitateIfShootSpeed(){
+        while(shooterSubsystem.isUpToSpeed()== true){
+            agitatorTread.set(AGITATESPEED);
+        }
+        agitatorTread.set(0.0);
     }
 
     public void reverseAgitating() {

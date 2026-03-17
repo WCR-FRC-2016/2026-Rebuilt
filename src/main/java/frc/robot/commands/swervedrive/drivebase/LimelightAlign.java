@@ -50,6 +50,7 @@ public class LimelightAlign extends Command {
 
         // checks if limelight has a target:
         if (tv) {
+            System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
             updatePositioningState();
            // System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
             // System.out.println(tx);
