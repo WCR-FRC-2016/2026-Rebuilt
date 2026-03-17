@@ -30,12 +30,14 @@ public class LimelightAlign extends Command {
     private SwerveSubsystem driveBase;
     private ShooterSubsystem shooterSubsystem;
 
-    public LimelightAlign(SwerveSubsystem swerve) {
+    public LimelightAlign(SwerveSubsystem swerve, ShooterSubsystem shooter) {
         driveBase = swerve;
+        shooterSubsystem =shooter;
         
         translation = new Translation2d();
         translationZero = new Translation2d();
-        addRequirements(driveBase);
+        addRequirements(driveBase, shooterSubsystem);
+        
     }
 
     @Override
@@ -86,13 +88,16 @@ public class LimelightAlign extends Command {
         
         final double tagX = targetPos_BotSpace[0];
         final double tagZ = targetPos_BotSpace[2];
-         if (tagZ >=0 && tagZ <= 2.55) {
+        if (tagZ >=0 && tagZ <= 2.55) {
             DESIRED_DISTANCE_Z = 2.1;
-            ShooterState desiredShooterState = ShooterState.TwoMeters;
+            System.out.println("moved 2.1");
+            shooterSubsystem.desiredShooterState = ShooterState.TwoMeters;
             shooterSubsystem.updateShooterPivot();
         }
-        else {         ShooterState desiredShooterState = ShooterState.ThreeMeters;
+        else {
+            shooterSubsystem.desiredShooterState = ShooterState.ThreeMeters;
             DESIRED_DISTANCE_Z = 3.0;
+            System.out.println("moved 3");
             shooterSubsystem.updateShooterPivot();
         }
         final double tagYaw = Math.toRadians(targetPos_BotSpace[4]);
@@ -114,13 +119,13 @@ public class LimelightAlign extends Command {
         //if (translation.getDistance(translationZero))
         //System.out.println("length:" + Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ));
 
-        System.out.println("x: " + translation.getX() + ", Y: " + translation.getY());
+       // System.out.println("x: " + translation.getX() + ", Y: " + translation.getY());
     }
 
     @Override
     public boolean isFinished() {
 
-       /*  if (NetworkTables.getTv() && Math.abs(NetworkTables.getTx()) < 0.1) {
+      /*    if (NetworkTables.getTv() && Math.abs(NetworkTables.getTx()) < 0.1 ) {
             return true;
         }   */
 

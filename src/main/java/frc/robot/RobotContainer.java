@@ -24,6 +24,7 @@ import frc.robot.commands.collector.StopCollectingAuto;
 import frc.robot.commands.collector.movePivotDown;
 import frc.robot.commands.shooter.StartShootingAuto60speed;
 import frc.robot.commands.swervedrive.agitator.Agitate;
+import frc.robot.commands.swervedrive.agitator.ShootAgitate;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 
 import frc.robot.subsystems.LedSubsystem;
@@ -85,7 +86,7 @@ public class RobotContainer {
                 DriverStation.silenceJoystickConnectionWarning(true);
 
                 NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-                NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
+                NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase, shooter));
                 // NamedCommands.registerCommand("startCollecting", StartCollecting());
 
         }
@@ -99,7 +100,7 @@ public class RobotContainer {
              NamedCommands.registerCommand("StartCollectingAuto", new StartCollectingAuto(collector));
              NamedCommands.registerCommand("StopCollectingAuto", new StopCollectingAuto(collector));
              NamedCommands.registerCommand("Climb", new ClimbAuto(climberSubsystem));
-             NamedCommands.registerCommand("ShootAlign", new LimelightAlign(drivebase));
+             NamedCommands.registerCommand("ShootAlign", new LimelightAlign(drivebase, shooter));
              NamedCommands.registerCommand("movePivotDown", new movePivotDown(collector));
              
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -156,7 +157,7 @@ public class RobotContainer {
 
                 drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
-                driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
+                driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase, shooter));
 
                 driverCommandXbox.back().onTrue(Commands.runOnce(drivebase::zeroGyro));
 
@@ -171,6 +172,10 @@ public class RobotContainer {
                                 .rightTrigger(0.1)
                                 .whileTrue(Commands.run(agitatorSubsystem::startAgitating, agitatorSubsystem))
                                 .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating, agitatorSubsystem));
+               /*  driverCommandXbox
+                                .rightTrigger(0.1)
+                                .whileTrue(Commands.runOnce(new ShootAgitate(agitatorSubsystem, Constants.AGITATOR_SPEED)))
+                                .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating, agitatorSubsystem));*/
 
                 // Shooter pivot up
                 driverCommandXbox
@@ -293,7 +298,7 @@ public class RobotContainer {
 
                 drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
-                driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
+                driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase,shooter));
 
                 driverCommandXbox.back().onTrue(Commands.runOnce(drivebase::zeroGyro));
 

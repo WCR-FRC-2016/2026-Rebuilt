@@ -1,22 +1,40 @@
 package frc.robot.commands.swervedrive.agitator;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.agitator.AgitatorSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class ShootAgitate extends Command {
-    private Agitate agitatorCommand;
-    public ShootAgitate(Agitate agitatorCommand) {
-        this.agitatorCommand = agitatorCommand;
-        addRequirements(agitatorCommand.getRequirements().toArray(new edu.wpi.first.wpilibj2.command.Subsystem[0]));
+     private AgitatorSubsystem agitatorSubsystem;
+     private ShooterSubsystem shooterSubsystem;
+    double speed;
+
+
+    public ShootAgitate(AgitatorSubsystem agitatorSubsystem, double speed) {
+        this.agitatorSubsystem = agitatorSubsystem;
+
+        this.speed = speed;
+        addRequirements(agitatorSubsystem);
+}
+ @Override
+public void execute() {
+    if( Math.abs(shooterSubsystem.currentVelocity) >= Math.abs(shooterSubsystem.wantedVelocity) + 5 && Math.abs(shooterSubsystem.currentVelocity) <= Math.abs(shooterSubsystem.wantedVelocity) - 5){
+
+    agitatorSubsystem.startAgitating();}
+    else {
+        agitatorSubsystem.stopAgitating();
     }
 
-    @Override
-    public void execute() {
-        agitatorCommand.execute();
-    }
+}
+@Override
+public void end(boolean interupted){
+agitatorSubsystem.stopAgitating();//when set up a command add the uptospeed requirements
 
-    @Override
-    public void end(boolean interrupted) {
-        agitatorCommand.end(interrupted);
-    }
-    
+
+
+
+}
+ 
 }
