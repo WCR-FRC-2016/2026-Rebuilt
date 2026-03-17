@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Rumble;
 import frc.robot.commands.collector.StartCollectingAuto;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 
@@ -79,7 +80,7 @@ public class RobotContainer {
                 DriverStation.silenceJoystickConnectionWarning(true);
 
                 NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-                NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
+                //NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
                 // NamedCommands.registerCommand("startCollecting", StartCollecting());
 
         }
@@ -147,6 +148,7 @@ public class RobotContainer {
                 driverCommandXbox
                                 .leftTrigger(0.1)
                                 .whileTrue(Commands.run(shooter::ShooterWheelsRun, shooter))
+                                .whileTrue(new Rumble(manipulatorXbox, 0.5))
                                 .onFalse(Commands.runOnce(shooter::ShooterWheelsStop, shooter));
 
                 // Agitate to shoot

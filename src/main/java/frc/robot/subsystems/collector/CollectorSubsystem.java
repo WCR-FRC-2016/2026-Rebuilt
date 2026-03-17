@@ -36,7 +36,7 @@ public class CollectorSubsystem extends SubsystemBase {
     private static final int COLLECTOR_WHEELS_F_CAN_ID = 8;
     private static final int COLLECTOR_PIVOT_L_CAN_ID = 14;
     private static final int COLLECTOR_PIVOT_F_CAN_ID = 15;
-    private static final double COLLECT_POWER = 0.6;
+    private static final double COLLECT_POWER = 0.8;
     private static final double PIVOT_DOWN =  -2.282;
     private static final double PIVOT_UP =  0.0;
 

@@ -11,7 +11,14 @@ public class LimelightAlign extends Command {
     private double offsetDistanceZ = 0.0;
 
     private final double DESIRED_DISTANCE_X = 0.0;
-    private final double DESIRED_DISTANCE_Z = 2.5;
+    private final double DESIRED_DISTANCE_Z21 = 2.1;
+    private final double DESIRED_DISTANCE_Z3 = 3;
+    private final double DESIRED_DISTANCE_Z41 = 4.1;
+    private final double DESIRED_DISTANCE_Z53 = 5.3;
+    private final double DESIRED_DISTANCE_Z63 = 6.3;
+    private  double desiredDistanceFromTag;
+
+    
 
     private double desiredAngle;
 
@@ -37,7 +44,7 @@ public class LimelightAlign extends Command {
 
         // checks if limelight has a target:
         if (tv) {
-            updatePositioningState();
+            updatePositioningState(desiredDistanceFromTag);
             System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
             // System.out.println(tx);
             
@@ -66,7 +73,7 @@ public class LimelightAlign extends Command {
 
     // Target Distance For Shoot : 2.5 m
 
-    private void updatePositioningState() {
+    private void updatePositioningState(double desiredDistanceFromTag) {
         double[] targetPos_BotSpace = NetworkTables.getTargetPos_BotSpace();
         if (targetPos_BotSpace == null || targetPos_BotSpace.length != 6) {
             System.out.println("faliure");
@@ -83,8 +90,8 @@ public class LimelightAlign extends Command {
         final double targetAngle = Math.atan2(targetPosX, targetPosZ);
         tx = Math.toDegrees(targetAngle);
 
-        final double desiredRotatedZ = DESIRED_DISTANCE_Z * Math.cos(targetAngle) - DESIRED_DISTANCE_X * Math.sin(targetAngle);
-        final double desiredRotatedX = DESIRED_DISTANCE_Z * Math.sin(targetAngle) + DESIRED_DISTANCE_X * Math.cos(targetAngle);
+        final double desiredRotatedZ = desiredDistanceFromTag * Math.cos(targetAngle) - DESIRED_DISTANCE_X * Math.sin(targetAngle);
+        final double desiredRotatedX = desiredDistanceFromTag * Math.sin(targetAngle) + DESIRED_DISTANCE_X * Math.cos(targetAngle);
         offsetDistanceX = targetPosX - desiredRotatedX;
         offsetDistanceZ = targetPosZ - desiredRotatedZ;
         final double velocityX = Math.min(Math.max(offsetDistanceX / 1.5, -2), 2);
