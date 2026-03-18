@@ -23,6 +23,7 @@ import frc.robot.commands.climber.ClimbAuto;
 import frc.robot.commands.collector.StartCollectingAuto;
 import frc.robot.commands.collector.StopCollectingAuto;
 import frc.robot.commands.collector.movePivotDown;
+import frc.robot.commands.shooter.MovePivot;
 import frc.robot.commands.shooter.StartShootingAuto60speed;
 import frc.robot.commands.swervedrive.agitator.Agitate;
 import frc.robot.commands.swervedrive.agitator.ShootAgitate;
@@ -36,6 +37,8 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 import java.io.File;
+
+import javax.sound.sampled.SourceDataLine;
 
 import swervelib.SwerveInputStream;
 
@@ -249,6 +252,10 @@ public class RobotContainer {
                                 .povDown()
                                 .whileTrue(Commands.run(climberSubsystem::runClimberDown, climberSubsystem))
                                 .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
+                manipulatorCommandXbox
+                                .b()
+                                .whileTrue(new MovePivot(shooter, -1));
+        
 
                 leftJoystickManualTrigger
                                 .onTrue(Commands.runOnce(() -> System.out.println("Works!!")));

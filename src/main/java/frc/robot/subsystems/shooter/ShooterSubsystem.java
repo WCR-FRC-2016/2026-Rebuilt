@@ -17,6 +17,7 @@ import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -59,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeader = new TalonFX(shooterWheelsLCanId);
   private final Follower follower = new Follower(shooterWheelsLCanId, MotorAlignmentValue.Opposed);
   private final TalonFX shooterFollower = new TalonFX(shooterWheelsFCanId);
-  private final SparkMax pivotWheel = new SparkMax(pivotWheelCanId, MotorType.kBrushed);
+  public final SparkMax pivotWheel = new SparkMax(pivotWheelCanId, MotorType.kBrushed);
 
   private final StatusSignal<AngularVelocity> velocitySignal = shooterLeader.getVelocity();
    private DoubleSupplier manualControlInput = null;
@@ -94,13 +95,18 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
+    AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig().countsPerRevolution(280);
     ClosedLoopConfig pivotClosedLoopConfig = new ClosedLoopConfig().pid(0.85, 0.0, 0.0, ClosedLoopSlot.kSlot0)
                 .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder).positionWrappingEnabled(false).outputRange(-1,1);
 
-    pivotConfig
+      pivotConfig
         .smartCurrentLimit(40)
         .idleMode(IdleMode.kBrake);
+      pivotConfig.apply(encoderConfig);
+      pivotConfig.apply(pivotClosedLoopConfig);
+     
 
+    //SparkClosedLoopController pivController = pivotWheel.getClosedLoopController();
     pivotWheel.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     shooterFollower.setControl(follower);
@@ -139,6 +145,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void stopPivotizing() {
     pivotWheel.set(0);
+  }
+
+  public void pivotTo(double position) {
+    System.out.println("Current Position: " + pivotWheel.getAlternateEncoder().getPosition());
+    System.out.println("Target position: " + position);
+    pivotWheel.getClosedLoopController().setSetpoint(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   public void changeSpeedUp() {
