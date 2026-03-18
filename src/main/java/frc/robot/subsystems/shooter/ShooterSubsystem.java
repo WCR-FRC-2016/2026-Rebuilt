@@ -169,7 +169,6 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void updateShooterPivot() {
-        
             final double PIVOT_POSITON = (desiredShooterState == ShooterState.TwoMeters) ? SHOOTER_DOWN : SHOOTER_UP;
         pivotWheel.getClosedLoopController().setSetpoint(PIVOT_POSITON, ControlType.kPosition,
                 ClosedLoopSlot.kSlot0);
