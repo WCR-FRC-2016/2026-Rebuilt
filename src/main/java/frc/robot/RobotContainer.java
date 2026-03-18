@@ -355,12 +355,10 @@ public class RobotContainer {
                 manipulatorCommandXbox.a().onTrue(Commands.runOnce(collector:: zeroPivotEncoder));
                 manipulatorCommandXbox.leftBumper().onTrue(Commands.runOnce(collector::setPivotDown));
                 manipulatorCommandXbox.rightBumper()
-                .onTrue(Commands.runOnce(collector::setPivotUp))
-                .whileTrue(Commands.runOnce(collector::startSpiting))
-                .onFalse(Commands.runOnce(collector:: stopCollection));
-                leftJoystickManualTrigger. whileTrue(Commands.run(collector::setPivotManually));
-                manipulatorCommandXbox.x().onTrue(Commands.runOnce(()-> System.out.println("Current Pivot Angle: " + collector.collectorPivotL.getAlternateEncoder().getPosition())));
-
+                  .onTrue(Commands.runOnce(collector::setPivotUp));
+                
+                leftJoystickManualTrigger
+                  .whileTrue(Commands.run(collector::setPivotManually));
 
                 // Intake
                 manipulatorCommandXbox
@@ -388,8 +386,6 @@ public class RobotContainer {
                                 .povDown()
                                 .whileTrue(Commands.run(climberSubsystem::runClimberDown, climberSubsystem))
                                 .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
-
-              
               
         }
 

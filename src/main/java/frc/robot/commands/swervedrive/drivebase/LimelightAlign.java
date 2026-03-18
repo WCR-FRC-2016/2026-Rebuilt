@@ -8,9 +8,9 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.NetworkTables;
 
 public class LimelightAlign extends Command {
-    private double tx = 0.0;
-    private double offsetDistanceX = 0.0;
-    private double offsetDistanceZ = 0.0;
+    private double tx;
+    private double offsetDistanceX;
+    private double offsetDistanceZ;
 
     private final double DESIRED_DISTANCE_X = 0.0;
     private  double DESIRED_DISTANCE_Z =3;// 60?
@@ -21,8 +21,6 @@ public class LimelightAlign extends Command {
     // 4.1 ?
     // 5.3 ?
     // 6.3 ?
-
-    private double desiredAngle;
 
     private Translation2d translationZero;
     private Translation2d translation;
