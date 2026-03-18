@@ -90,14 +90,14 @@ public class LimelightAlign extends Command {
         final double tagX = targetPos_BotSpace[0];
         final double tagZ = targetPos_BotSpace[2];
         if (tagZ >=0 && tagZ <= 2.55) {
-            DESIRED_DISTANCE_Z = 2.1;
+            DESIRED_DISTANCE_Z = 3; // hood angle for 2.1 m is 0.00
             System.out.println("moved 2.1");
             shooterSubsystem.desiredShooterState = ShooterState.TwoMeters;
             shooterSubsystem.updateShooterPivot();
         }
         else {
             shooterSubsystem.desiredShooterState = ShooterState.ThreeMeters;
-            DESIRED_DISTANCE_Z = 3.0;
+            DESIRED_DISTANCE_Z = 3; // hood angle for 3 m is -0.02
             System.out.println("moved 3");
             shooterSubsystem.updateShooterPivot();
         }

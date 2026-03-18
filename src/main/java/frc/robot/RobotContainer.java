@@ -352,6 +352,8 @@ public class RobotContainer {
                 .whileTrue(Commands.runOnce(collector::startSpiting))
                 .onFalse(Commands.runOnce(collector:: stopCollection));
                 leftJoystickManualTrigger. whileTrue(Commands.run(collector::setPivotManually));
+                manipulatorCommandXbox.x().onTrue(Commands.runOnce(()-> System.out.println("Current Pivot Angle: " + collector.collectorPivotL.getAlternateEncoder().getPosition())));
+
 
                 // Intake
                 manipulatorCommandXbox

@@ -17,9 +17,9 @@ public class Rumble extends Command {
 
     @Override
     public void execute(){
-         while(shooterSubsystem.isUpToSpeed()== true){
-        xboxController.setRumble(RumbleType.kBothRumble, intensity);
-    }
+    //      while(shooterSubsystem.isUpToSpeed()== true){
+    //     xboxController.setRumble(RumbleType.kBothRumble, intensity);
+    // }
 }
 
     @Override

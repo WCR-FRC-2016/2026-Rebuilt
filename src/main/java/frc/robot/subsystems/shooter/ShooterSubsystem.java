@@ -71,14 +71,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
      if(desiredShooterState != ShooterState.manual){
             return;
-        }
+     }
    // System.out.println(velocitySignal.getValueAsDouble());
       final SparkClosedLoopController closedLoopController = pivotWheel.getClosedLoopController();
        final double currentSetpoint = closedLoopController.getSetpoint();
        final double movementInput = manualControlInput.getAsDouble();
        final double newSetpoint = currentSetpoint + (movementInput / 20);
        closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-   
+     
    velocitySignal.refresh();
   }
 
@@ -91,6 +91,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * private int currentMotorVelocity = 0;
    */
   public ShooterSubsystem() {
+
 
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
     ClosedLoopConfig pivotClosedLoopConfig = new ClosedLoopConfig().pid(0.85, 0.0, 0.0, ClosedLoopSlot.kSlot0)
@@ -113,6 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
    pivotWheel.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
   }
+ 
 
   public void ShooterWheelsRun() {
     // shooterLeader.set(SHOOTERSPEED);
@@ -179,18 +181,22 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void updateShooterPivot() {
-        
+        System.out.println(desiredShooterState);
             final double PIVOT_POSITON = (desiredShooterState == ShooterState.TwoMeters) ? SHOOTER_DOWN : SHOOTER_UP;
         pivotWheel.getClosedLoopController().setSetpoint(PIVOT_POSITON, ControlType.kPosition,
                 ClosedLoopSlot.kSlot0);
     }
-    public boolean UpToSpeed() {
-        // Check if the shooter is within 5% of the target velocity
-        if( Math.abs(currentVelocity) >= Math.abs(wantedVelocity) + 5 && Math.abs(currentVelocity) <= Math.abs(wantedVelocity) - 5){
-          return true;
-        }
-        else return false;
+
+    public void printAngle(){
+        System.out.println("Current Pivot Angle: " + pivotWheel.getAlternateEncoder().getPosition());
     }
+    //public boolean UpToSpeed() {
+        // Check if the shooter is within 5% of the target velocity
+       // if( Math.abs(currentVelocity) >= Math.abs(wantedVelocity) + 5 && Math.abs(currentVelocity) <= Math.abs(wantedVelocity) - 5){
+       //   return true;
+       // }
+      //  else return false;
+   // }
 
       public void setPivotManually() {
         desiredShooterState = ShooterState.manual;
