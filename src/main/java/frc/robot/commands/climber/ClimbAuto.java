@@ -18,12 +18,12 @@ public class ClimbAuto extends Command{
     public void initialize() {
         timer.reset();
         timer.start();
-        climberSubsystem.runClimber();
+        climberSubsystem.runClimberUp();
     }
 
     public void execute() {
         if (timer.get() > CLIMBTIME) {
-            climberSubsystem.stop();
+            climberSubsystem.climberStop();
         }
     }
 }

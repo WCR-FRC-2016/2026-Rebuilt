@@ -15,16 +15,12 @@ public class LimelightAlign extends Command {
     private double offsetDistanceX;
     private double offsetDistanceZ;
 
-    private final int RED_AIM_APRILTAG = 9;
-    private final int BLUE_AIM_APRILTAG = 25;
+    private final int RED_AIM_APRILTAG = 10;
+    private final int BLUE_AIM_APRILTAG = 24;
 
     private final double DESIRED_DISTANCE_X = 0.0;
-    private  double DESIRED_DISTANCE_Z =3;// 60?
+    private  double DESIRED_DISTANCE_Z =2.5;// 60?
    // private double desiredDistance;
-    public double[] targetPos_BotSpace = NetworkTables.getTargetPos_BotSpace();
-    public final double tagZ = targetPos_BotSpace[2];
-    final boolean isAngleInRange = tx > -1 && tx < 1 ; 
-    final boolean isAtTargetPosition = Math.abs(offsetDistanceX) < 0.1 && Math.abs(offsetDistanceZ) < 0.1;
     
 
     // 2.1;//speed 60
@@ -68,19 +64,22 @@ public class LimelightAlign extends Command {
 
         // checks if limelight has a target:
         if (tv) {
-            System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
             updatePositioningState();
+            System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
+
            // System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
             // System.out.println(tx);
             
             
             // checks if limelight is looking within range of April tag:
+    final boolean isAngleInRange = tx > -1 && tx < 1 ; 
+    final boolean isAtTargetPosition = Math.abs(offsetDistanceX) < 0.1 && Math.abs(offsetDistanceZ) < 0.1;
             
             if (!isAngleInRange || !isAtTargetPosition) {
                 // sets speed, amount of rotation, & rotation direction for the robot:
                 double rotateAlign = (tx / 41.0) * -100;
                 // Translation2d translation = new Translation2d(movementVelocityZ,
-                // movementVelocityX);
+                 //movementVelocityX);
                 driveBase.drive(translation, Math.toRadians(rotateAlign), false);
                 // locks robot in place if limelight is within range (failsafe):
                 
@@ -96,7 +95,7 @@ public class LimelightAlign extends Command {
     }
         @Override
         public void end(boolean isInterrupted){
-            LimelightHelpers.SetFiducialIDFiltersOverride("limelight",null);
+            LimelightHelpers.SetFiducialIDFiltersOverride("limelight",new int [0]);
             LimelightHelpers.setPriorityTagID("limelight", -1);
         }
     // Target Distance For Shoot : 2.5 m
@@ -109,8 +108,9 @@ public class LimelightAlign extends Command {
         }
         
         final double tagX = targetPos_BotSpace[0];
+        final double tagZ = targetPos_BotSpace[2];
         
-        if (tagZ >=0 && tagZ <= 2.55) {
+       /*  if (tagZ >=0 && tagZ <= 2.55) {
             DESIRED_DISTANCE_Z = 3; // hood angle for 2.1 m is 0.00
             System.out.println("moved 2.1");
             shooterSubsystem.desiredShooterState = ShooterState.TwoMeters;
@@ -121,7 +121,7 @@ public class LimelightAlign extends Command {
             DESIRED_DISTANCE_Z = 3; // hood angle for 3 m is -0.02
             System.out.println("moved 3");
             shooterSubsystem.pivotTo(-0.02);
-        }
+        }*/
         final double tagYaw = Math.toRadians(targetPos_BotSpace[4]);
         final double CENTER_OFFSET_Z = 0.736;
         final double centerOffsetRotateZ = CENTER_OFFSET_Z * Math.cos(tagYaw);
@@ -147,9 +147,9 @@ public class LimelightAlign extends Command {
     @Override
     public boolean isFinished() {
         // TODO: Use proper check to make this command work in autonomous, currently doesn't account for robot positioning
-         if (NetworkTables.getTv() && isAngleInRange ==true && isAtTargetPosition==true) {
-            return true;
-        }   
+        // if (NetworkTables.getTv() && isAngleInRange ==true && isAtTargetPosition==true) {
+           // return true;
+         
 
         return false;
 

@@ -17,9 +17,9 @@ public class AgitatorSubsystem extends SubsystemBase {
 
 
     @SuppressWarnings("removal")
-    public AgitatorSubsystem() {
+    public AgitatorSubsystem(ShooterSubsystem shooterSubsystem) {
         agitatorTread = new SparkMax(AGITATOR_TREAD_CAN_ID, MotorType.kBrushed);
-
+       this. shooterSubsystem= shooterSubsystem;
         SparkMaxConfig config = new SparkMaxConfig();
 
         config
@@ -35,10 +35,12 @@ public class AgitatorSubsystem extends SubsystemBase {
         agitatorTread.set(AGITATESPEED);
     }
     public void agitateIfShootSpeed(){
-        while(shooterSubsystem.isUpToSpeed()== true){
-            agitatorTread.set(AGITATESPEED);
-        }
-        agitatorTread.set(0.0);
+       if(shooterSubsystem.isUpToSpeed()){
+        startAgitating();
+       }
+       else{
+        reverseAgitating();
+       }
     }
 
     public void reverseAgitating() {

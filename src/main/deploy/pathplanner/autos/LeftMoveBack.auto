@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Start to Shoot1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right Shoot1 to Climb"
+            "pathName": "LeftMoveBack"
           }
         }
       ]

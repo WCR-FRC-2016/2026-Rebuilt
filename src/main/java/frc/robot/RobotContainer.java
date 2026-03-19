@@ -60,7 +60,7 @@ public class RobotContainer {
       () -> MathUtil.applyDeadband(manipulatorCommandXbox.getLeftY(), 0.4) * -1);
   private final ShooterSubsystem shooter = new ShooterSubsystem();
   private final LedSubsystem ledSubsystem = new LedSubsystem();
-  private final AgitatorSubsystem agitatorSubsystem = new AgitatorSubsystem();
+  private final AgitatorSubsystem agitatorSubsystem = new AgitatorSubsystem(shooter);
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   private final Trigger leftJoystickManualTrigger = new Trigger(
@@ -130,7 +130,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return drivebase.driveCommand(() -> -0.1, () -> 0, () -> 0);
 
-    var auto = SmartDashboard.getString("Auto Selector", "Test");
+    var auto = SmartDashboard.getString("Auto Selector", "LeftMoveBack");
     System.out.println("Selected Autonomous: " + ((auto == null) ? "[null, cannot find one]" : auto));
 
     // Verify and autonomous command was able to be found from the Dashboard
@@ -139,9 +139,12 @@ public class RobotContainer {
 
     // Verify the command actually exists. This will return the command if its in
     // the list. (MUST match)
-    for (var i = 0; i < Auton.AUTO_NAMES.length; i++)
-      if (Auton.AUTO_NAMES[i].equals(auto))
+    for (var i = 0; i < Auton.AUTO_NAMES.length; i++){
+      System.out.println("Auto");
         return drivebase.getAutonomousCommand(auto);
+      
+    }
+      
 
     // Dont try to run a autonomous that isn't verifiably in the list
     System.out.println("This autonomous is not in the list!!!");
@@ -165,8 +168,10 @@ public class RobotContainer {
     // Start: Zero Gyro
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    driverCommandXbox.rightTrigger(0.2).onTrue(Commands.runOnce(shooter::ShooterWheelsRunSlow)).onFalse(Commands.runOnce(shooter::ShooterWheelsStop));
-    driverCommandXbox.rightBumper().whileTrue(Commands.run(agitatorSubsystem:: startAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
+    driverCommandXbox.rightTrigger(0.2).onTrue(Commands.runOnce(shooter::ShooterWheelsRun)).onFalse(Commands.runOnce(shooter::ShooterWheelsStop));
+    driverCommandXbox.leftTrigger(0.2).onTrue(Commands.runOnce(shooter::ShooterWheelsRunBack)).onFalse(Commands.runOnce(shooter::ShooterWheelsStop));
+    driverCommandXbox.povRight().whileTrue(Commands.run(agitatorSubsystem:: startAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
+    driverCommandXbox.rightBumper().whileTrue(Commands.run(agitatorSubsystem:: agitateIfShootSpeed)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
     driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase, shooter));
     // TODO: Bind X to AutoPivot
     driverCommandXbox.leftBumper().onTrue(Commands.runOnce(agitatorSubsystem:: reverseAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
@@ -184,6 +189,8 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(collector::stopCollection));
     manipulatorCommandXbox.rightTrigger().onTrue(Commands.runOnce(collector::startSpitting))
         .onFalse(Commands.runOnce(collector::stopCollection));
+        manipulatorCommandXbox.povUp().onTrue(Commands.runOnce(climberSubsystem::runClimberUp)).onFalse(Commands.runOnce(climberSubsystem::climberStop));
+        manipulatorCommandXbox.povDown().onTrue(Commands.runOnce(climberSubsystem::runClimberDown)).onFalse(Commands.runOnce(climberSubsystem::climberStop));
     leftJoystickManualTrigger.whileTrue(Commands.run(collector::setPivotManually));
     
   }

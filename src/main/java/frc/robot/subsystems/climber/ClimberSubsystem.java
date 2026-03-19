@@ -36,7 +36,7 @@ public class ClimberSubsystem extends SubsystemBase {
         );
     }
 
-    public void runClimber() {
+    public void runClimberUp() {
         climberMotor.set(1.0);
     }
 
@@ -44,7 +44,7 @@ public class ClimberSubsystem extends SubsystemBase {
         climberMotor.set(-1.0);
     }
 
-    public void stop() {
+    public void climberStop() {
         climberMotor.set(0);
     }
 }

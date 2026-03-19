@@ -9,31 +9,6 @@
           "data": {
             "pathName": "LeftShoot"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootAlign"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShootingAuto60speed"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Agitate"
-                }
-              }
-            ]
-          }
         }
       ]
     }
