@@ -23,6 +23,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -70,7 +71,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-     if(desiredShooterState != ShooterState.manual){
+    velocitySignal.refresh();
+    if(desiredShooterState != ShooterState.manual){
             return;
      }
    // System.out.println(velocitySignal.getValueAsDouble());
@@ -79,14 +81,14 @@ public class ShooterSubsystem extends SubsystemBase {
        final double movementInput = manualControlInput.getAsDouble();
        final double newSetpoint = currentSetpoint + (movementInput / 20);
        closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-     
-   velocitySignal.refresh();
+   
   }
+
+
 
   /*
    * private DoubleSupplier getRampSpeed = null;
    * private double currentTriggerValue = 0;
-   * private PIDController pid = new PIDController(0.1, 0, 0.01);
    * private double rampedSetpoint = 0;
    * private double motorOutput = 0;
    * private int currentMotorVelocity = 0;
@@ -165,7 +167,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SHOOTERSPEED += 0.05;
   }
   public boolean isUpToSpeed() {
-    if (velocitySignal.getValueAsDouble() == SHOOTERSPEED){
+    if (velocitySignal.getValueAsDouble() >= SHOOTERSPEED){
       return true;
     }
     else {
