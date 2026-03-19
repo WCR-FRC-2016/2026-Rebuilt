@@ -53,7 +53,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public ShooterState desiredShooterState = ShooterState.TwoMeters;
-  public double wantedVelocity = -62; //60
+  public double wantedVelocity = 62; //60
 
   private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(wantedVelocity).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
@@ -129,11 +129,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void ShooterWheelsRunBack() {
-    shooterLeader.set(-0.9);
+    shooterLeader.set(0.9);
   }
 
   public void ShooterWheelsRunSlow() {
-    shooterLeader.set(0.2);
+    shooterLeader.set(-0.2);
   }
 
   public void ShooterWheelsRunAuto(double speed) {

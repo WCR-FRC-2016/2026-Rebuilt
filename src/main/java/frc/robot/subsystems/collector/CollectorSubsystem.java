@@ -25,8 +25,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class CollectorSubsystem extends SubsystemBase {
-    final CommandXboxController manipulatorCommandXbox = new CommandXboxController(1);
-
     public enum PivotState {
         up, down, manual, shoot
     }
@@ -110,12 +108,12 @@ public void periodic() {
 
     if (desiredPivotState == PivotState.manual) {
         final double currentSetpoint = closedLoopController.getSetpoint();
-        double leftJoystickY = manipulatorCommandXbox.getLeftY();
-        if (leftJoystickY > 0.4 && currentSetpoint < 0.9) {
+        double leftJoystickY = manualControlInput.getAsDouble();
+        if (leftJoystickY > 0.4 && currentSetpoint < 0) {
             final double newSetpoint = currentSetpoint + (0.05);
             closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         }
-        if (leftJoystickY < -0.4 && currentSetpoint > 0.05) {
+        if (leftJoystickY < -0.4 && currentSetpoint > -2) {
             final double newSetpoint = currentSetpoint - (0.05);
             closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         }    
@@ -134,7 +132,7 @@ public void periodic() {
         collectorWheelsL.set(COLLECT_POWER);
     }
 
-    public void startSpiting() {
+    public void startSpitting() {
         currentWheelState = WheelState.spit;
         collectorWheelsL.set(-COLLECT_POWER);
     }
