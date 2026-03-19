@@ -23,6 +23,9 @@ public class LimelightAlign extends Command {
    // private double desiredDistance;
     public double[] targetPos_BotSpace = NetworkTables.getTargetPos_BotSpace();
     public final double tagZ = targetPos_BotSpace[2];
+    final boolean isAngleInRange = tx > -1 && tx < 1 ; 
+    final boolean isAtTargetPosition = Math.abs(offsetDistanceX) < 0.1 && Math.abs(offsetDistanceZ) < 0.1;
+    
 
     // 2.1;//speed 60
     // 3 ?
@@ -72,8 +75,7 @@ public class LimelightAlign extends Command {
             
             
             // checks if limelight is looking within range of April tag:
-            final boolean isAngleInRange = tx > -1 && tx < 1 ; 
-            final boolean isAtTargetPosition = Math.abs(offsetDistanceX) < 0.1 && Math.abs(offsetDistanceZ) < 0.1;
+            
             if (!isAngleInRange || !isAtTargetPosition) {
                 // sets speed, amount of rotation, & rotation direction for the robot:
                 double rotateAlign = (tx / 41.0) * -100;
@@ -112,13 +114,13 @@ public class LimelightAlign extends Command {
             DESIRED_DISTANCE_Z = 3; // hood angle for 2.1 m is 0.00
             System.out.println("moved 2.1");
             shooterSubsystem.desiredShooterState = ShooterState.TwoMeters;
-            shooterSubsystem.updateShooterPivot();
+            shooterSubsystem.pivotTo(0.0);
         }
         else {
             shooterSubsystem.desiredShooterState = ShooterState.ThreeMeters;
             DESIRED_DISTANCE_Z = 3; // hood angle for 3 m is -0.02
             System.out.println("moved 3");
-            shooterSubsystem.updateShooterPivot();
+            shooterSubsystem.pivotTo(-0.02);
         }
         final double tagYaw = Math.toRadians(targetPos_BotSpace[4]);
         final double CENTER_OFFSET_Z = 0.736;
@@ -145,7 +147,7 @@ public class LimelightAlign extends Command {
     @Override
     public boolean isFinished() {
         // TODO: Use proper check to make this command work in autonomous, currently doesn't account for robot positioning
-         if (NetworkTables.getTv() && Math.abs(NetworkTables.getTx()) < 0.1 && Math.abs(tagZ) < 0.1) {
+         if (NetworkTables.getTv() && isAngleInRange ==true && isAtTargetPosition==true) {
             return true;
         }   
 
