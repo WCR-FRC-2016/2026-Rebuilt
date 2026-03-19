@@ -19,14 +19,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Auton;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Rumble;
+import frc.robot.commands.agitator.Agitate;
+import frc.robot.commands.agitator.ShootAgitate;
 import frc.robot.commands.climber.ClimbAuto;
 import frc.robot.commands.collector.StartCollectingAuto;
 import frc.robot.commands.collector.StopCollectingAuto;
 import frc.robot.commands.collector.movePivotDown;
 import frc.robot.commands.shooter.MovePivot;
-import frc.robot.commands.shooter.StartShootingAuto60speed;
-import frc.robot.commands.swervedrive.agitator.Agitate;
-import frc.robot.commands.swervedrive.agitator.ShootAgitate;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 
 import frc.robot.subsystems.LedSubsystem;
@@ -101,7 +100,6 @@ public class RobotContainer {
   private void configureBindings() {
     registerAutos();
 
-    NamedCommands.registerCommand("StartShootingAuto60speed", new StartShootingAuto60speed());
     NamedCommands.registerCommand("Agitate", new Agitate(agitatorSubsystem, Constants.SpeedConstants.AGITATOR_SPEED));
     NamedCommands.registerCommand("StartCollectingAuto", new StartCollectingAuto(collector));
     NamedCommands.registerCommand("StopCollectingAuto", new StopCollectingAuto(collector));
@@ -112,7 +110,7 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     // if (DriverStation.isTest()) {
-    bindCompetitionControls();
+    bindTestingControls();
     // } else {
     // bindCompetitionControls();
     // }
@@ -170,9 +168,12 @@ public class RobotContainer {
     // Shooter wheels ramp up
     driverCommandXbox
         .leftTrigger(0.1)
-        .whileTrue(Commands.run(shooter::ShooterWheelsRun, shooter))
-        .whileTrue(new Rumble(manipulatorXbox, 0.5))
-        .onFalse(Commands.runOnce(shooter::ShooterWheelsStop, shooter));
+        .onTrue(Commands.runOnce(shooter::ShooterWheelsRunSlow))
+        .onFalse(Commands.runOnce(shooter::ShooterWheelsStop));
+        
+        //.whileTrue(Commands.run(shooter::ShooterWheelsRun, shooter))
+        //.whileTrue(new Rumble(manipulatorXbox, 0.5))
+        //.onFalse(Commands.runOnce(shooter::ShooterWheelsStop, shooter));
 
     // Agitate to shoot
     driverCommandXbox
@@ -268,6 +269,10 @@ public class RobotContainer {
 
     leftJoystickManualTrigger
         .onTrue(Commands.runOnce(() -> System.out.println("Works!!")));
+
+    
+
+
     // () -> collector.manualCollectorPivot()));
     /*
      * if (manipulatorCommandXbox.getLeftY() > 0.4) {
@@ -318,19 +323,19 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
-    driverCommandXbox.b().whileTrue(new LimelightAlign(drivebase, shooter));
+    driverCommandXbox.rightTrigger().whileTrue(new LimelightAlign(drivebase, shooter));
 
     driverCommandXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
 
     // Shooter wheels ramp up
     driverCommandXbox
-        .rightTrigger(0.1)
+        .leftTrigger(0.1)
         .whileTrue(Commands.run(shooter::ShooterWheelsRun, shooter))
         .onFalse(Commands.runOnce(shooter::ShooterWheelsStop, shooter));
 
     // Agitate to shoot
     driverCommandXbox
-        .rightBumper()
+        .leftBumper()
         .whileTrue(Commands.run(agitatorSubsystem::startAgitating, agitatorSubsystem))
         .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating, agitatorSubsystem));
 
@@ -347,7 +352,7 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(shooter::stopPivotizing, shooter));
 
     // Reverse Agitator!!!
-    driverCommandXbox.leftTrigger(0.1)
+    driverCommandXbox.b()
         .whileTrue(Commands.runOnce(agitatorSubsystem::reverseAgitating, agitatorSubsystem))
         .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating, agitatorSubsystem));
 
@@ -401,6 +406,11 @@ public class RobotContainer {
         .povDown()
         .whileTrue(Commands.run(climberSubsystem::runClimberDown, climberSubsystem))
         .onFalse(Commands.run(climberSubsystem::stop, climberSubsystem));
+
+    manipulatorCommandXbox
+    .x()
+    .onTrue(Commands.run(shooter::ShooterWheelsRunBack, shooter))
+    .onFalse(Commands.runOnce(shooter::ShooterWheelsStop, shooter));
 
   }
 

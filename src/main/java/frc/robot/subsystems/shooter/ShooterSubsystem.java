@@ -125,8 +125,15 @@ public class ShooterSubsystem extends SubsystemBase {
  
 
   public void ShooterWheelsRun() {
-    // shooterLeader.set(SHOOTERSPEED);
     shooterLeader.setControl(m_velocityVoltage.withVelocity(wantedVelocity));
+  }
+
+  public void ShooterWheelsRunBack() {
+    shooterLeader.set(-0.9);
+  }
+
+  public void ShooterWheelsRunSlow() {
+    shooterLeader.set(0.2);
   }
 
   public void ShooterWheelsRunAuto(double speed) {
