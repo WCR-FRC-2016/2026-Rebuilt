@@ -26,6 +26,7 @@ import frc.robot.commands.collector.StartCollectingAuto;
 import frc.robot.commands.collector.StopCollectingAuto;
 import frc.robot.commands.collector.movePivotDown;
 import frc.robot.commands.shooter.MovePivot;
+import frc.robot.commands.shooter.calculateAndMovePivot;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 
 import frc.robot.subsystems.LedSubsystem;
@@ -160,6 +161,8 @@ public class RobotContainer {
     Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
 
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+
+    driverCommandXbox.x().onTrue(new calculateAndMovePivot(shooter));
 
     driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase, shooter));
 
