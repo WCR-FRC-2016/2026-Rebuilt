@@ -162,7 +162,7 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
-    driverCommandXbox.x().onTrue(new calculateAndMovePivot(shooter));
+    //driverCommandXbox.x().onTrue(new calculateAndMovePivot(shooter));
 
     driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase, shooter));
 
