@@ -71,7 +71,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-     if(desiredShooterState != ShooterState.manual){
+    velocitySignal.refresh();
+    if(desiredShooterState != ShooterState.manual){
             return;
      }
    // System.out.println(velocitySignal.getValueAsDouble());
@@ -80,8 +81,7 @@ public class ShooterSubsystem extends SubsystemBase {
        final double movementInput = manualControlInput.getAsDouble();
        final double newSetpoint = currentSetpoint + (movementInput / 20);
        closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-     
-   velocitySignal.refresh();
+   
   }
 
 
@@ -167,7 +167,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SHOOTERSPEED += 0.05;
   }
   public boolean isUpToSpeed() {
-    if (velocitySignal.getValueAsDouble() == SHOOTERSPEED){
+    if (velocitySignal.getValueAsDouble() >= SHOOTERSPEED){
       return true;
     }
     else {

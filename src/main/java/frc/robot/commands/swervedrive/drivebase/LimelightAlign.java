@@ -1,16 +1,22 @@
 package frc.robot.commands.swervedrive.drivebase;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.LimelightHelpers;
 import frc.robot.NetworkTables;
 
 public class LimelightAlign extends Command {
     private double tx;
     private double offsetDistanceX;
     private double offsetDistanceZ;
+
+    private final int RED_AIM_APRILTAG = 9;
+    private final int BLUE_AIM_APRILTAG = 25;
 
     private final double DESIRED_DISTANCE_X = 0.0;
     private  double DESIRED_DISTANCE_Z =3;// 60?
@@ -40,6 +46,15 @@ public class LimelightAlign extends Command {
         
     }
 
+     @Override
+     public void initialize(){
+        int[]filterTag = new int[]{
+            (DriverStation.getAlliance().get() == Alliance.Red) ? RED_AIM_APRILTAG : BLUE_AIM_APRILTAG
+        };
+        LimelightHelpers.SetFiducialIDFiltersOverride("limelight",filterTag);
+        LimelightHelpers.setPriorityTagID("limelight", filterTag[0]);
+
+     }
     @Override
     public void execute() {
         offsetDistanceX = 0.0;
@@ -77,7 +92,11 @@ public class LimelightAlign extends Command {
             driveBase.drive(translationZero, Math.toRadians(30), true);
         }
     }
-
+        @Override
+        public void end(boolean isInterrupted){
+            LimelightHelpers.SetFiducialIDFiltersOverride("limelight",null);
+            LimelightHelpers.setPriorityTagID("limelight", -1);
+        }
     // Target Distance For Shoot : 2.5 m
    
     private void updatePositioningState( ) {
@@ -125,7 +144,7 @@ public class LimelightAlign extends Command {
 
     @Override
     public boolean isFinished() {
-
+        // TODO: Use proper check to make this command work in autonomous, currently doesn't account for robot positioning
          if (NetworkTables.getTv() && Math.abs(NetworkTables.getTx()) < 0.1 && Math.abs(tagZ) < 0.1) {
             return true;
         }   
