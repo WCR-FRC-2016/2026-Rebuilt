@@ -1,5 +1,6 @@
 package frc.robot.subsystems.collector;
 
+import java.nio.BufferOverflowException;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.PersistMode;
@@ -24,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class CollectorSubsystem extends SubsystemBase {
+    final CommandXboxController manipulatorCommandXbox = new CommandXboxController(1);
+
     public enum PivotState {
         up, down, manual, shoot
     }
@@ -53,6 +56,7 @@ public class CollectorSubsystem extends SubsystemBase {
     private DoubleSupplier manualControlInput = null;
 
     public CollectorSubsystem(DoubleSupplier manualControlInput) {
+        
         collectorWheelsL = new SparkMax(COLLECTOR_WHEELS_L_CAN_ID, MotorType.kBrushless);
         collectorWheelsF = new SparkMax(COLLECTOR_WHEELS_F_CAN_ID, MotorType.kBrushless);
         collectorPivotL = new SparkMax(COLLECTOR_PIVOT_L_CAN_ID, MotorType.kBrushed);
@@ -100,19 +104,30 @@ public class CollectorSubsystem extends SubsystemBase {
         collectorPivotL.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
-    @Override
-    public void periodic() {
-        if(desiredPivotState != PivotState.manual){
-            return;
+   @Override
+public void periodic() {
+    final SparkClosedLoopController closedLoopController = collectorPivotL.getClosedLoopController();
+
+    if (desiredPivotState == PivotState.manual) {
+        final double currentSetpoint = closedLoopController.getSetpoint();
+        double leftJoystickY = manipulatorCommandXbox.getLeftY();
+        if (leftJoystickY > 0.4 && currentSetpoint < 0.9) {
+            final double newSetpoint = currentSetpoint + (0.05);
+            closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         }
-       final SparkClosedLoopController closedLoopController = collectorPivotL.getClosedLoopController();
-       final double currentSetpoint = closedLoopController.getSetpoint();
-       final double movementInput = manualControlInput.getAsDouble();
-       final double newSetpoint = currentSetpoint + (movementInput / 20);
-       closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        if (leftJoystickY < -0.4 && currentSetpoint > 0.05) {
+            final double newSetpoint = currentSetpoint - (0.05);
+            closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        }    
+    }
+
+    // System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
+    //         + collectorPivotL.getAlternateEncoder().getPosition());
+}
+        
+
        //System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
           //      + collectorPivotL.getAlternateEncoder().getPosition());
-        }
 
     public void startCollecting() {
         currentWheelState = WheelState.collect;
@@ -150,6 +165,8 @@ public class CollectorSubsystem extends SubsystemBase {
         desiredPivotState = PivotState.shoot;
         updatePivot();
     }
+
+
 
     public void zeroPivotEncoder() {
 

@@ -23,6 +23,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -83,10 +84,11 @@ public class ShooterSubsystem extends SubsystemBase {
    velocitySignal.refresh();
   }
 
+
+
   /*
    * private DoubleSupplier getRampSpeed = null;
    * private double currentTriggerValue = 0;
-   * private PIDController pid = new PIDController(0.1, 0, 0.01);
    * private double rampedSetpoint = 0;
    * private double motorOutput = 0;
    * private int currentMotorVelocity = 0;
