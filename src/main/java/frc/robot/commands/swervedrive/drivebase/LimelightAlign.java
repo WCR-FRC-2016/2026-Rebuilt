@@ -15,7 +15,9 @@ public class LimelightAlign extends Command {
     private final double DESIRED_DISTANCE_X = 0.0;
     private  double DESIRED_DISTANCE_Z =3;// 60?
    // private double desiredDistance;
-    
+    public double[] targetPos_BotSpace = NetworkTables.getTargetPos_BotSpace();
+    public final double tagZ = targetPos_BotSpace[2];
+
     // 2.1;//speed 60
     // 3 ?
     // 4.1 ?
@@ -86,7 +88,7 @@ public class LimelightAlign extends Command {
         }
         
         final double tagX = targetPos_BotSpace[0];
-        final double tagZ = targetPos_BotSpace[2];
+        
         if (tagZ >=0 && tagZ <= 2.55) {
             DESIRED_DISTANCE_Z = 3; // hood angle for 2.1 m is 0.00
             System.out.println("moved 2.1");
@@ -124,9 +126,9 @@ public class LimelightAlign extends Command {
     @Override
     public boolean isFinished() {
 
-      /*    if (NetworkTables.getTv() && Math.abs(NetworkTables.getTx()) < 0.1 ) {
+         if (NetworkTables.getTv() && Math.abs(NetworkTables.getTx()) < 0.1 && Math.abs(tagZ) < 0.1) {
             return true;
-        }   */
+        }   
 
         return false;
 
