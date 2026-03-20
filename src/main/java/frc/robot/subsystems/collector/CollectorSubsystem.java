@@ -44,7 +44,7 @@ public class CollectorSubsystem extends SubsystemBase {
     
 
     private final SparkMax collectorWheelsL;
-    private final SparkMax collectorWheelsF;
+    //private final SparkMax collectorWheelsF;
     public final SparkMax collectorPivotL;
     private final SparkMax collectorPivotF;
 
@@ -55,8 +55,8 @@ public class CollectorSubsystem extends SubsystemBase {
 
     public CollectorSubsystem(DoubleSupplier manualControlInput) {
         
-        collectorWheelsL = new SparkMax(COLLECTOR_WHEELS_L_CAN_ID, MotorType.kBrushless);
-        collectorWheelsF = new SparkMax(COLLECTOR_WHEELS_F_CAN_ID, MotorType.kBrushless);
+        collectorWheelsL = new SparkMax(COLLECTOR_WHEELS_L_CAN_ID, MotorType.kBrushed);
+        //collectorWheelsF = new SparkMax(COLLECTOR_WHEELS_F_CAN_ID, MotorType.kBrushless);
         collectorPivotL = new SparkMax(COLLECTOR_PIVOT_L_CAN_ID, MotorType.kBrushed);
         collectorPivotF = new SparkMax(COLLECTOR_PIVOT_F_CAN_ID, MotorType.kBrushed);
 
@@ -96,8 +96,8 @@ public class CollectorSubsystem extends SubsystemBase {
                 PersistMode.kPersistParameters);
         collectorWheelsL.configure(collectorWheelsLConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        collectorWheelsF.configure(collectorWheelsFConfig, ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+       // collectorWheelsF.configure(collectorWheelsFConfig, ResetMode.kResetSafeParameters,
+        //        PersistMode.kPersistParameters);
 
         collectorPivotL.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
