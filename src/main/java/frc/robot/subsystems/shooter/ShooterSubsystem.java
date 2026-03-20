@@ -42,9 +42,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public static double IdealShootSpeed = 0; // rotations per minute
   // public boolean GoodSpeed = UpToSpeed();
   public double SHOOTERSPEED = -58;// currently runs at 6.2 perfect for 2.5 distance
+  public double PASSSPEED = -28;// currently runs at 6.2 perfect for 2.5 distance
   public final double PIVOTSPEED = 0.4;
     private static final double SHOOTER_DOWN =  0.0;
     private static final double SHOOTER_UP =  -0.11;//THAT IS MAX TO CHANGE LATER
+    private static final double SHOOTER_PASS = -0.11;
 
 
 
@@ -54,6 +56,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterState desiredShooterState = ShooterState.TwoMeters;
   public double wantedVelocity = -62; //60
+  private static final double SHOOTING_VELOCITY= -62;
+  private static final double PASSING_VELOCITY= -30;
 
   private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(wantedVelocity).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
@@ -125,20 +129,32 @@ public class ShooterSubsystem extends SubsystemBase {
  
 
   public void ShooterWheelsRun() {
-    shooterLeader.setControl(m_velocityVoltage.withVelocity(wantedVelocity));
+   // shooterLeader.setControl(m_velocityVoltage.withVelocity(wantedVelocity));
+    shooterLeader.setControl(m_velocityVoltage.withVelocity(SHOOTING_VELOCITY));
   }
 
+  public void shooterWheelsRunPass(){
+    shooterLeader.setControl(m_velocityVoltage.withVelocity(PASSING_VELOCITY));
+  }
+
+  public void pivotToPass(){
+    pivotTo(SHOOTER_PASS);
+  }
+
+  public void pivotToShoot(){
+    pivotTo(SHOOTER_DOWN);
+  }
   public void ShooterWheelsRunBack() {
-    shooterLeader.set(0.9);
-  }
+     shooterLeader.set(0.9);
+   }
 
-  public void ShooterWheelsRunSlow() {
-    shooterLeader.set(-0.6);
-  }
+  // public void ShooterWheelsRunSlow() {
+  //   shooterLeader.set(-0.6);
+  // }
 
-  public void ShooterWheelsRunAuto(double speed) {
-    shooterLeader.set(speed);
-  }
+  // public void ShooterWheelsRunAuto(double speed) {
+  //   shooterLeader.set(speed);
+  // }
 
   public void ShooterWheelsStop() {
     shooterLeader.setControl(m_brake);
@@ -176,6 +192,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean isUpToSpeed() {
     //boolean directCompare = Math.abs(velocitySignal.getValueAsDouble() - SHOOTERSPEED) <= 0.01;
     return velocitySignal.getValueAsDouble() <= SHOOTERSPEED;
+  }
+  public boolean isUpToPassSpeed() {
+    //boolean directCompare = Math.abs(velocitySignal.getValueAsDouble() - SHOOTERSPEED) <= 0.01;
+    return velocitySignal.getValueAsDouble() <= PASSSPEED;
   }
 
   public double calculateHighArcAngle(double distance, double velocity, double targetHeight) {

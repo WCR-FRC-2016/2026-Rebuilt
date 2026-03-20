@@ -43,6 +43,14 @@ public class AgitatorSubsystem extends SubsystemBase {
        }
     }
 
+     public void agitateIfPassSpeed(){
+       if(shooterSubsystem.isUpToPassSpeed()){
+        startAgitating();
+       }
+       else{
+        stopAgitating();
+       }
+    }
     public void reverseAgitating() {
         agitatorTread.set(-AGITATESPEED);
     }

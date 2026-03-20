@@ -27,6 +27,7 @@ import frc.robot.commands.collector.StartCollectingAuto;
 import frc.robot.commands.collector.StopCollectingAuto;
 import frc.robot.commands.collector.movePivotDown;
 import frc.robot.commands.shooter.MovePivot;
+import frc.robot.commands.shooter.PassBalls;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 
 import frc.robot.subsystems.LedSubsystem;
@@ -178,6 +179,7 @@ public class RobotContainer {
     driverCommandXbox.povUp().onTrue(Commands.runOnce(shooter:: pivotUp)).onFalse(Commands.runOnce(shooter::stopPivotizing));
     driverCommandXbox.povDown().onTrue(Commands.runOnce(shooter:: pivotDown)).onFalse(Commands.runOnce(shooter::stopPivotizing));
     driverCommandXbox.start().onTrue(Commands.runOnce(drivebase:: zeroGyro));
+    driverCommandXbox.povLeft().whileTrue(new PassBalls(shooter, agitatorSubsystem));
 
     manipulatorCommandXbox.x().whileTrue(Commands.run(shooter::ShooterWheelsRunBack))
         .onFalse(Commands.runOnce(shooter::ShooterWheelsStop));
