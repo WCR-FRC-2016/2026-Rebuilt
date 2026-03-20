@@ -177,18 +177,17 @@ public class RobotContainer {
     // Start: Zero Gyro
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    driverCommandXbox.rightTrigger(0.2).onTrue(Commands.runOnce(shooter::ShooterWheelsRun)).onFalse(Commands.runOnce(shooter::ShooterWheelsStop));
     driverCommandXbox.leftTrigger(0.2).onTrue(Commands.runOnce(shooter::ShooterWheelsRunBack)).onFalse(Commands.runOnce(shooter::ShooterWheelsStop));
-    driverCommandXbox.povRight().whileTrue(Commands.run(agitatorSubsystem:: startAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
-    driverCommandXbox.rightBumper().whileTrue(Commands.run(agitatorSubsystem:: agitateIfShootSpeed)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
-    driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase, shooter));
-    // TODO: Bind X to AutoPivot
-    driverCommandXbox.x().whileTrue(new LimelightHoodAlign(drivebase, shooter));
-    driverCommandXbox.leftBumper().onTrue(Commands.runOnce(agitatorSubsystem:: reverseAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
-    driverCommandXbox.povUp().onTrue(Commands.runOnce(shooter:: pivotUp)).onFalse(Commands.runOnce(shooter::stopPivotizing));
-    driverCommandXbox.povDown().onTrue(Commands.runOnce(shooter:: pivotDown)).onFalse(Commands.runOnce(shooter::stopPivotizing));
-    driverCommandXbox.start().onTrue(Commands.runOnce(drivebase:: zeroGyro));
-    driverCommandXbox.povLeft().whileTrue(new PassBalls(shooter, agitatorSubsystem));
+    driverCommandXbox.rightTrigger(0.2).onTrue(Commands.runOnce(shooter::ShooterWheelsRun)).onFalse(Commands.runOnce(shooter::ShooterWheelsStop));
+    driverCommandXbox.leftBumper().whileTrue(new PassBalls(shooter, agitatorSubsystem));
+    driverCommandXbox.rightBumper().whileTrue(Commands.run(agitatorSubsystem::agitateIfShootSpeed)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
+    driverCommandXbox.povLeft().onTrue(Commands.runOnce(agitatorSubsystem::reverseAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
+    driverCommandXbox.povRight().whileTrue(Commands.run(agitatorSubsystem::startAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
+    driverCommandXbox.povUp().onTrue(Commands.runOnce(shooter::pivotUp)).onFalse(Commands.runOnce(shooter::stopPivotizing));
+    driverCommandXbox.povDown().onTrue(Commands.runOnce(shooter::pivotDown)).onFalse(Commands.runOnce(shooter::stopPivotizing));
+    driverCommandXbox.y().whileTrue(new LimelightHoodAlign(drivebase, shooter));
+    driverCommandXbox.x().whileTrue(new LimelightAlign(drivebase, shooter));
+    driverCommandXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
 
     manipulatorCommandXbox.x().whileTrue(Commands.run(shooter::ShooterWheelsRunBack))
         .onFalse(Commands.runOnce(shooter::ShooterWheelsStop));

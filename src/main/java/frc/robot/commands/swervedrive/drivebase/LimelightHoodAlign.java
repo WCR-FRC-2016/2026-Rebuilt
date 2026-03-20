@@ -142,6 +142,7 @@ public class LimelightHoodAlign extends Command {
                 return currentDatapoint.HoodAngle;
             }
             final Datapoint previousDatapoint = data[i-1];
+            //misspelled did not want to mess with it mid tourney
             final double datapoiontDistance = currentDatapoint.Distance - previousDatapoint.Distance;
             final double targetDistanceOffset = distanceToTarget - previousDatapoint.Distance;
             final double t = targetDistanceOffset / datapoiontDistance;
