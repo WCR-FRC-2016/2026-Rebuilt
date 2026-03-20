@@ -686,7 +686,7 @@ public class SwerveSubsystem extends SubsystemBase
   private void addLimelightPoseEstimate()
   {
     LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-    if(poseEstimate.tagCount > 0) {
+    if(poseEstimate != null && poseEstimate.tagCount > 0) {
       swerveDrive.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds, VecBuilder.fill(0.9, 0.9, 0.9));
     }
   }

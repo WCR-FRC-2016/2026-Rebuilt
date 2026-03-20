@@ -70,7 +70,8 @@ public final class Constants
         "LeftShoot",
         "MiddleShoot",
         "RightShoot",*/
-        "LeftMoveBack"
+        "LeftMoveBack",
+        "Middle Shoot"
 
     };
   }

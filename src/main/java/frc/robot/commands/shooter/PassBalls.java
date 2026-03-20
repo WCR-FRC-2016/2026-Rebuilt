@@ -16,7 +16,7 @@ public class PassBalls extends Command {
 
     @Override
     public void initialize() {
-       // shooterSubsystem.pivotToPass();
+       shooterSubsystem.pivotToPass();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class PassBalls extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // shooterSubsystem.pivotToShoot();
+        shooterSubsystem.pivotToShoot();
         shooterSubsystem.ShooterWheelsStop();
         agitatorSubsystem.stopAgitating();
     }

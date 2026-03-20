@@ -13,7 +13,7 @@ import frc.robot.NetworkTables;
 public class LimelightAlign extends Command {
     private double tx;
     private double offsetDistanceX;
-    private double offsetDistanceZ;
+    public double offsetDistanceZ;
 
     private final int RED_AIM_APRILTAG = 10;
     private final int BLUE_AIM_APRILTAG = 24;
@@ -56,47 +56,36 @@ public class LimelightAlign extends Command {
      }
     @Override
     public void execute() {
-        offsetDistanceX = 0.0;
-        offsetDistanceZ = 0.0;
-        tx = 0.0;
-
-        final boolean tv = NetworkTables.getTv();
+        clearPositioningState();
+        //final boolean tv = NetworkTables.getTv();
 
         // checks if limelight has a target:
+        final boolean tv = LimelightHelpers.getTV("limelight");
         if (tv) {
             updatePositioningState();
-            System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
-
-           // System.out.println("tx: " + tx + ", offsetX: " + offsetDistanceX + ", offsetZ: " + offsetDistanceZ);
-            // System.out.println(tx);
-            
-            
-            // checks if limelight is looking within range of April tag:
-    final boolean isAngleInRange = tx > -1 && tx < 1 ; 
-    final boolean isAtTargetPosition = Math.abs(offsetDistanceX) < 0.1 && Math.abs(offsetDistanceZ) < 0.1;
-            
-            if (!isAngleInRange || !isAtTargetPosition) {
+        System.out.println("distance");  
+            // Check to see if the robot is positioned and rotated proprerly
+            final boolean isAtPosition = isPositionedCorrectly();
+            if (!isAtPosition) {
                 // sets speed, amount of rotation, & rotation direction for the robot:
                 double rotateAlign = (tx / 41.0) * -100;
-                // Translation2d translation = new Translation2d(movementVelocityZ,
-                 //movementVelocityX);
                 driveBase.drive(translation, Math.toRadians(rotateAlign), false);
-                // locks robot in place if limelight is within range (failsafe):
-                
             } else {
+                 // locks robot in place if limelight is within range (failsafe):
                 driveBase.drive(translationZero, 0, true);
                 System.out.println("finished");
             }
         }
         // rotates the robot until limelight gets a target:
         else {
-            driveBase.drive(translationZero, Math.toRadians(30), true);
+        driveBase.drive(translationZero, Math.toRadians(30), true);
         }
     }
         @Override
         public void end(boolean isInterrupted){
             LimelightHelpers.SetFiducialIDFiltersOverride("limelight",new int [0]);
             LimelightHelpers.setPriorityTagID("limelight", -1);
+            System.out.println("Alignment Ended");
         }
     // Target Distance For Shoot : 2.5 m
    
@@ -109,19 +98,6 @@ public class LimelightAlign extends Command {
         
         final double tagX = targetPos_BotSpace[0];
         final double tagZ = targetPos_BotSpace[2];
-        
-       /*  if (tagZ >=0 && tagZ <= 2.55) {
-            DESIRED_DISTANCE_Z = 3; // hood angle for 2.1 m is 0.00
-            System.out.println("moved 2.1");
-            shooterSubsystem.desiredShooterState = ShooterState.TwoMeters;
-            shooterSubsystem.pivotTo(0.0);
-        }
-        else {
-            shooterSubsystem.desiredShooterState = ShooterState.ThreeMeters;
-            DESIRED_DISTANCE_Z = 3; // hood angle for 3 m is -0.02
-            System.out.println("moved 3");
-            shooterSubsystem.pivotTo(-0.02);
-        }*/
         final double tagYaw = Math.toRadians(targetPos_BotSpace[4]);
         final double CENTER_OFFSET_Z = 0.736;
         final double centerOffsetRotateZ = CENTER_OFFSET_Z * Math.cos(tagYaw);
@@ -138,24 +114,36 @@ public class LimelightAlign extends Command {
         final double velocityX = Math.min(Math.max(offsetDistanceX / 1.5, -2), 2);
         final double velocityZ = Math.min(Math.max(offsetDistanceZ / 1.5, -2), 2);
         translation = new Translation2d(velocityZ, velocityX);
-        //if (translation.getDistance(translationZero))
-        //System.out.println("length:" + Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ));
-
-       // System.out.println("x: " + translation.getX() + ", Y: " + translation.getY());
+        
+        // distance formula
+        System.out.println("length:" + Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ));
+    }
+    
+    private void clearPositioningState(){
+        offsetDistanceX = 0.0;
+        offsetDistanceZ = 0.0;
+        tx = 0.0;
+    }
+    private boolean isPositionedCorrectly(){
+        final boolean isAngleInRange = tx > -1 && tx < 1 ; 
+        final boolean isAtTargetPosition = Math.abs(offsetDistanceX) < 0.1 && Math.abs(offsetDistanceZ) < 0.1;
+        return isAngleInRange && isAtTargetPosition;
     }
 
     @Override
     public boolean isFinished() {
-        // TODO: Use proper check to make this command work in autonomous, currently doesn't account for robot positioning
-        // if (NetworkTables.getTv() && isAngleInRange ==true && isAtTargetPosition==true) {
-           // return true;
-         
+        final boolean tv = LimelightHelpers.getTV("limelight");
+        clearPositioningState();
 
-        return false;
+        if(tv){
+            updatePositioningState();
+            final boolean isAtPosition = isPositionedCorrectly();
+            if(isAtPosition){
+            System.out.println("At position");
+            }
+            return isAtPosition;
+        }
 
+         return false;
     }
-
-    // @Override
-    // public void end(boolean isFinished==true){
-    // SwerveSubsystem.stop();
 }

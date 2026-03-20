@@ -28,6 +28,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 import frc.robot.subsystems.collector.CollectorSubsystem.PivotState;
 
 import static edu.wpi.first.units.Units.Amps;
@@ -41,12 +42,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static double IdealShootSpeed = 0; // rotations per minute
   // public boolean GoodSpeed = UpToSpeed();
-  public double SHOOTERSPEED = -58;// currently runs at 6.2 perfect for 2.5 distance
+  public double SHOOTERSPEED = -53;// currently runs at 6.2 perfect for 2.5 distance
   public double PASSSPEED = -28;// currently runs at 6.2 perfect for 2.5 distance
   public final double PIVOTSPEED = 0.4;
     private static final double SHOOTER_DOWN =  0.0;
     private static final double SHOOTER_UP =  -0.11;//THAT IS MAX TO CHANGE LATER
-    private static final double SHOOTER_PASS = -0.11;
+    private static final double SHOOTER_PASS = -1.257;
 
 
 
@@ -55,9 +56,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public ShooterState desiredShooterState = ShooterState.TwoMeters;
-  public double wantedVelocity = -62; //60
-  private static final double SHOOTING_VELOCITY= -62;
-  private static final double PASSING_VELOCITY= -30;
+  public double wantedVelocity = -56; //60
+  private static final double SHOOTING_VELOCITY= -56;
+  private static final double PASSING_VELOCITY= -45;
 
   private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(wantedVelocity).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
@@ -131,6 +132,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void ShooterWheelsRun() {
    // shooterLeader.setControl(m_velocityVoltage.withVelocity(wantedVelocity));
     shooterLeader.setControl(m_velocityVoltage.withVelocity(SHOOTING_VELOCITY));
+    System.out.println("hood: "+ pivotWheel.getAlternateEncoder().getPosition());
   }
 
   public void shooterWheelsRunPass(){
@@ -173,8 +175,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void pivotTo(double position) {
-    System.out.println("Current Position: " + pivotWheel.getAlternateEncoder().getPosition());
-    System.out.println("Target position: " + position);
+  //  System.out.println("Current Position: " + pivotWheel.getAlternateEncoder().getPosition());
+    //System.out.println("Target position: " + position);
     pivotWheel.getClosedLoopController().setSetpoint(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 

@@ -29,7 +29,7 @@ import frc.robot.commands.collector.movePivotDown;
 import frc.robot.commands.shooter.MovePivot;
 import frc.robot.commands.shooter.PassBalls;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
-
+import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlign;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.agitator.AgitatorSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -93,7 +93,6 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-    NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase, shooter));
     // NamedCommands.registerCommand("startCollecting", StartCollecting());
 
   }
@@ -103,12 +102,12 @@ public class RobotContainer {
     registerAutos();
     
 
-    NamedCommands.registerCommand("Agitate", new Agitate(agitatorSubsystem, Constants.SpeedConstants.AGITATOR_SPEED));
-    NamedCommands.registerCommand("StartCollectingAuto", new StartCollectingAuto(collector));
-    NamedCommands.registerCommand("StopCollectingAuto", new StopCollectingAuto(collector));
-    NamedCommands.registerCommand("Climb", new ClimbAuto(climberSubsystem));
-    NamedCommands.registerCommand("ShootAlign", new LimelightAlign(drivebase, shooter));
-    NamedCommands.registerCommand("movePivotDown", new movePivotDown(collector));
+   // NamedCommands.registerCommand("Agitate", new Agitate(agitatorSubsystem, Constants.SpeedConstants.AGITATOR_SPEED));
+    //NamedCommands.registerCommand("StartCollectingAuto", new StartCollectingAuto(collector));
+    //NamedCommands.registerCommand("StopCollectingAuto", new StopCollectingAuto(collector));
+   // NamedCommands.registerCommand("Climb", new ClimbAuto(climberSubsystem));
+   // NamedCommands.registerCommand("ShootAlign", new LimelightAlign(drivebase, shooter));
+    //NamedCommands.registerCommand("movePivotDown", new movePivotDown(collector));
 
     DriverStation.silenceJoystickConnectionWarning(true);
 
@@ -156,6 +155,15 @@ public class RobotContainer {
 
   private void registerAutos() {
     SmartDashboard.putStringArray("Auto List", Auton.AUTO_NAMES);
+    NamedCommands.registerCommand("StartShooterWheels", Commands.runOnce(shooter::ShooterWheelsRun));
+    NamedCommands.registerCommand("StopShooterWheels", Commands.runOnce(shooter::ShooterWheelsStop));
+    NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase, shooter));
+    NamedCommands.registerCommand("AgitateIfAtSpeedUntilCancelled", Commands.run(agitatorSubsystem::agitateIfShootSpeed));
+    NamedCommands.registerCommand("StopAgitate", Commands.run(agitatorSubsystem::stopAgitating));
+    NamedCommands.registerCommand("PivotDown", Commands.runOnce(collector::setPivotDown));
+    NamedCommands.registerCommand("PivotUp", Commands.runOnce(collector::setPivotUp));
+    NamedCommands.registerCommand("RunClimberDown", Commands.runOnce(climberSubsystem::runClimberDown));
+    NamedCommands.registerCommand("RunClimberUp", Commands.runOnce(climberSubsystem::runClimberUp));
   }
 
   private void bindCompetitionControls() {
@@ -175,6 +183,7 @@ public class RobotContainer {
     driverCommandXbox.rightBumper().whileTrue(Commands.run(agitatorSubsystem:: agitateIfShootSpeed)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
     driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase, shooter));
     // TODO: Bind X to AutoPivot
+    driverCommandXbox.x().whileTrue(new LimelightHoodAlign(drivebase, shooter));
     driverCommandXbox.leftBumper().onTrue(Commands.runOnce(agitatorSubsystem:: reverseAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
     driverCommandXbox.povUp().onTrue(Commands.runOnce(shooter:: pivotUp)).onFalse(Commands.runOnce(shooter::stopPivotizing));
     driverCommandXbox.povDown().onTrue(Commands.runOnce(shooter:: pivotDown)).onFalse(Commands.runOnce(shooter::stopPivotizing));
