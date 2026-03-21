@@ -54,7 +54,7 @@ public final class Constants
   }
 
   public static final class Auton {
-    public static final String DEFAULT_AUTO_NAME = "LeftMoveBack";
+    public static final String DEFAULT_AUTO_NAME = "Do Nothing";
 
     public static final String[] AUTO_NAMES = {
    
@@ -70,8 +70,13 @@ public final class Constants
         "LeftShoot",
         "MiddleShoot",
         "RightShoot",*/
-        "LeftMoveBack",
-        "Middle Shoot"
+        //"LeftMoveBack",
+       // "Middle Shoot",
+       "Do Nothing",
+        "MiddleShootReliable",
+        "TopShootReliable",
+        "BottomShootReliable"
+
 
     };
   }

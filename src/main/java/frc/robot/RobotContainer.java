@@ -130,7 +130,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return drivebase.driveCommand(() -> -0.1, () -> 0, () -> 0);
 
-    var auto = SmartDashboard.getString("Auto Selector", "LeftMoveBack");
+    var auto = SmartDashboard.getString("Auto Selector", "Do Nothing");
     System.out.println("Selected Autonomous: " + ((auto == null) ? "[null, cannot find one]" : auto));
 
     // Verify and autonomous command was able to be found from the Dashboard
@@ -164,6 +164,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("PivotUp", Commands.runOnce(collector::setPivotUp));
     NamedCommands.registerCommand("RunClimberDown", Commands.runOnce(climberSubsystem::runClimberDown));
     NamedCommands.registerCommand("RunClimberUp", Commands.runOnce(climberSubsystem::runClimberUp));
+    NamedCommands.registerCommand("LimelightHoodAlign", new LimelightHoodAlign(drivebase, shooter));
   }
 
   private void bindCompetitionControls() {

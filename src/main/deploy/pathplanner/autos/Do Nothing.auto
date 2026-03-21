@@ -3,7 +3,14 @@
   "command": {
     "type": "sequential",
     "data": {
-      "commands": []
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 15.0
+          }
+        }
+      ]
     }
   },
   "resetOdom": true,
