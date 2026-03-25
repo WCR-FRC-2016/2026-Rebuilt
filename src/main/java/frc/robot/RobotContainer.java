@@ -30,6 +30,7 @@ import frc.robot.commands.shooter.MovePivot;
 import frc.robot.commands.shooter.PassBalls;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlign;
+import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignAuto;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.agitator.AgitatorSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -165,6 +166,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("RunClimberDown", Commands.runOnce(climberSubsystem::runClimberDown));
     NamedCommands.registerCommand("RunClimberUp", Commands.runOnce(climberSubsystem::runClimberUp));
     NamedCommands.registerCommand("LimelightHoodAlign", new LimelightHoodAlign(drivebase, shooter));
+    NamedCommands.registerCommand("Agitate", Commands.runOnce(agitatorSubsystem::startAgitating));
   }
 
   private void bindCompetitionControls() {
@@ -186,7 +188,7 @@ public class RobotContainer {
     driverCommandXbox.povRight().whileTrue(Commands.run(agitatorSubsystem::startAgitating)).onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
     driverCommandXbox.povUp().onTrue(Commands.runOnce(shooter::pivotUp)).onFalse(Commands.runOnce(shooter::stopPivotizing));
     driverCommandXbox.povDown().onTrue(Commands.runOnce(shooter::pivotDown)).onFalse(Commands.runOnce(shooter::stopPivotizing));
-    driverCommandXbox.y().whileTrue(new LimelightHoodAlign(drivebase, shooter));
+    driverCommandXbox.y().whileTrue(new LimelightHoodAlignAuto(drivebase, shooter));
     driverCommandXbox.x().whileTrue(new LimelightAlign(drivebase, shooter));
     driverCommandXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
 

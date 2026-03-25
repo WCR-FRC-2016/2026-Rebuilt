@@ -20,6 +20,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
@@ -39,6 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private static int shooterWheelsLCanId = 0;
   private static int shooterWheelsFCanId = 1;
   private static int pivotWheelCanId = 4;
+  private static double setpointRPS = 50.0; // rotations per second
 
   public static double IdealShootSpeed = 0; // rotations per minute
   // public boolean GoodSpeed = UpToSpeed();
@@ -48,6 +50,9 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final double SHOOTER_DOWN =  0.0;
     private static final double SHOOTER_UP =  -0.11;//THAT IS MAX TO CHANGE LATER
     private static final double SHOOTER_PASS = -1.257;
+    private static final double kS = 0.0;
+    private static final double kV = 0.0;
+    
 
 
 
@@ -69,8 +74,9 @@ public class ShooterSubsystem extends SubsystemBase {
   public final SparkMax pivotWheel = new SparkMax(pivotWheelCanId, MotorType.kBrushed);
 
   private final StatusSignal<AngularVelocity> velocitySignal = shooterLeader.getVelocity();
-   private DoubleSupplier manualControlInput = null;
-      public double currentVelocity = velocitySignal.getValueAsDouble();
+  private DoubleSupplier manualControlInput = null;
+  public double currentVelocity = velocitySignal.getValueAsDouble();
+  private double ff = kS * Math.signum(setpointRPS) + kV * setpointRPS;
 
 
 
@@ -80,6 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if(desiredShooterState != ShooterState.manual){
             return;
      }
+     double measuredRPS = currentVelocity;
    // System.out.println(velocitySignal.getValueAsDouble());
       final SparkClosedLoopController closedLoopController = pivotWheel.getClosedLoopController();
        final double currentSetpoint = closedLoopController.getSetpoint();
@@ -100,7 +107,18 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public ShooterSubsystem() {
 
+    SparkFlexConfig shooterLeaderconfig = new SparkFlexConfig();
 
+// Set PID gains
+  shooterLeaderconfig
+    .closedLoop
+        .pid(0, 0, 0) // slot 0
+        .pid(0, 0, 0, ClosedLoopSlot.kSlot1) // slot 1
+        .feedForward
+            .kS(0) // slot 0 by default S is the voltage value where motor does not move on its own but when you manually move it the motor has no resistance Voltz
+            .kV(0, ClosedLoopSlot.kSlot0) // slot 0 explicitly Velocity Gain in Voltz per RPM
+            
+            .sva(0, 0, 0, ClosedLoopSlot.kSlot1); // slot 1
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
     AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig().countsPerRevolution(280);
     ClosedLoopConfig pivotClosedLoopConfig = new ClosedLoopConfig().pid(0.85, 0.0, 0.0, ClosedLoopSlot.kSlot0)
