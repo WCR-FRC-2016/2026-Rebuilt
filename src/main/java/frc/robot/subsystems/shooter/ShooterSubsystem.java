@@ -83,6 +83,10 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     velocitySignal.refresh();
+
+    currentVelocity = velocitySignal.getValueAsDouble();
+    System.out.println("Shooter Velocity (RPS): " + currentVelocity);
+
     if(desiredShooterState != ShooterState.manual){
             return;
      }
@@ -112,13 +116,13 @@ public class ShooterSubsystem extends SubsystemBase {
 // Set PID gains
   shooterLeaderconfig
     .closedLoop
-        .pid(0, 0, 0) // slot 0
-        .pid(0, 0, 0, ClosedLoopSlot.kSlot1) // slot 1
+      .pid(0.8, 0.0, 0.01) 
+      .pid(0.2, 0.0, 0.01, ClosedLoopSlot.kSlot1) 
         .feedForward
-            .kS(0) // slot 0 by default S is the voltage value where motor does not move on its own but when you manually move it the motor has no resistance Voltz
-            .kV(0, ClosedLoopSlot.kSlot0) // slot 0 explicitly Velocity Gain in Voltz per RPM
-            
-            .sva(0, 0, 0, ClosedLoopSlot.kSlot1); // slot 1
+        .kS(0.05) 
+        .kV(0.0002, ClosedLoopSlot.kSlot0) 
+        .sva(0.2, 0.0002, 0.0, ClosedLoopSlot.kSlot1);  
+
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
     AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig().countsPerRevolution(280);
     ClosedLoopConfig pivotClosedLoopConfig = new ClosedLoopConfig().pid(0.85, 0.0, 0.0, ClosedLoopSlot.kSlot0)
@@ -167,6 +171,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void ShooterWheelsRunBack() {
      shooterLeader.set(0.9);
    }
+
 
   // public void ShooterWheelsRunSlow() {
   //   shooterLeader.set(-0.6);
@@ -258,4 +263,6 @@ public class ShooterSubsystem extends SubsystemBase {
         desiredShooterState = ShooterState.manual;
         updateShooterPivot();
     }
+
+    
 }
