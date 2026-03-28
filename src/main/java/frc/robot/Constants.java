@@ -74,9 +74,7 @@ public final class Constants
         //"LeftMoveBack",
        // "Middle Shoot",
        "Do Nothing",
-        "MiddleShootReliable",
-        "TopShootReliable",
-        "BottomShootReliable"
+       "MoveForwardTest"
 
 
     };
