@@ -67,7 +67,9 @@ public class LimelightAlignCommand extends Command {
         double denominator = 2 * distanceFromHubAprilTag * distanceFromHub;
         double desiredAngleChange = Math.acos(numerator / denominator);
 
-        
+        System.out.println(desiredAngleChange);
+        System.out.println(distanceFromHub);
+
    }
 
 
