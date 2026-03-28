@@ -1,6 +1,7 @@
 package frc.robot.commands.swervedrive.drivebase;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,7 +10,45 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.LimelightHelpers;
 import frc.robot.NetworkTables;
 
+import edu.wpi.first.math.Vector;
+
 public class LimelightAlignCommand extends Command {
+    private final SwerveSubsystem drivebaseSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
+
+    private Vector<N2> position;
+
+    public LimelightAlignCommand(final SwerveSubsystem drivebaseSubsystem, final ShooterSubsystem shooterSubsystem) {
+        this.drivebaseSubsystem = drivebaseSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
+
+        addRequirements(drivebaseSubsystem);
+    }
+
+   @Override
+   public void execute() {
+       updatePositioningState();
+   }
+
+   @Override
+   public boolean isFinished() {
+       return false;
+   }
+
+   private void updatePositioningState () {
+    
+        LimelightHelpers.PoseEstimate position = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (position == null) {
+            System.out.println("faliure");
+            return;
+        }
+        System.out.println("x: " + position.pose.getX() + ", y: " + position.pose.getY() + ", heading: " + position.pose.getRotation().getDegrees());
+
+        
+   }
+
+
+    /*
     private double tx;
     private double offsetDistanceX;
     public double offsetDistanceZ;
@@ -144,5 +183,5 @@ public class LimelightAlignCommand extends Command {
         }
 
          return false;
-    }
+    }*/
 }

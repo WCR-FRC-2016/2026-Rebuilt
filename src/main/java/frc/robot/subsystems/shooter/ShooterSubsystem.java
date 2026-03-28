@@ -89,7 +89,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // Refresh the velocity signal so the current flywheel velocity can be measured. THIS ALWAYS NEEDS TO BE RUN! (it caches the value)
     flywheelVelocitySignal.refresh();
-    System.out.println("Flywheel speed: " + flywheelVelocitySignal.getValueAsDouble());
+   // System.out.println("Flywheel speed: " + flywheelVelocitySignal.getValueAsDouble());
 
     // Manually control the hood pivot (if desired) by incrmenetally changing the setpoint
     if (desiredPivotState != PivotState.manual) {

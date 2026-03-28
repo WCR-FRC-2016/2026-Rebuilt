@@ -1388,6 +1388,10 @@ public class LimelightHelpers {
         return getLimelightNTDoubleArray(limelightName, "botpose_wpiblue");
     }
 
+    public static double[] getBotPose_orb_wpiBlue(String limelightName) {
+        return getLimelightNTDoubleArray(limelightName, "botpose_orb_wpiblue");
+    }
+
     public static double[] getBotPose_TargetSpace(String limelightName) {
         return getLimelightNTDoubleArray(limelightName, "botpose_targetspace");
     }

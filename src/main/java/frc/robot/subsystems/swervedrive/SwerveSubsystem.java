@@ -122,6 +122,8 @@ public class SwerveSubsystem extends SubsystemBase
       addLimelightPoseEstimate();
     }
     swerveDrive.updateOdometry();
+
+    LimelightHelpers.SetRobotOrientation("limelight", getHeading().getDegrees(), 0, 0, 0, 0, 0);
   }
 
   @Override
