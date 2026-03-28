@@ -9,7 +9,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.LimelightHelpers;
 import frc.robot.NetworkTables;
 
-public class LimelightAlign extends Command {
+public class LimelightAlignCommand extends Command {
     private double tx;
     private double offsetDistanceX;
     public double offsetDistanceZ;
@@ -34,7 +34,7 @@ public class LimelightAlign extends Command {
     private SwerveSubsystem driveBase;
     private ShooterSubsystem shooterSubsystem;
 
-    public LimelightAlign(SwerveSubsystem swerve, ShooterSubsystem shooter) {
+    public LimelightAlignCommand(SwerveSubsystem swerve, ShooterSubsystem shooter) {
         driveBase = swerve;
         shooterSubsystem =shooter;
         

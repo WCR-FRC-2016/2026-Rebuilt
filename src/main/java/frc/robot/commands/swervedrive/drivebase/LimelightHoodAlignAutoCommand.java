@@ -1,29 +1,22 @@
 package frc.robot.commands.swervedrive.drivebase;
 
-import javax.sound.sampled.SourceDataLine;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem.PivotState;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.LimelightHelpers;
 import frc.robot.NetworkTables;
 
-public class LimelightHoodAlign extends Command {
+public class LimelightHoodAlignAutoCommand extends Command {
     private record Datapoint(double Distance, double HoodAngle) {}
     private double hoodPivotAngle = 0.0;
     private double tx;
-    private double offsetDistanceX;
     public double offsetDistanceZ;
 
     private final int RED_AIM_APRILTAG = 10;
     private final int BLUE_AIM_APRILTAG = 24;
-
-    private final double DESIRED_DISTANCE_X = 0.0;
-    private double DESIRED_DISTANCE_Z = 2.5;// 60?
 
     private static final Datapoint[] data = {
             // sorted by distance increasing order (distance of 1 would go here)
@@ -42,16 +35,14 @@ public class LimelightHoodAlign extends Command {
     // 6.3 ?
 
     private Translation2d translationZero;
-    private Translation2d translation;
-
     private SwerveSubsystem driveBase;
     private ShooterSubsystem shooterSubsystem;
 
-    public LimelightHoodAlign(SwerveSubsystem swerve, ShooterSubsystem shooter) {
+    public LimelightHoodAlignAutoCommand(SwerveSubsystem swerve, ShooterSubsystem shooter) {
         driveBase = swerve;
         shooterSubsystem = shooter;
 
-        translation = new Translation2d();
+        new Translation2d();
         translationZero = new Translation2d();
        // addRequirements(driveBase,shooterSubsystem);
 
@@ -76,38 +67,45 @@ public class LimelightHoodAlign extends Command {
         final boolean tv = LimelightHelpers.getTV("limelight");
         if(tv){
             updatePositioningState();
-            System.out.println("Hood angle: " + hoodPivotAngle);
-            shooterSubsystem.pivotToPosition(hoodPivotAngle);
-        }
-        /*if (tv) {
-            updatePositioningState();
-            System.out.println("distance");
-            // Check to see if the robot is positioned and rotated proprerly
+             // Check to see if the robot is positioned and rotated proprerly
             final boolean isAtPosition = isPositionedCorrectly();
             if (!isAtPosition) {
                 // sets speed, amount of rotation, & rotation direction for the robot:
                 double rotateAlign = (tx / 41.0) * -100;
-                // driveBase.drive(translation, Math.toRadians(rotateAlign), false);
+                driveBase.drive(translationZero, Math.toRadians(rotateAlign), false);
             } else {
                 // locks robot in place if limelight is within range (failsafe):
-                // driveBase.drive(translationZero, 0, true);
+                driveBase.drive(translationZero, 0, true);
                 System.out.println("finished");
             }
+            System.out.println("Hood angle: " + hoodPivotAngle);
+            shooterSubsystem.pivotToPosition(hoodPivotAngle);
         }
-        // rotates the robot until limelight gets a target:
-        else {
-            driveBase.drive(translationZero, Math.toRadians(30), true);
-        } */
      }
 
     @Override
     public void end(boolean isInterrupted) {
         LimelightHelpers.SetFiducialIDFiltersOverride("limelight", new int[0]);
         LimelightHelpers.setPriorityTagID("limelight", -1);
-    //    System.out.println("Alignment Ended");
     }
-    // Target Distance For Shoot : 2.5 m
 
+    @Override
+    public boolean isFinished() {
+        final boolean tv = LimelightHelpers.getTV("limelight");
+        clearPositioningState();
+
+        if (tv) {
+            updatePositioningState();
+            final boolean isAtPosition = isPositionedCorrectly();
+            if (isAtPosition) {
+                System.out.println("At position");
+            }
+            return isAtPosition;
+        }
+        return false;
+    }
+
+    // Target Distance For Shoot : 2.5 m
     private void updatePositioningState() {
         double[] targetPos_BotSpace = NetworkTables.getTargetPos_BotSpace();
         if (targetPos_BotSpace == null || targetPos_BotSpace.length != 6) {
@@ -157,31 +155,12 @@ public class LimelightHoodAlign extends Command {
 
     private void clearPositioningState() {
         hoodPivotAngle = 0.0;
-        offsetDistanceX = 0.0;
         offsetDistanceZ = 0.0;
         tx = 0.0;
     }
 
     private boolean isPositionedCorrectly() {
         final boolean isAngleInRange = tx > -1 && tx < 1;
-        final boolean isAtTargetPosition = Math.abs(offsetDistanceX) < 0.1 && Math.abs(offsetDistanceZ) < 0.1;
-        return isAngleInRange && isAtTargetPosition;
-    }
-
-    @Override
-    public boolean isFinished() {
-     /*    final boolean tv = LimelightHelpers.getTV("limelight");
-        clearPositioningState();
-
-        if (tv) {
-            updatePositioningState();
-            final boolean isAtPosition = isPositionedCorrectly();
-            if (isAtPosition) {
-                System.out.println("At position");
-            }
-            return isAtPosition;
-        }
-*/
-        return false;
+        return isAngleInRange;
     }
 }

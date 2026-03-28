@@ -19,7 +19,7 @@ import swervelib.math.SwerveMath;
 /**
  * An example command that uses an example subsystem.
  */
-public class AbsoluteFieldDrive extends Command
+public class AbsoluteFieldDriveCommand extends Command
 {
 
   private final SwerveSubsystem swerve;
@@ -39,7 +39,7 @@ public class AbsoluteFieldDrive extends Command
    *                station glass.
    * @param heading DoubleSupplier that supplies the robot's heading angle.
    */
-  public AbsoluteFieldDrive(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY,
+  public AbsoluteFieldDriveCommand(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY,
                             DoubleSupplier heading)
   {
     this.swerve = swerve;

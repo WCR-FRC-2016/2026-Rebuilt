@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Auton;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.shooter.PassBallsCommand;
-import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
-import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlign;
-import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignAuto;
+import frc.robot.commands.swervedrive.drivebase.LimelightAlignCommand;
+import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignCommand;
+import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignAutoCommand;
 import frc.robot.subsystems.agitator.AgitatorSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.collector.CollectorSubsystem;
@@ -102,14 +102,14 @@ public class RobotContainer {
     SmartDashboard.putStringArray("Auto List", Auton.AUTO_NAMES);
     NamedCommands.registerCommand("StartShooterWheels", Commands.runOnce(shooterSubsystem::setShooterWheelsShoot));
     NamedCommands.registerCommand("StopShooterWheels", Commands.runOnce(shooterSubsystem::stopShooterWheels));
-    NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebaseSubsystem, shooterSubsystem));
+    NamedCommands.registerCommand("LimelightAlign", new LimelightAlignCommand(drivebaseSubsystem, shooterSubsystem));
     NamedCommands.registerCommand("AgitateIfAtSpeedUntilCancelled", Commands.run(agitatorSubsystem::agitateIfShootSpeed));
     NamedCommands.registerCommand("StopAgitate", Commands.run(agitatorSubsystem::stopAgitating));
     NamedCommands.registerCommand("PivotDown", Commands.runOnce(collectorSubsystem::setPivotDown));
     NamedCommands.registerCommand("PivotUp", Commands.runOnce(collectorSubsystem::setPivotUp));
     NamedCommands.registerCommand("RunClimberDown", Commands.runOnce(climberSubsystem::runClimberDown));
     NamedCommands.registerCommand("RunClimberUp", Commands.runOnce(climberSubsystem::runClimberUp));
-    NamedCommands.registerCommand("LimelightHoodAlign", new LimelightHoodAlign(drivebaseSubsystem, shooterSubsystem));
+    NamedCommands.registerCommand("LimelightHoodAlign", new LimelightHoodAlignCommand(drivebaseSubsystem, shooterSubsystem));
     NamedCommands.registerCommand("Agitate", Commands.runOnce(agitatorSubsystem::startAgitating));
   }
 
@@ -149,9 +149,9 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(shooterSubsystem::pivotDownManually))
         .onFalse(Commands.runOnce(shooterSubsystem::stopPivotingManually));
     driverCommandXbox.y()
-        .whileTrue(new LimelightHoodAlignAuto(drivebaseSubsystem, shooterSubsystem));
+        .whileTrue(new LimelightHoodAlignAutoCommand(drivebaseSubsystem, shooterSubsystem));
     driverCommandXbox.x()
-        .whileTrue(new LimelightAlign(drivebaseSubsystem, shooterSubsystem));
+        .whileTrue(new LimelightAlignCommand(drivebaseSubsystem, shooterSubsystem));
     driverCommandXbox.start()
         .onTrue(Commands.runOnce(drivebaseSubsystem::zeroGyro));
 
@@ -181,5 +181,8 @@ public class RobotContainer {
         .whileTrue(Commands.run(collectorSubsystem::setPivotManually));
 
   }
+
+
+
 
 }

@@ -46,7 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private static final double FLYWHEEL_D = 0.0f; // TODO: Might get changes to prevent overshooting, tune after V
 
   private static final double FLYWHEEL_S = 0.0; // TODO: This is for overcoming static friction, may not be needed tbh
-  private static final double FLYWHEEL_V = 0.0; // TODO: From quick research makes me believe this is the feedforward value we care about
+  private static final double FLYWHEEL_V = 1.5; // TODO: From quick research makes me believe this is the feedforward value we care about
 
   // Shooter pivot constants
   public static final double PIVOT_INCREMENT_MANUAL = 0.4;
@@ -89,6 +89,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // Refresh the velocity signal so the current flywheel velocity can be measured. THIS ALWAYS NEEDS TO BE RUN! (it caches the value)
     flywheelVelocitySignal.refresh();
+    System.out.println("Flywheel speed: " + flywheelVelocitySignal.getValueAsDouble());
 
     // Manually control the hood pivot (if desired) by incrmenetally changing the setpoint
     if (desiredPivotState != PivotState.manual) {
@@ -104,16 +105,6 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public ShooterSubsystem() {
-    // TODO: Properly configure feedforward through TalonFX API
-    // SparkFlexConfig shooterLeaderconfig = new SparkFlexConfig();
-    // // Set PID gains
-    // shooterLeaderconfig.closedLoop
-    //     .pid(0.8, 0.0, 0.01)
-    //     .pid(0.2, 0.0, 0.01, ClosedLoopSlot.kSlot1).feedForward
-    //     .kS(0.05)
-    //     .kV(0.0002, ClosedLoopSlot.kSlot0)
-    //     .sva(0.2, 0.0002, 0.0, ClosedLoopSlot.kSlot1);
-
     SparkMaxConfig pivotConfig = (SparkMaxConfig) new SparkMaxConfig()
         .smartCurrentLimit(40)
         .idleMode(IdleMode.kBrake);
@@ -170,7 +161,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void stopShooterWheels() {
     flywheelLeader.setControl(brakeControl);
-    currentMinimumFlywheelVelocity = 0.0;
+    // TODO: Find a better way to do this, maybe a stack?
+    currentMinimumFlywheelVelocity = MINIMUM_SHOOTING_VELOCITY;
   }
 
   // TODO: Potentially put this as an enum and use just one pivot method (for named pivot spots)?
@@ -202,6 +194,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // NOTE: This assumes all angles are negative (hence the <=), this might need to change in the future
   public boolean isFlywheelUpToSpeed() {
+    System.out.println("Minimum Velocity: " + currentMinimumFlywheelVelocity);
     return flywheelVelocitySignal.getValueAsDouble() <= currentMinimumFlywheelVelocity;
   }
 

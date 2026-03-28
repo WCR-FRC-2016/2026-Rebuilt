@@ -19,7 +19,7 @@ import swervelib.math.SwerveMath;
 /**
  * An example command that uses an example subsystem.
  */
-public class AbsoluteDrive extends Command
+public class AbsoluteDriveCommand extends Command
 {
 
   private final SwerveSubsystem swerve;
@@ -47,7 +47,7 @@ public class AbsoluteDrive extends Command
    *                          robot coordinate system, this is along the same axis as vX.  Should range from -1 to 1
    *                          with no deadband. Positive is away from the alliance wall.
    */
-  public AbsoluteDrive(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier headingHorizontal,
+  public AbsoluteDriveCommand(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier headingHorizontal,
                        DoubleSupplier headingVertical)
   {
     this.swerve = swerve;
