@@ -44,6 +44,29 @@ public class LimelightAlignCommand extends Command {
         }
         System.out.println("x: " + position.pose.getX() + ", y: " + position.pose.getY() + ", heading: " + position.pose.getRotation().getDegrees());
 
+        double botPoseX = position.pose.getX();
+        double botPoseY = position.pose.getY();
+        double botPoseHeading = position.pose.getRotation().getDegrees();
+        double distanceFromHub = 0;
+        double distanceFromHubAprilTag = 0;
+        
+        
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            distanceFromHub = Math.sqrt(Math.pow(botPoseX-9.83, 2) + Math.pow(botPoseY-4.02, 2));
+            distanceFromHubAprilTag = Math.sqrt(Math.pow(botPoseX-9.83+0.55, 2) + Math.pow(botPoseY-4.02, 2));
+        }
+        else if (DriverStation.getAlliance().get() == Alliance.Blue){
+            distanceFromHub = Math.sqrt(Math.pow(botPoseX-4.52, 2) + Math.pow(botPoseY-4.02, 2));
+            distanceFromHubAprilTag = Math.sqrt(Math.pow(botPoseX-4.52-0.55, 2) + Math.pow(botPoseY-4.02, 2));
+        }
+        else {
+            System.out.println("NO ALLIENCE DETECTED !!!!!!");
+        }
+
+        double numerator = Math.pow(distanceFromHubAprilTag, 2) + Math.pow(distanceFromHub, 2) - Math.pow(0.55, 2);
+        double denominator = 2 * distanceFromHubAprilTag * distanceFromHub;
+        double desiredAngleChange = Math.acos(numerator / denominator);
+
         
    }
 
