@@ -4,13 +4,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.NetworkTables;
 
-public class calculateAndMovePivot extends Command {
+// TODO: Review this class (and potentially remove it)
+public class CalculateAndMoveShooterPivotCommand extends Command {
     private ShooterSubsystem shooterSubsystem;
 
     double tz;
     double pivotAngle;
 
-    public calculateAndMovePivot(ShooterSubsystem shooter) {
+    public CalculateAndMoveShooterPivotCommand(ShooterSubsystem shooter) {
         this.shooterSubsystem = shooter;
         addRequirements(shooterSubsystem);
     }

@@ -3,11 +3,12 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-public class MovePivot extends Command {
+// TODO: Review this class (and potentially remove it)
+public class MoveShooterPivotCommand extends Command {
     private ShooterSubsystem shooterSubsystem;
     double position;
 
-    public MovePivot(ShooterSubsystem shooter, double position) {
+    public MoveShooterPivotCommand(ShooterSubsystem shooter, double position) {
         this.shooterSubsystem = shooter;
         this.position = position;
         addRequirements(shooterSubsystem);

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Auton;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.shooter.PassBalls;
+import frc.robot.commands.shooter.PassBallsCommand;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlign;
 import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignAuto;
@@ -132,7 +132,7 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsShoot))
         .onFalse(Commands.runOnce(shooterSubsystem::stopShooterWheels));
     driverCommandXbox.leftBumper()
-        .whileTrue(new PassBalls(shooterSubsystem, agitatorSubsystem));
+        .whileTrue(new PassBallsCommand(shooterSubsystem, agitatorSubsystem));
     driverCommandXbox.rightBumper()
         .whileTrue(Commands.run(agitatorSubsystem::agitateIfShootSpeed))
         .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));

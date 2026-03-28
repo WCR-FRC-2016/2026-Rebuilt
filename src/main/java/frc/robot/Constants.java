@@ -53,6 +53,7 @@ public final class Constants
     public static final double AGITATOR_SPEED = 0.90;
   }
 
+  // TODO: Recursively read the autonomous deploy directly and get the commands instead of hardcoding them here
   public static final class Auton {
     public static final String DEFAULT_AUTO_NAME = "Do Nothing";
 
