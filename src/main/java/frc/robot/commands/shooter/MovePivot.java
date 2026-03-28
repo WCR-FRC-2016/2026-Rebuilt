@@ -22,13 +22,13 @@ public class MovePivot extends Command {
 
     @Override
     public void execute() {
-        shooterSubsystem.pivotTo(position);
+        shooterSubsystem.pivotToPosition(position);
        // System.out.println("Uh oh stinky");
     }   
 
     @Override
     public void end(boolean interrupted) {
-        shooterSubsystem.pivotTo(0);
+        shooterSubsystem.pivotToPosition(0);
     }
 
 }

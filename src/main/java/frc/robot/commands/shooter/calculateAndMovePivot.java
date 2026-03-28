@@ -36,12 +36,12 @@ public class calculateAndMovePivot extends Command {
         pivotAngle = tz + 1; // your formula here
 
         //shooterSubsystem.pivotTo(pivotAngle);
-        shooterSubsystem.pivotTo(0);
+        shooterSubsystem.pivotToPosition(0);
     }
 
     @Override
     public void end(boolean interrupted) {
-        shooterSubsystem.pivotTo(0);
+        shooterSubsystem.pivotToPosition(0);
     }
 
     @Override

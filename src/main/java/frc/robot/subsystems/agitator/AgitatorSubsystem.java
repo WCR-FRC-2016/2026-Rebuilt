@@ -35,7 +35,7 @@ public class AgitatorSubsystem extends SubsystemBase {
         agitatorTread.set(AGITATESPEED);
     }
     public void agitateIfShootSpeed(){
-       if(shooterSubsystem.isUpToSpeed()){
+       if(shooterSubsystem.isFlywheelUpToSpeed()){
         startAgitating();
        }
        else{
@@ -44,7 +44,7 @@ public class AgitatorSubsystem extends SubsystemBase {
     }
 
      public void agitateIfPassSpeed(){
-       if(shooterSubsystem.isUpToPassSpeed()){
+       if(shooterSubsystem.isFlywheelUpToSpeed()){
         startAgitating();
        }
        else{

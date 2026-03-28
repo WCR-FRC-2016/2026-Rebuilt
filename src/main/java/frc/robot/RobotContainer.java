@@ -93,10 +93,15 @@ public class RobotContainer {
     return drivebaseSubsystem.getAutonomousCommand(Auton.DEFAULT_AUTO_NAME);
   }
 
+  public void setMotorBrake(boolean isBraked){
+    drivebaseSubsystem.setMotorBrake(isBraked);
+  }
+
   private void registerAutos() {
+    // TODO: Review command names
     SmartDashboard.putStringArray("Auto List", Auton.AUTO_NAMES);
-    NamedCommands.registerCommand("StartShooterWheels", Commands.runOnce(shooterSubsystem::ShooterWheelsRun));
-    NamedCommands.registerCommand("StopShooterWheels", Commands.runOnce(shooterSubsystem::ShooterWheelsStop));
+    NamedCommands.registerCommand("StartShooterWheels", Commands.runOnce(shooterSubsystem::setShooterWheelsShoot));
+    NamedCommands.registerCommand("StopShooterWheels", Commands.runOnce(shooterSubsystem::stopShooterWheels));
     NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebaseSubsystem, shooterSubsystem));
     NamedCommands.registerCommand("AgitateIfAtSpeedUntilCancelled", Commands.run(agitatorSubsystem::agitateIfShootSpeed));
     NamedCommands.registerCommand("StopAgitate", Commands.run(agitatorSubsystem::stopAgitating));
@@ -121,11 +126,11 @@ public class RobotContainer {
     drivebaseSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
     driverCommandXbox.leftTrigger(0.2)
-        .onTrue(Commands.runOnce(shooterSubsystem::ShooterWheelsRunBack))
-        .onFalse(Commands.runOnce(shooterSubsystem::ShooterWheelsStop));
+        .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsReverse))
+        .onFalse(Commands.runOnce(shooterSubsystem::stopShooterWheels));
     driverCommandXbox.rightTrigger(0.2)
-        .onTrue(Commands.runOnce(shooterSubsystem::ShooterWheelsRun))
-        .onFalse(Commands.runOnce(shooterSubsystem::ShooterWheelsStop));
+        .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsShoot))
+        .onFalse(Commands.runOnce(shooterSubsystem::stopShooterWheels));
     driverCommandXbox.leftBumper()
         .whileTrue(new PassBalls(shooterSubsystem, agitatorSubsystem));
     driverCommandXbox.rightBumper()
@@ -138,11 +143,11 @@ public class RobotContainer {
         .whileTrue(Commands.run(agitatorSubsystem::startAgitating))
         .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
     driverCommandXbox.povUp()
-        .onTrue(Commands.runOnce(shooterSubsystem::pivotUp))
-        .onFalse(Commands.runOnce(shooterSubsystem::stopPivotizing));
+        .onTrue(Commands.runOnce(shooterSubsystem::pivotUpManually))
+        .onFalse(Commands.runOnce(shooterSubsystem::stopPivotingManually));
     driverCommandXbox.povDown()
-        .onTrue(Commands.runOnce(shooterSubsystem::pivotDown))
-        .onFalse(Commands.runOnce(shooterSubsystem::stopPivotizing));
+        .onTrue(Commands.runOnce(shooterSubsystem::pivotDownManually))
+        .onFalse(Commands.runOnce(shooterSubsystem::stopPivotingManually));
     driverCommandXbox.y()
         .whileTrue(new LimelightHoodAlignAuto(drivebaseSubsystem, shooterSubsystem));
     driverCommandXbox.x()
@@ -151,8 +156,8 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(drivebaseSubsystem::zeroGyro));
 
     manipulatorCommandXbox.x()
-        .whileTrue(Commands.run(shooterSubsystem::ShooterWheelsRunBack))
-        .onFalse(Commands.runOnce(shooterSubsystem::ShooterWheelsStop));
+        .whileTrue(Commands.run(shooterSubsystem::setShooterWheelsReverse))
+        .onFalse(Commands.runOnce(shooterSubsystem::stopShooterWheels));
     manipulatorCommandXbox.y()
         .whileTrue(Commands.run(agitatorSubsystem::reverseAgitating, agitatorSubsystem))
         .onFalse(Commands.run(agitatorSubsystem::stopAgitating, agitatorSubsystem));

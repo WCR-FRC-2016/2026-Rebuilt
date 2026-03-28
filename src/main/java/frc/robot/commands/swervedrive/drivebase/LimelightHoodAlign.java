@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem.ShooterState;
+import frc.robot.subsystems.shooter.ShooterSubsystem.PivotState;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.LimelightHelpers;
 import frc.robot.NetworkTables;
@@ -77,7 +77,7 @@ public class LimelightHoodAlign extends Command {
         if(tv){
             updatePositioningState();
             System.out.println("Hood angle: " + hoodPivotAngle);
-            shooterSubsystem.pivotTo(hoodPivotAngle);
+            shooterSubsystem.pivotToPosition(hoodPivotAngle);
         }
         /*if (tv) {
             updatePositioningState();
