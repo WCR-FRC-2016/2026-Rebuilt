@@ -684,6 +684,10 @@ public class SwerveSubsystem extends SubsystemBase
   {
     return swerveDrive;
   }
+
+  public void resetGyro(){
+     resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+  }
   
   private void addLimelightPoseEstimate()
   {

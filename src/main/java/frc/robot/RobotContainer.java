@@ -120,7 +120,7 @@ public class RobotContainer {
         final Command driveFieldOrientedAngularVelocity = drivebaseSubsystem.driveFieldOriented(driveAngularVelocity);
         drivebaseSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
-        driverCommandXbox.start().onTrue(Commands.runOnce(drivebaseSubsystem::zeroGyro));
+        driverCommandXbox.start().onTrue(Commands.runOnce(drivebaseSubsystem::resetGyro));
 
         driverCommandXbox.leftTrigger(0.2)
                 .onTrue(Commands.runOnce(climberSubsystem::runClimberDown))
