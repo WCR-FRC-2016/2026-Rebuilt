@@ -194,12 +194,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // NOTE: This assumes all angles are negative (hence the <=), this might need to change in the future
   public boolean isFlywheelUpToSpeed() {
-    System.out.println("Minimum Velocity: " + currentMinimumFlywheelVelocity);
+    //System.out.println("Minimum Velocity: " + currentMinimumFlywheelVelocity);
     return flywheelVelocitySignal.getValueAsDouble() <= currentMinimumFlywheelVelocity;
   }
 
   public void printPivotAngle() {
-    System.out.println("Current Pivot Angle: " + pivot.getAlternateEncoder().getPosition());
+   // System.out.println("Current Pivot Angle: " + pivot.getAlternateEncoder().getPosition());
   }
 
   // TODO: Consider making this private?

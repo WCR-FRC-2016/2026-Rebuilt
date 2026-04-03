@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Auton;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.climber.ClimbAutoCommand;
 import frc.robot.commands.shooter.PassBallsCommand;
+import frc.robot.commands.shooter.ShootCommand;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlignCommand;
 import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignCommand;
 import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignAutoCommand;
@@ -98,7 +100,6 @@ public class RobotContainer {
     }
 
     private void registerAutos() {
-        // TODO: Review command names
         SmartDashboard.putStringArray("Auto List", Auton.AUTO_NAMES);
         NamedCommands.registerCommand("StartShooterWheels", Commands.runOnce(shooterSubsystem::setShooterWheelsShoot));
         NamedCommands.registerCommand("StopShooterWheels", Commands.runOnce(shooterSubsystem::stopShooterWheels));
@@ -114,6 +115,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("LimelightHoodAlign",
                 new LimelightHoodAlignCommand(drivebaseSubsystem, shooterSubsystem));
         NamedCommands.registerCommand("Agitate", Commands.runOnce(agitatorSubsystem::startAgitating));
+        NamedCommands.registerCommand("ClimbAuto", new ClimbAutoCommand(climberSubsystem));
+        NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem, agitatorSubsystem));
+
     }
 
     private void bindDriverCompetitionControls() {

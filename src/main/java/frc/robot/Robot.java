@@ -144,6 +144,8 @@ public class Robot extends TimedRobot
     {
       CommandScheduler.getInstance().cancelAll();
     }
+
+    LimelightHelpers.SetIMUMode("limelight", 3);
   }
 
   /**

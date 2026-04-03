@@ -39,7 +39,7 @@ public class LimelightHoodAlignAutoCommand extends Command {
     private ShooterSubsystem shooterSubsystem;
 
     public LimelightHoodAlignAutoCommand(SwerveSubsystem swerve, ShooterSubsystem shooter) {
-        driveBase = swerve;
+        driveBase = swerve; 
         shooterSubsystem = shooter;
 
         new Translation2d();
@@ -125,7 +125,7 @@ public class LimelightHoodAlignAutoCommand extends Command {
         
         final double distanceToTarget =  Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
         hoodPivotAngle = calculateHoodAngleLinear(distanceToTarget);
-        System.out.println("distance: " + distanceToTarget);
+        //System.out.println("distance: " + distanceToTarget);
         // distance formula
         //System.out.println("length:" + Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ));
     }

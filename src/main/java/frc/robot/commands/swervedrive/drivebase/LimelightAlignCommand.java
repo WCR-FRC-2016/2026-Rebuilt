@@ -13,21 +13,39 @@ import edu.wpi.first.math.Vector;
 
 public class LimelightAlignCommand extends Command {
 
-    private final SwerveSubsystem drivebaseSubsystem;
     private final ShooterSubsystem shooterSubsystem;
+    private final SwerveSubsystem swerveSubsystem;
     private Vector<N2> position;
+    Translation2d translationZero;
+    double offsetRotation;
 
-    public LimelightAlignCommand(final SwerveSubsystem drivebaseSubsystem, final ShooterSubsystem shooterSubsystem) {
-        this.drivebaseSubsystem = drivebaseSubsystem;
+
+    public LimelightAlignCommand(final SwerveSubsystem swerveSubsystem, final ShooterSubsystem shooterSubsystem) {
+        this.swerveSubsystem = swerveSubsystem;
         this.shooterSubsystem = shooterSubsystem;
 
-        addRequirements(drivebaseSubsystem);
+        translationZero = new Translation2d();
+        addRequirements(swerveSubsystem);
     }
 
     @Override
     public void execute() {
         updatePositioningState();
-    }
+        final boolean tv = LimelightHelpers.getTV("limelight");
+        if(tv){
+             //Check to see if the robot is positioned and rotated proprerly
+            final boolean isAtPosition = isPositionedCorrectly();
+           if (!isAtPosition) {
+               // sets speed, amount of rotation, & rotation direction for the robot:
+                swerveSubsystem.drive(translationZero, Math.toRadians(offsetRotation*2), false);
+            } else {
+               // locks robot in place if limelight is within range (failsafe):
+               swerveSubsystem.drive(translationZero, 0, true);
+               System.out.println("finished");
+            }
+        }
+        }
+    
 
     @Override
     public boolean isFinished() {
@@ -35,7 +53,6 @@ public class LimelightAlignCommand extends Command {
     }
 
     private void updatePositioningState() {
-
         LimelightHelpers.PoseEstimate position = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
         if (position == null) {
             System.out.println("faliure");
@@ -50,28 +67,25 @@ public class LimelightAlignCommand extends Command {
         double botPoseHeading = position.pose.getRotation().getDegrees();
         double distanceFromHub = 0;
         double distanceFromHubAprilTag = 0;
+        double aprilTagDistanceToHubCenter = 0;
 
-        var allience = Alliance.Blue;
-
-        if (allience == Alliance.Red) {
-            distanceFromHub = Math.sqrt(Math.pow(botPoseX - 9.83, 2) + Math.pow(botPoseY - 4.02, 2));
-            distanceFromHubAprilTag = Math.sqrt(Math.pow(botPoseX - 9.83 + 0.55, 2) + Math.pow(botPoseY - 4.02, 2));
-        } else if (allience == Alliance.Blue) {
-            distanceFromHub = Math.sqrt(Math.pow(botPoseX - 4.52, 2) + Math.pow(botPoseY - 4.02, 2));
-            distanceFromHubAprilTag = Math.sqrt(Math.pow(botPoseX - 4.52 - 0.55, 2) + Math.pow(botPoseY - 4.02, 2));
-        } else {
-            System.out.println("NO ALLIENCE DETECTED !!!!!!");
-        }
+        Alliance allience = Alliance.Red;
 
         double targetX = 0;
         double targetY = 4.02;
 
         if (allience == Alliance.Red) {
-            targetX = 9.83;
+            targetX = 11.9;
+            aprilTagDistanceToHubCenter = -0.55;
         } else if (allience == Alliance.Blue) {
-            targetX = 4.52;
+            targetX = 4.612;
+            aprilTagDistanceToHubCenter = -0.55;
         }
-
+        
+        double centerDistanceX = aprilTagDistanceToHubCenter + targetX;
+        distanceFromHub = Math.sqrt(Math.pow(botPoseX - targetX, 2) + Math.pow(botPoseY - targetY, 2));
+        distanceFromHubAprilTag = Math.sqrt(Math.pow(botPoseX - targetX + aprilTagDistanceToHubCenter, 2) + Math.pow(botPoseY - 4.02, 2));
+        
         double dx = targetX - botPoseX;
         double dy = targetY - botPoseY;
 
@@ -79,15 +93,26 @@ public class LimelightAlignCommand extends Command {
         double currentHeadingRad = Math.toRadians(botPoseHeading);
 
         double desiredAngleChange = targetAngle - currentHeadingRad;
-        desiredAngleChange = Math.atan2(Math.sin(desiredAngleChange), Math.cos(desiredAngleChange));
+        // desired angle change needs to be more
+        
+        double desiredAngleChangeDegrees = Math.toDegrees(desiredAngleChange);
+        offsetRotation = desiredAngleChangeDegrees;
 
-        System.out.println("desiredAngleChange : " + desiredAngleChange);
-        System.out.println("desiredAngleChange : " + desiredAngleChange);
-        System.out.println("distanceFromHub : " + distanceFromHub);
-        System.out.println("botPoseX: " + botPoseX);
-        System.out.println("botPoseY: " + botPoseY);
+        // desiredAngleChange = Math.atan2(Math.sin(desiredAngleChange), Math.cos(desiredAngleChange));
+
+        //System.out.println("heading : " + botPoseHeading);
+        System.out.println("desiredAngleChange : " + desiredAngleChangeDegrees);
+        //System.out.println("distanceFromHub : " + distanceFromHub);
+        //System.out.println("botPoseX: " + botPoseX);
+        //System.out.println("botPoseY: " + botPoseY);
     }
-}
+    
+    private boolean isPositionedCorrectly() {
+        final boolean isAngleInRange = offsetRotation > -2 && offsetRotation < 2;
+        return isAngleInRange;
+    }
+}   
+
 
     /*
      * private double tx;
@@ -234,3 +259,4 @@ public class LimelightAlignCommand extends Command {
      * return false;
      * }
      */
+

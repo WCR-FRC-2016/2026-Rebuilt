@@ -74,7 +74,9 @@ public final class Constants
         //"LeftMoveBack",
        // "Middle Shoot",
        "Do Nothing",
-       "MoveForwardTest"
+       "MoveForwardTest",
+       "TopClimbAuto",
+       "TopShootClimbAuto"
 
 
     };
