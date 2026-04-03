@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top-Shoot"
+            "pathName": "Middle-Collect"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle-Collect-Shoot"
           }
         },
         {

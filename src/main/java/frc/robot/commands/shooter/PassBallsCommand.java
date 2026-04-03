@@ -2,6 +2,7 @@ package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.agitator.AgitatorSubsystem;
+import frc.robot.subsystems.collector.CollectorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class PassBallsCommand extends Command {
@@ -13,6 +14,10 @@ public class PassBallsCommand extends Command {
         this.agitatorSubsystem = agitatorSubsystem;
         
         addRequirements(shooterSubsystem);
+    }
+
+    public PassBallsCommand(CollectorSubsystem collectorSubsystem) {
+        //TODO Auto-generated constructor stub
     }
 
     @Override

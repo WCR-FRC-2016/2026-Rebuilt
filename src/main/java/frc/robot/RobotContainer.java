@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Auton;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.climber.ClimbAutoCommand;
+import frc.robot.commands.collector.StartCollectAutoCommand;
 import frc.robot.commands.shooter.PassBallsCommand;
 import frc.robot.commands.shooter.ShootCommand;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlignCommand;
@@ -117,6 +118,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("Agitate", Commands.runOnce(agitatorSubsystem::startAgitating));
         NamedCommands.registerCommand("ClimbAuto", new ClimbAutoCommand(climberSubsystem));
         NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem, agitatorSubsystem));
+        NamedCommands.registerCommand("StartCollectAutoCommand", new StartCollectAutoCommand(collectorSubsystem));
+        NamedCommands.registerCommand("StopCollectAutoCommand", new StartCollectAutoCommand(collectorSubsystem));
+        NamedCommands.registerCommand("PassBallsCommand", new PassBallsCommand(shooterSubsystem, agitatorSubsystem));
+
+
 
     }
 
