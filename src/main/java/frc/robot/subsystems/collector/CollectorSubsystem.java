@@ -20,6 +20,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -40,7 +41,9 @@ public class CollectorSubsystem extends SubsystemBase {
     private static final double COLLECT_POWER = -0.9;
     private static final double PIVOT_DOWN =  -2.282;
     private static final double PIVOT_UP =  0.0;
-    private static final double PIVOT_SHOOT =  -1.214;
+    private static final double BOUNCE_MAX =  0.0;
+    private static final double BOUNCE_MIN =  -2.282;
+    
     
 
     private final SparkMax collectorWheelsL;
@@ -53,6 +56,7 @@ public class CollectorSubsystem extends SubsystemBase {
 
     private DoubleSupplier manualControlInput = null;
 
+    Timer timer = new Timer();
     public CollectorSubsystem(DoubleSupplier manualControlInput) {
         
         collectorWheelsL = new SparkMax(COLLECTOR_WHEELS_L_CAN_ID, MotorType.kBrushed);
@@ -101,11 +105,19 @@ public class CollectorSubsystem extends SubsystemBase {
 
         collectorPivotL.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
+   
 
    @Override
 public void periodic() {
+    timer.start();
+    if(desiredPivotState == PivotState.bounce){
+       double sinOfTime = Math.sin(timer.get() / 1000);
+       double normalizedSinOfTime = (sinOfTime + 1) / 2;
+       double bounceValue = BOUNCE_MIN + (BOUNCE_MAX - BOUNCE_MIN) * normalizedSinOfTime;
+         collectorPivotL.getClosedLoopController().setSetpoint(bounceValue, ControlType.kPosition,
+                ClosedLoopSlot.kSlot0);
+    }
     final SparkClosedLoopController closedLoopController = collectorPivotL.getClosedLoopController();
-
     if (desiredPivotState == PivotState.manual) {
         final double currentSetpoint = closedLoopController.getSetpoint();
         double leftJoystickY = manualControlInput.getAsDouble();
