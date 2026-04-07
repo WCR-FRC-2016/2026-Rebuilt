@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class CollectorSubsystem extends SubsystemBase {
     public enum PivotState {
-        up, down, manual, shoot
+        up, down, manual, shoot, bounce
     }
 
     private enum WheelState {
@@ -164,6 +164,8 @@ public void periodic() {
         updatePivot();
     }
 
+    //in periodic current time(ms) / 1000 min and max setpoint interpolated by output of sin normalize sin by add 1 to output then divide it by two pass that into a lerp min is min pivot position max is max position t is normalized value 
+    // setpoint to be what we want ignores bouncing state 
 
 
     public void zeroPivotEncoder() {

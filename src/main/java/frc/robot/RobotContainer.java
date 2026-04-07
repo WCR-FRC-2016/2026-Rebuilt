@@ -14,6 +14,7 @@ import frc.robot.Constants.Auton;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.climber.ClimbAutoCommand;
 import frc.robot.commands.collector.StartCollectAutoCommand;
+import frc.robot.commands.collector.StartWaitStopCollectionAutoCommand;
 import frc.robot.commands.shooter.PassBallsCommand;
 import frc.robot.commands.shooter.ShootCommand;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlignCommand;
@@ -120,7 +121,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem, agitatorSubsystem));
         NamedCommands.registerCommand("StartCollectAutoCommand", new StartCollectAutoCommand(collectorSubsystem));
         NamedCommands.registerCommand("StopCollectAutoCommand", new StartCollectAutoCommand(collectorSubsystem));
-        NamedCommands.registerCommand("PassBallsCommand", new PassBallsCommand(shooterSubsystem, agitatorSubsystem));
+        NamedCommands.registerCommand("PassBallsCommand", new PassBallsCommand(shooterSubsystem, agitatorSubsystem)); 
+        NamedCommands.registerCommand("StartWaitStopCollectionAutoCommand", new StartWaitStopCollectionAutoCommand(collectorSubsystem));
 
 
 
@@ -169,6 +171,8 @@ public class RobotContainer {
 
         manipulatorCommandXbox.rightBumper()
                 .whileTrue(Commands.run(agitatorSubsystem::agitateIfShootSpeed))
+                .onTrue(Commands.runOnce(shooterSubsystem:: feedFlyWheels))
+                .onFalse(Commands.runOnce(shooterSubsystem:: feedFlyWheelsStop))
                 .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
 
         manipulatorCommandXbox.a()

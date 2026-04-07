@@ -40,13 +40,15 @@ public class ShooterSubsystem extends SubsystemBase {
   private static final double MINIMUM_SHOOTING_VELOCITY = -53.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
   private static final double MINIMUM_PASSING_VELOCITY = -28.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
 
+  private static final double FEED_FLYWHEELS_SPEED = -0.7; // the motor power of the things that feed the balls from the agitator to the actual shooting wheels
+
   // Shooter flywheel feedforward/feedback constants
-  private static final double FLYWHEEL_P = 20.0f; // TODO
+  private static final double FLYWHEEL_P = 0.1f; // TODO
   private static final double FLYWHEEL_I = 0.0f; // TODO: Will probably stay at 0
   private static final double FLYWHEEL_D = 0.0f; // TODO: Might get changes to prevent overshooting, tune after V
 
   private static final double FLYWHEEL_S = 0.0; // TODO: This is for overcoming static friction, may not be needed tbh
-  private static final double FLYWHEEL_V = 1.5; // TODO: From quick research makes me believe this is the feedforward value we care about
+  private static final double FLYWHEEL_V = 0.12; // TODO: From quick research makes me believe this is the feedforward value we care about
 
   // Shooter pivot constants
   public static final double PIVOT_INCREMENT_MANUAL = 0.4;
@@ -58,7 +60,8 @@ public class ShooterSubsystem extends SubsystemBase {
   // Can IDs
   private static final int FLYWHEELS_L_CAN_ID = 0;
   private static final int FLYWHEELS_F_CAN_ID = 1;
-  private static final int PIVOT_CAN_ID = 4;
+ // private static final int PIVOT_CAN_ID = 4;
+  private static final int FEED_FLYWHEELS_CAN_ID = 4;
 
   // External controls
   private DoubleSupplier manualPivotInput = null;
@@ -67,7 +70,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelLeader = new TalonFX(FLYWHEELS_L_CAN_ID);
   private final TalonFX shooterFollower = new TalonFX(FLYWHEELS_F_CAN_ID);
   private final Follower flywheelFollower = new Follower(FLYWHEELS_L_CAN_ID, MotorAlignmentValue.Opposed);
-  private final SparkMax pivot = new SparkMax(PIVOT_CAN_ID, MotorType.kBrushed);
+  //private final SparkMax pivot = new SparkMax(PIVOT_CAN_ID, MotorType.kBrushed);
+  private final SparkMax feedFlyWheels = new SparkMax(FEED_FLYWHEELS_CAN_ID, MotorType.kBrushless);
+  
 
   // Flywheel variables
   private final NeutralOut brakeControl = new NeutralOut();
@@ -89,19 +94,19 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // Refresh the velocity signal so the current flywheel velocity can be measured. THIS ALWAYS NEEDS TO BE RUN! (it caches the value)
     flywheelVelocitySignal.refresh();
-   // System.out.println("Flywheel speed: " + flywheelVelocitySignal.getValueAsDouble());
+    System.out.println("Flywheel speed: " + flywheelVelocitySignal.getValueAsDouble());
 
     // Manually control the hood pivot (if desired) by incrmenetally changing the setpoint
     if (desiredPivotState != PivotState.manual) {
       return;
     }
 
-    final SparkClosedLoopController closedLoopController = pivot.getClosedLoopController();
-    final double currentSetpoint = closedLoopController.getSetpoint();
-    final double movementInput = manualPivotInput.getAsDouble();
-    final double newSetpoint = currentSetpoint + (movementInput / 20);
+   // final SparkClosedLoopController closedLoopController = pivot.getClosedLoopController();
+   // final double currentSetpoint = closedLoopController.getSetpoint();
+    //final double movementInput = manualPivotInput.getAsDouble();
+    //final double newSetpoint = currentSetpoint + (movementInput / 20);
 
-    closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+   // closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   public ShooterSubsystem() {
@@ -121,7 +126,7 @@ public class ShooterSubsystem extends SubsystemBase {
     pivotConfig.apply(encoderConfig);
     pivotConfig.apply(pivotClosedLoopConfig);
 
-    pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+   // pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // TODO: Properly configured the feedback and feedforward controller of the leader TalonFX
     shooterFollower.setControl(flywheelFollower);
@@ -141,7 +146,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterFollower.getConfigurator().apply(configuration);
 
     // Initially set the pivot position to be the bottom positon
-    pivot.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    //pivot.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   public void setShooterWheelsShoot() {
@@ -181,15 +186,15 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   
   public void pivotUpManually() {
-    pivot.set(-PIVOT_INCREMENT_MANUAL);
+  //  pivot.set(-PIVOT_INCREMENT_MANUAL);
   }
 
   public void pivotDownManually() {
-    pivot.set(PIVOT_INCREMENT_MANUAL);
+   // pivot.set(PIVOT_INCREMENT_MANUAL);
   }
 
   public void stopPivotingManually() {
-    pivot.set(0.0f);
+   // pivot.set(0.0f);
   }
 
   // NOTE: This assumes all angles are negative (hence the <=), this might need to change in the future
@@ -198,19 +203,28 @@ public class ShooterSubsystem extends SubsystemBase {
     return flywheelVelocitySignal.getValueAsDouble() <= currentMinimumFlywheelVelocity;
   }
 
+  public void feedFlyWheels(){
+    feedFlyWheels.set(FEED_FLYWHEELS_SPEED);
+  }
+
+ public void feedFlyWheelsStop(){
+    feedFlyWheels.set(0);
+  }
+
+
   public void printPivotAngle() {
    // System.out.println("Current Pivot Angle: " + pivot.getAlternateEncoder().getPosition());
   }
 
   // TODO: Consider making this private?
   public void pivotToPosition(final double position){
-    pivot.getClosedLoopController().setSetpoint(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+   // pivot.getClosedLoopController().setSetpoint(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   // TODO: Potentially remove this when pivot state gets removed
   private void updateShooterPivot() {
     final double PIVOT_POSITON = (desiredPivotState == PivotState.TwoMeters) ? PIVOT_DOWN : PIVOT_UP;
-    pivot.getClosedLoopController().setSetpoint(PIVOT_POSITON, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    //pivot.getClosedLoopController().setSetpoint(PIVOT_POSITON, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   // Methods below this point have not been organized

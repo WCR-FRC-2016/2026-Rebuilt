@@ -76,7 +76,9 @@ public final class Constants
        "Do Nothing",
        "MoveForwardTest",
        "MiddleClimbAuto",
-       "MiddleShootClimbAuto"
+       "MiddleShootClimbAuto",
+        "collectortest"
+
 
 
     };

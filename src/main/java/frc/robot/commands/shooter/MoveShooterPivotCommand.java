@@ -24,7 +24,7 @@ public class MoveShooterPivotCommand extends Command {
     @Override
     public void execute() {
         shooterSubsystem.pivotToPosition(position);
-       // System.out.println("Uh oh stinky");
+       
     }   
 
     @Override

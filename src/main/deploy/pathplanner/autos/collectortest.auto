@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotDown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartCollectAutoCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "movementtest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopCollectAutoCommand"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

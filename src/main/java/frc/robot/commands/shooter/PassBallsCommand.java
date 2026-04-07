@@ -33,7 +33,7 @@ public class PassBallsCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooterSubsystem.setPivotToShoot();
+        //shooterSubsystem.setPivotToShoot();
         shooterSubsystem.stopShooterWheels();
         agitatorSubsystem.stopAgitating();
     }
