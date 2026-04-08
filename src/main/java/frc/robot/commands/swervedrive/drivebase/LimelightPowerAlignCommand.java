@@ -12,14 +12,23 @@ import frc.robot.NetworkTables;
 public class LimelightPowerAlignCommand extends Command {
     private record Datapoint(double Distance, double flyWheelSpeed) {}
     private double tx;
-    private double flyWheelSpeed = 0.0;
+    private double desiredFlyWheelSpeed = 0.0;
     public double offsetDistanceZ;
+     private final int RED_AIM_APRILTAG = 10;
+    private final int BLUE_AIM_APRILTAG = 24;
+
 
 
     private static final Datapoint[] data = {
             // sorted by distance increasing order (distance of 1 would go here)
             // (TooClose,0.0)
-           
+                new Datapoint(2.49, -49),
+                new Datapoint(3.01, -49),
+                new Datapoint(3.28, -51),
+                new Datapoint(3.48,-53),
+                new Datapoint(3.76, -53),
+
+
             // (TooFar, -1.58)
     };
     // private double desiredDistance;
@@ -47,7 +56,7 @@ public class LimelightPowerAlignCommand extends Command {
     @Override
     public void initialize() {
         int[] filterTag = new int[] {
-               // (DriverStation.getAlliance().get() == Alliance.Red) ? RED_AIM_APRILTAG : BLUE_AIM_APRILTAG
+                (DriverStation.getAlliance().get() == Alliance.Red) ? RED_AIM_APRILTAG : BLUE_AIM_APRILTAG
         };
         LimelightHelpers.SetFiducialIDFiltersOverride("limelight", filterTag);
         LimelightHelpers.setPriorityTagID("limelight", filterTag[0]);
@@ -62,7 +71,7 @@ public class LimelightPowerAlignCommand extends Command {
         if (tv) {
             updatePositioningState();
             //System.out.println("Hood angle: " + flyWheelSpeed);
-           shooterSubsystem.DESIRED_SHOOTING_VELOCITY = flyWheelSpeed;
+          shooterSubsystem.setDesiredFlyWheelVelocity(desiredFlyWheelSpeed);
         }
        
         }
@@ -109,7 +118,7 @@ public class LimelightPowerAlignCommand extends Command {
         tx = Math.toDegrees(targetAngle);
         
         final double distanceToTarget =  Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
-       double  desiredFlyWheelSpeed = calculateflyWheelSpeedLinear(distanceToTarget);
+        desiredFlyWheelSpeed = calculateflyWheelSpeedLinear(distanceToTarget);
         //System.out.println("distance: " + distanceToTarget);
         // distance formula
         //System.out.println("length:" + Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ));
@@ -139,7 +148,7 @@ public class LimelightPowerAlignCommand extends Command {
     }
 
     private void clearPositioningState() {
-        flyWheelSpeed = 0.0;
+        desiredFlyWheelSpeed = 0.0;
         offsetDistanceZ = 0.0;
         tx = 0.0;
     }

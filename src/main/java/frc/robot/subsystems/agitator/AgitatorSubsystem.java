@@ -39,7 +39,7 @@ public class AgitatorSubsystem extends SubsystemBase {
         startAgitating();
        }
        else{
-       stopAgitating();
+        stopAgitating();
        }
     }
 

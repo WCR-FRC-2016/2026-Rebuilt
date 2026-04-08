@@ -63,8 +63,7 @@ public class LimelightHoodAlignCommand extends Command {
         final boolean tv = LimelightHelpers.getTV("limelight");
         if (tv) {
             updatePositioningState();
-            System.out.println("Hood angle: " + hoodPivotAngle);
-            shooterSubsystem.pivotToPosition(hoodPivotAngle);
+            //System.out.println("Hood angle: " + hoodPivotAngle);
         }
     }
 
@@ -99,7 +98,7 @@ public class LimelightHoodAlignCommand extends Command {
 
         final double distanceToTarget = Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
         hoodPivotAngle = calculateHoodAngleLinear(distanceToTarget);
-        System.out.println("distance: " + distanceToTarget);
+       // System.out.println("distance: " + distanceToTarget);
     }
 
     private double calculateHoodAngleLinear(final double distanceToTarget) {

@@ -33,14 +33,23 @@ import java.util.function.DoubleSupplier;
 
 public class ShooterSubsystem extends SubsystemBase {
   // Shooter flywheel constants
-  private static final double DESIRED_SHOOTING_VELOCITY = -56.0; // The desired rotations-per-second to run the shooter when shooting
-  private static final double DESIRED_PASSING_VELOCITY = -45.0; // The desired rotations-per-second to run the shooter when passing
   private static final double DESIRED_REVERSE_VELOCITY = 60.0; // The desired rotations-per-second to run the shooter when in reverse
+  private static final double DESIRED_PASSING_VELOCITY = -45.0; // The desired rotations-per-second to run the shooter when passing
 
-  private static final double MINIMUM_SHOOTING_VELOCITY = -53.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+  private static final double DESIRED_SHOOTING_VELOCITY = -48.0; // The desired rotations-per-second to run the shooter when shooting
+  private static final double DESIRED_SHOOT_CLOSE_VELOCITY = -40.0; // The desired rotations-per-second to run the shooter when close 
+  private static final double DESIRED_SHOOT_CORNER_VELOCITY = -60.0; // The desired rotations-per-second to run the shooter when in corner 
+  private static final double DESIRED_SHOOT_CLIMBER_VELOCITY = -51.0; // The desired rotations-per-second to run the shooter when at climb tower x:11.65, y: 6.25
+
   private static final double MINIMUM_PASSING_VELOCITY = -28.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
 
+  private static final double MINIMUM_SHOOTING_VELOCITY = -53.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+  private static final double MINIMUM_SHOOT_CLOSE_VELOCITY = 0.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+  private static final double MINIMUM_SHOOT_CORNER_VELOCITY = 0.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+  private static final double MINIMUM_SHOOT_CLIMBER_VELOCITY = 0.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+
   private static final double FEED_FLYWHEELS_SPEED = -0.7; // the motor power of the things that feed the balls from the agitator to the actual shooting wheels
+  private static final double FEED_FLYWHEELS_REVERSE = 0.7; // the motor power of the things that feed the balls from the agitator to the actual shooting wheels
 
   // Shooter flywheel feedforward/feedback constants
   private static final double FLYWHEEL_P = 0.1f; // TODO
@@ -60,17 +69,14 @@ public class ShooterSubsystem extends SubsystemBase {
   // Can IDs
   private static final int FLYWHEELS_L_CAN_ID = 0;
   private static final int FLYWHEELS_F_CAN_ID = 1;
- // private static final int PIVOT_CAN_ID = 4;
   private static final int FEED_FLYWHEELS_CAN_ID = 4;
 
-  // External controls
-  private DoubleSupplier manualPivotInput = null;
 
   // Motor
   private final TalonFX flywheelLeader = new TalonFX(FLYWHEELS_L_CAN_ID);
   private final TalonFX shooterFollower = new TalonFX(FLYWHEELS_F_CAN_ID);
   private final Follower flywheelFollower = new Follower(FLYWHEELS_L_CAN_ID, MotorAlignmentValue.Opposed);
-  //private final SparkMax pivot = new SparkMax(PIVOT_CAN_ID, MotorType.kBrushed);
+
   private final SparkMax feedFlyWheels = new SparkMax(FEED_FLYWHEELS_CAN_ID, MotorType.kBrushless);
   
 
@@ -80,6 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final StatusSignal<AngularVelocity> flywheelVelocitySignal = flywheelLeader.getVelocity();
   
   private double currentMinimumFlywheelVelocity = 0.0f; // The current minimum velocity required for the flywheel to be considerd "up-to-speed"
+  private double desiredFlyWheelVelocity = 0;
 
   // POINT OF VARIABLES THAT HAVENT BEEN SORTED
 
@@ -94,40 +101,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // Refresh the velocity signal so the current flywheel velocity can be measured. THIS ALWAYS NEEDS TO BE RUN! (it caches the value)
     flywheelVelocitySignal.refresh();
-    System.out.println("Flywheel speed: " + flywheelVelocitySignal.getValueAsDouble());
-
-    // Manually control the hood pivot (if desired) by incrmenetally changing the setpoint
-    if (desiredPivotState != PivotState.manual) {
-      return;
-    }
-
-   // final SparkClosedLoopController closedLoopController = pivot.getClosedLoopController();
-   // final double currentSetpoint = closedLoopController.getSetpoint();
-    //final double movementInput = manualPivotInput.getAsDouble();
-    //final double newSetpoint = currentSetpoint + (movementInput / 20);
-
-   // closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    //System.out.println("Flywheel speed: " + flywheelVelocitySignal.getValueAsDouble());
   }
 
   public ShooterSubsystem() {
-    SparkMaxConfig pivotConfig = (SparkMaxConfig) new SparkMaxConfig()
-        .smartCurrentLimit(40)
-        .idleMode(IdleMode.kBrake);
-
-      AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig()
-        .countsPerRevolution(280);
-
-      ClosedLoopConfig pivotClosedLoopConfig = new ClosedLoopConfig()
-        .pid(0.85, 0.0, 0.0, ClosedLoopSlot.kSlot0)
-        .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-        .positionWrappingEnabled(false)
-        .outputRange(-1, 1);
-
-    pivotConfig.apply(encoderConfig);
-    pivotConfig.apply(pivotClosedLoopConfig);
-
-   // pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
     // TODO: Properly configured the feedback and feedforward controller of the leader TalonFX
     shooterFollower.setControl(flywheelFollower);
     TalonFXConfiguration configuration = new TalonFXConfiguration()
@@ -144,24 +121,37 @@ public class ShooterSubsystem extends SubsystemBase {
 
     flywheelLeader.getConfigurator().apply(configuration);
     shooterFollower.getConfigurator().apply(configuration);
-
-    // Initially set the pivot position to be the bottom positon
-    //pivot.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   public void setShooterWheelsShoot() {
-    flywheelLeader.setControl(flywheelVelocityVoltage.withVelocity(DESIRED_SHOOTING_VELOCITY));
+   setDesiredFlyWheelVelocity(DESIRED_SHOOTING_VELOCITY);
     currentMinimumFlywheelVelocity = MINIMUM_SHOOTING_VELOCITY;
   }
 
   public void setShooterWheelsPass() {
-    flywheelLeader.setControl(flywheelVelocityVoltage.withVelocity(DESIRED_PASSING_VELOCITY));
+   setDesiredFlyWheelVelocity(DESIRED_PASSING_VELOCITY);
     currentMinimumFlywheelVelocity = MINIMUM_PASSING_VELOCITY;
   }
 
   public void setShooterWheelsReverse() {
-    flywheelLeader.setControl(flywheelVelocityVoltage.withVelocity(DESIRED_REVERSE_VELOCITY));
+   setDesiredFlyWheelVelocity(DESIRED_REVERSE_VELOCITY);
     currentMinimumFlywheelVelocity = 0.0f;
+  }
+  public void setShooterWheelsShootClose(){
+    setDesiredFlyWheelVelocity(DESIRED_SHOOT_CLOSE_VELOCITY);
+    currentMinimumFlywheelVelocity = MINIMUM_SHOOT_CLOSE_VELOCITY;
+  }
+   public void setShooterWheelsShootCorner(){
+    setDesiredFlyWheelVelocity(DESIRED_SHOOT_CORNER_VELOCITY);
+    currentMinimumFlywheelVelocity = MINIMUM_SHOOT_CORNER_VELOCITY;
+  }
+   public void setShooterWheelsShootClimber(){
+    setDesiredFlyWheelVelocity(DESIRED_SHOOT_CLIMBER_VELOCITY);
+    currentMinimumFlywheelVelocity = MINIMUM_SHOOT_CLIMBER_VELOCITY;
+  }
+  public void setDesiredFlyWheelVelocity(final double newDesiredFlyWheelVelocity) {
+    desiredFlyWheelVelocity = newDesiredFlyWheelVelocity;
+    flywheelLeader.setControl(flywheelVelocityVoltage.withVelocity(newDesiredFlyWheelVelocity));
   }
 
   public void stopShooterWheels() {
@@ -169,34 +159,6 @@ public class ShooterSubsystem extends SubsystemBase {
     // TODO: Find a better way to do this, maybe a stack?
     currentMinimumFlywheelVelocity = MINIMUM_SHOOTING_VELOCITY;
   }
-
-  // TODO: Potentially put this as an enum and use just one pivot method (for named pivot spots)?
-  public void setPivotToPass() {
-    pivotToPosition(PIVOT_PASS);
-  }
-
-  // TODO: Potentially put this as an enum and use just one pivot method (for named pivot spots)?
-  public void setPivotToShoot() {
-    pivotToPosition(PIVOT_DOWN);
-  }
-
-  public void setPivotManually() {
-    desiredPivotState = PivotState.manual;
-    updateShooterPivot();
-  }
-  
-  public void pivotUpManually() {
-  //  pivot.set(-PIVOT_INCREMENT_MANUAL);
-  }
-
-  public void pivotDownManually() {
-   // pivot.set(PIVOT_INCREMENT_MANUAL);
-  }
-
-  public void stopPivotingManually() {
-   // pivot.set(0.0f);
-  }
-
   // NOTE: This assumes all angles are negative (hence the <=), this might need to change in the future
   public boolean isFlywheelUpToSpeed() {
     //System.out.println("Minimum Velocity: " + currentMinimumFlywheelVelocity);
@@ -206,61 +168,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void feedFlyWheels(){
     feedFlyWheels.set(FEED_FLYWHEELS_SPEED);
   }
+public void reverseFeedFlyWheels(){
+    feedFlyWheels.set(FEED_FLYWHEELS_REVERSE);
+  }
 
  public void feedFlyWheelsStop(){
     feedFlyWheels.set(0);
   }
 
-
-  public void printPivotAngle() {
-   // System.out.println("Current Pivot Angle: " + pivot.getAlternateEncoder().getPosition());
-  }
-
-  // TODO: Consider making this private?
-  public void pivotToPosition(final double position){
-   // pivot.getClosedLoopController().setSetpoint(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-  }
-
-  // TODO: Potentially remove this when pivot state gets removed
-  private void updateShooterPivot() {
-    final double PIVOT_POSITON = (desiredPivotState == PivotState.TwoMeters) ? PIVOT_DOWN : PIVOT_UP;
-    //pivot.getClosedLoopController().setSetpoint(PIVOT_POSITON, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-  }
-
-  // Methods below this point have not been organized
-
-  // TODO: Review whether this should stay
-  //        . If it does stay, dont modify the constant (split into separate variable)
-  // public void changeSpeedUp() {
-  //   // Limits speed so it doesn't go below -1.0
-  //   if (SHOOTERSPEED > -1.0) {
-  //     SHOOTERSPEED -= 0.05;
-  //   }
-  // }
-
-  // TODO: Review whether this should stay
-  //        . If it does stay, dont modify the constant (split into separate variable)
-  // public void changeSpeedDown() {
-  //   // Limits speed so it doesn't go above 0
-  //   SHOOTERSPEED += 0.05;
-  // }
-
-  private double calculateHighArcAngle(final double distance, final double velocity, final double targetHeight) {
-    final double g = 9.80665;
-
-    final double v2 = Math.pow(velocity, 2);
-    final double v4 = Math.pow(velocity, 4);
-    final double x2 = Math.pow(distance, 2);
-
-    // Formula: v^4 - g(g*x^2 + 2*y*v^2)
-    final double rootContent = v4 - g * (g * x2 + 2 * targetHeight * v2);
-
-    if (rootContent < 0) {
-      return Double.NaN;
-    }
-
-    final double tanThetaHigh = (v2 + Math.sqrt(rootContent)) / (g * distance);
-
-    return Math.toDegrees(Math.atan(tanThetaHigh));
-  }
 }

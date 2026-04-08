@@ -15,11 +15,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.climber.ClimbAutoCommand;
 import frc.robot.commands.collector.StartCollectAutoCommand;
 import frc.robot.commands.collector.StartWaitStopCollectionAutoCommand;
-import frc.robot.commands.shooter.PassBallsCommand;
 import frc.robot.commands.shooter.ShootCommand;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlignCommand;
 import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignCommand;
-import frc.robot.commands.swervedrive.drivebase.LimelightHoodAlignAutoCommand;
+import frc.robot.commands.swervedrive.drivebase.LimelightPowerAlignCommand;
 import frc.robot.subsystems.agitator.AgitatorSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.collector.CollectorSubsystem;
@@ -121,7 +120,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem, agitatorSubsystem));
         NamedCommands.registerCommand("StartCollectAutoCommand", new StartCollectAutoCommand(collectorSubsystem));
         NamedCommands.registerCommand("StopCollectAutoCommand", new StartCollectAutoCommand(collectorSubsystem));
-        NamedCommands.registerCommand("PassBallsCommand", new PassBallsCommand(shooterSubsystem, agitatorSubsystem)); 
         NamedCommands.registerCommand("StartWaitStopCollectionAutoCommand", new StartWaitStopCollectionAutoCommand(collectorSubsystem));
 
 
@@ -162,7 +160,8 @@ public class RobotContainer {
                 .onFalse(Commands.runOnce(collectorSubsystem::stopCollection));
 
         manipulatorCommandXbox.rightTrigger(0.2)
-                .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsShoot))
+               // .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsShoot))
+               .whileTrue(new LimelightPowerAlignCommand(drivebaseSubsystem, shooterSubsystem))
                 .onFalse(Commands.runOnce(shooterSubsystem::stopShooterWheels));
 
         manipulatorCommandXbox.leftBumper()
@@ -170,11 +169,16 @@ public class RobotContainer {
                 .onFalse(Commands.runOnce(collectorSubsystem::stopCollection));
 
         manipulatorCommandXbox.rightBumper()
-                .whileTrue(Commands.run(agitatorSubsystem::agitateIfShootSpeed))
-                .onTrue(Commands.runOnce(shooterSubsystem:: feedFlyWheels))
-                .onFalse(Commands.runOnce(shooterSubsystem:: feedFlyWheelsStop))
-                .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
-
+                .onTrue(Commands.runOnce(()-> {
+                    System.out.println("Start Agitating");
+                    agitatorSubsystem.startAgitating();
+                    shooterSubsystem.feedFlyWheels();
+                }))
+                .onFalse(Commands.runOnce(() -> {
+                    System.out.println("Stop Agitating");
+                    shooterSubsystem.feedFlyWheelsStop();
+                    agitatorSubsystem.stopAgitating();
+              }));
         manipulatorCommandXbox.a()
                 .whileTrue(Commands.run(() -> {
                     shooterSubsystem.setShooterWheelsPass();
@@ -191,9 +195,23 @@ public class RobotContainer {
 
         manipulatorCommandXbox.x()
                 .onTrue(Commands.runOnce(agitatorSubsystem::reverseAgitating))
+                .onTrue(Commands.runOnce(shooterSubsystem::reverseFeedFlyWheels))
+                .onFalse(Commands.runOnce(shooterSubsystem::feedFlyWheelsStop))
                 .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
 
         manipulatorCommandXbox.y()
                 .onTrue(Commands.runOnce(collectorSubsystem::setPivotUp));
-    }
+
+        manipulatorCommandXbox.povUp()
+            .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsShootClose))
+            .onFalse(Commands.runOnce(shooterSubsystem::stopShooterWheels));
+
+        manipulatorCommandXbox.povDown()
+            .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsShootClimber))
+            .onFalse(Commands.runOnce(shooterSubsystem::stopShooterWheels));
+
+        manipulatorCommandXbox.povRight()
+            .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsShootCorner))
+            .onFalse(Commands.runOnce(shooterSubsystem::stopShooterWheels));
+            }
 }
