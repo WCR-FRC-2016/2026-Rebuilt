@@ -11,7 +11,7 @@ public class StopCollectAutoCommand extends Command {
         addRequirements(collectorSubsystem);
     }
 
-    public void initialize() {
+    public void execute() {
        collectorSubsystem.stopCollection();
     }
 }

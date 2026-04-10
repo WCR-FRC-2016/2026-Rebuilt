@@ -66,15 +66,12 @@ public class LimelightPowerAlignCommand extends Command {
     @Override
     public void execute() {
         clearPositioningState();
-        // final boolean tv = NetworkTables.getTv();
-  final boolean tv = LimelightHelpers.getTV("limelight");
+        final boolean tv = LimelightHelpers.getTV("limelight");
         if (tv) {
             updatePositioningState();
-            //System.out.println("Hood angle: " + flyWheelSpeed);
-          shooterSubsystem.setDesiredFlyWheelVelocity(desiredFlyWheelSpeed);
-        }
-       
-        }
+            shooterSubsystem.setDesiredFlyWheelVelocity(desiredFlyWheelSpeed);
+        }   
+    }
      
 
     @Override
@@ -91,9 +88,7 @@ public class LimelightPowerAlignCommand extends Command {
         if (tv) {
             updatePositioningState();
             final boolean isAtPosition = isPositionedCorrectly();
-            if (isAtPosition) {
-                System.out.println("At position");
-            }
+            if (isAtPosition) {System.out.println("At position");}
             return isAtPosition;
         }
         return false;

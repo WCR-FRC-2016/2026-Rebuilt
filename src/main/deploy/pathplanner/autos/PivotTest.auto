@@ -5,27 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "PivotDown"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartCollectAutoCommand"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "movementtest"
+            "pathName": "MoveFormward"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StopCollectAutoCommand"
+            "name": "PivotUp"
           }
         }
       ]

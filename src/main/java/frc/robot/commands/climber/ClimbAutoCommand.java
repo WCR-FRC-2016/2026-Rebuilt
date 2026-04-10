@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class ClimbAutoCommand extends Command {
     private final ClimberSubsystem climberSubsystem;
     Timer timer = new Timer();
-    final double CLIMBTIME = 1.6;
+    final double CLIMBTIME = 1.3;
 
     public ClimbAutoCommand(ClimberSubsystem climber) {
         climberSubsystem = climber;

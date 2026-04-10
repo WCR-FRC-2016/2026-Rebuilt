@@ -77,6 +77,10 @@ public final class Constants
        "MoveForwardTest",
        "MiddleClimbAuto",
        "MiddleShootClimbAuto",
+        "BottomShootClimbAuto",
+        "TopShootClimbAuto",
+        "simple",
+        "PivotTest",
         "collectortest"
 
 

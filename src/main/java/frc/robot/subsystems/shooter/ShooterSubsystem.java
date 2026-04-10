@@ -36,17 +36,21 @@ public class ShooterSubsystem extends SubsystemBase {
   private static final double DESIRED_REVERSE_VELOCITY = 60.0; // The desired rotations-per-second to run the shooter when in reverse
   private static final double DESIRED_PASSING_VELOCITY = -45.0; // The desired rotations-per-second to run the shooter when passing
 
-  private static final double DESIRED_SHOOTING_VELOCITY = -48.0; // The desired rotations-per-second to run the shooter when shooting
+  private static final double DESIRED_SHOOTING_VELOCITY = -46.5; // The desired rotations-per-second to run the shooter when shooting
   private static final double DESIRED_SHOOT_CLOSE_VELOCITY = -40.0; // The desired rotations-per-second to run the shooter when close 
-  private static final double DESIRED_SHOOT_CORNER_VELOCITY = -60.0; // The desired rotations-per-second to run the shooter when in corner 
+  private static final double DESIRED_SHOOT_CORNER_VELOCITY = -63.0; // -60.0 // The desired rotations-per-second to run the shooter when in corner 
   private static final double DESIRED_SHOOT_CLIMBER_VELOCITY = -51.0; // The desired rotations-per-second to run the shooter when at climb tower x:11.65, y: 6.25
+  private static final double DESIRED_SHOOT_TRENCH_VELOCITY = -56.0; // The desired rotations-per-second to run the shooter when at climb tower x:11.65, y: 6.25
+
 
   private static final double MINIMUM_PASSING_VELOCITY = -28.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
 
   private static final double MINIMUM_SHOOTING_VELOCITY = -53.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
-  private static final double MINIMUM_SHOOT_CLOSE_VELOCITY = 0.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
-  private static final double MINIMUM_SHOOT_CORNER_VELOCITY = 0.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
-  private static final double MINIMUM_SHOOT_CLIMBER_VELOCITY = 0.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+  private static final double MINIMUM_SHOOT_CLOSE_VELOCITY = -35.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+  private static final double MINIMUM_SHOOT_CORNER_VELOCITY = -60.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+  private static final double MINIMUM_SHOOT_CLIMBER_VELOCITY = -45.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+  private static final double MINIMUM_SHOOT_TRENCH_VELOCITY = -45.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode
+
 
   private static final double FEED_FLYWHEELS_SPEED = -0.7; // the motor power of the things that feed the balls from the agitator to the actual shooting wheels
   private static final double FEED_FLYWHEELS_REVERSE = 0.7; // the motor power of the things that feed the balls from the agitator to the actual shooting wheels
@@ -140,6 +144,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setShooterWheelsShootClose(){
     setDesiredFlyWheelVelocity(DESIRED_SHOOT_CLOSE_VELOCITY);
     currentMinimumFlywheelVelocity = MINIMUM_SHOOT_CLOSE_VELOCITY;
+  }
+    public void setShooterWheelsShootTrench(){
+    setDesiredFlyWheelVelocity(DESIRED_SHOOT_TRENCH_VELOCITY);
+    currentMinimumFlywheelVelocity = MINIMUM_SHOOT_TRENCH_VELOCITY;
   }
    public void setShooterWheelsShootCorner(){
     setDesiredFlyWheelVelocity(DESIRED_SHOOT_CORNER_VELOCITY);

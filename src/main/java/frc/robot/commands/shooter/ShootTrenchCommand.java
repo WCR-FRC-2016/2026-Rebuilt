@@ -5,13 +5,13 @@ import frc.robot.subsystems.agitator.AgitatorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
-public class ShootCommand extends Command {
+public class ShootTrenchCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private final AgitatorSubsystem agitatorSubsystem;
     Timer timer = new Timer();
     final double SHOOTTIME = 3.0;
 
-    public ShootCommand(ShooterSubsystem shooter, AgitatorSubsystem agitator) {
+    public ShootTrenchCommand(ShooterSubsystem shooter, AgitatorSubsystem agitator) {
         shooterSubsystem = shooter;
         agitatorSubsystem = agitator;
         addRequirements(shooterSubsystem, agitatorSubsystem);
@@ -20,7 +20,7 @@ public class ShootCommand extends Command {
     public void initialize() {
         timer.reset();
         timer.start();
-        shooterSubsystem.setShooterWheelsShoot();
+        shooterSubsystem.setShooterWheelsShootTrench();
     }
 
     public void execute() {

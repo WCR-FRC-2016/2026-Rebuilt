@@ -39,15 +39,13 @@ public class CollectorSubsystem extends SubsystemBase {
     private static final int COLLECTOR_PIVOT_L_CAN_ID = 14;
     private static final int COLLECTOR_PIVOT_F_CAN_ID = 15;
     private static final double COLLECT_POWER = -0.9;
-    private static final double PIVOT_DOWN =  -2.282;
-    private static final double PIVOT_UP =  0.0;
-    private static final double BOUNCE_MAX =  0.0;
-    private static final double BOUNCE_MIN =  -2.282;
-    
-    
+    private static final double PIVOT_DOWN = -2.282;
+    private static final double PIVOT_UP = 0.0;
+    private static final double BOUNCE_MAX = 0.0;
+    private static final double BOUNCE_MIN = -2.282;
 
     private final SparkMax collectorWheelsL;
-    //private final SparkMax collectorWheelsF;
+    // private final SparkMax collectorWheelsF;
     public final SparkMax collectorPivotL;
     private final SparkMax collectorPivotF;
 
@@ -57,10 +55,12 @@ public class CollectorSubsystem extends SubsystemBase {
     private DoubleSupplier manualControlInput = null;
 
     Timer timer = new Timer();
+
     public CollectorSubsystem(DoubleSupplier manualControlInput) {
-        
+
         collectorWheelsL = new SparkMax(COLLECTOR_WHEELS_L_CAN_ID, MotorType.kBrushed);
-        //collectorWheelsF = new SparkMax(COLLECTOR_WHEELS_F_CAN_ID, MotorType.kBrushless);
+        // collectorWheelsF = new SparkMax(COLLECTOR_WHEELS_F_CAN_ID,
+        // MotorType.kBrushless);
         collectorPivotL = new SparkMax(COLLECTOR_PIVOT_L_CAN_ID, MotorType.kBrushed);
         collectorPivotF = new SparkMax(COLLECTOR_PIVOT_F_CAN_ID, MotorType.kBrushed);
 
@@ -69,7 +69,8 @@ public class CollectorSubsystem extends SubsystemBase {
         SparkMaxConfig globalConfig = new SparkMaxConfig();
         AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig().countsPerRevolution(280);
         ClosedLoopConfig pivotClosedLoopConfig = new ClosedLoopConfig().pid(0.85, 0.0, 0.0, ClosedLoopSlot.kSlot0)
-                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder).positionWrappingEnabled(false).outputRange(-1,1);
+                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder).positionWrappingEnabled(false)
+                .outputRange(-1, 1);
         SparkMaxConfig collectorPivotLConfig = new SparkMaxConfig();
         SparkMaxConfig collectorPivotFConfig = new SparkMaxConfig();
         SparkMaxConfig collectorWheelsLConfig = new SparkMaxConfig();
@@ -100,44 +101,41 @@ public class CollectorSubsystem extends SubsystemBase {
                 PersistMode.kPersistParameters);
         collectorWheelsL.configure(collectorWheelsLConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-       // collectorWheelsF.configure(collectorWheelsFConfig, ResetMode.kResetSafeParameters,
-        //        PersistMode.kPersistParameters);
+        // collectorWheelsF.configure(collectorWheelsFConfig,
+        // ResetMode.kResetSafeParameters,
+        // PersistMode.kPersistParameters);
 
         collectorPivotL.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
-   
 
-   @Override
-public void periodic() {
-    timer.start();
-    if(desiredPivotState == PivotState.bounce){
-       double sinOfTime = Math.sin(timer.get() / 1000);
-       double normalizedSinOfTime = (sinOfTime + 1) / 2;
-       double bounceValue = BOUNCE_MIN + (BOUNCE_MAX - BOUNCE_MIN) * normalizedSinOfTime;
-         collectorPivotL.getClosedLoopController().setSetpoint(bounceValue, ControlType.kPosition,
-                ClosedLoopSlot.kSlot0);
-    }
-    final SparkClosedLoopController closedLoopController = collectorPivotL.getClosedLoopController();
-    if (desiredPivotState == PivotState.manual) {
-        final double currentSetpoint = closedLoopController.getSetpoint();
-        double leftJoystickY = manualControlInput.getAsDouble();
-        if (leftJoystickY > 0.4 && currentSetpoint < 0) {
-            final double newSetpoint = currentSetpoint + (0.05);
-            closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    @Override
+    public void periodic() {
+        if (desiredPivotState == PivotState.bounce) {
+            double center = -1.8;
+            double amplitude = 0.75;
+
+            double sinOfTime = Math.sin(timer.get() * 12);
+            double bounceValue = center + (amplitude * sinOfTime);
+
+            collectorPivotL.getClosedLoopController().setSetpoint(
+                    bounceValue,
+                    ControlType.kPosition,
+                    ClosedLoopSlot.kSlot0);
         }
-        if (leftJoystickY < -0.4 && currentSetpoint > -2) {
-            final double newSetpoint = currentSetpoint - (0.05);
-            closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        }    
+        final SparkClosedLoopController closedLoopController = collectorPivotL.getClosedLoopController();
+        if (desiredPivotState == PivotState.manual) {
+            final double currentSetpoint = closedLoopController.getSetpoint();
+            double leftJoystickY = manualControlInput.getAsDouble();
+            if (leftJoystickY > 0.4 && currentSetpoint < 0) {
+                final double newSetpoint = currentSetpoint + (0.05);
+                closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            }
+            if (leftJoystickY < -0.4 && currentSetpoint > -2) {
+                final double newSetpoint = currentSetpoint - (0.05);
+                closedLoopController.setSetpoint(newSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            }
+        }
     }
-
-    // System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
-    //         + collectorPivotL.getAlternateEncoder().getPosition());
-}
-        
-
-       //System.out.println("setpoint: " + collectorPivotL.getClosedLoopController().getSetpoint() + ", encoder: "
-          //      + collectorPivotL.getAlternateEncoder().getPosition());
 
     public void startCollecting() {
         currentWheelState = WheelState.collect;
@@ -176,14 +174,21 @@ public void periodic() {
         updatePivot();
     }
 
-    //in periodic current time(ms) / 1000 min and max setpoint interpolated by output of sin normalize sin by add 1 to output then divide it by two pass that into a lerp min is min pivot position max is max position t is normalized value 
-    // setpoint to be what we want ignores bouncing state 
+    public void startBounce() {
+        desiredPivotState = PivotState.bounce;
+        timer.reset();
+        timer.start();
+    }
 
+    public void stopBounce() {
+        desiredPivotState = PivotState.down;
+        updatePivot();
+        timer.stop();
+    }
 
     public void zeroPivotEncoder() {
-
         if (desiredPivotState == PivotState.manual) {
-             collectorPivotL.getAlternateEncoder().setPosition(0.0);
+            collectorPivotL.getAlternateEncoder().setPosition(0.0);
             collectorPivotL.getClosedLoopController().setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
             collectorPivotL.getClosedLoopController();
         } else {
@@ -202,36 +207,4 @@ public void periodic() {
         collectorPivotL.getClosedLoopController().setSetpoint(PIVOT_POSITON, ControlType.kPosition,
                 ClosedLoopSlot.kSlot0);
     }
-
-    /*
-     * public void Collect() {
-     * pivotCollectorDown();
-     * collectorWheelsL.set(COLLECT_POWER);
-     * }
-     * 
-     * public void stopCollect() {
-     * collectorWheelsL.set(0);
-     * }
-     * 
-     * public void Release() {
-     * collectorWheelsL.set(-COLLECT_POWER);
-     * }
-     * 
-     * // has to pivot more than 90 degrees
-     * public void pivotCollectorDown() {
-     * collectorPivotL.set(0.5);
-     * }
-     * 
-     * public void pivotCollectorUp() {
-     * collectorPivotL.set(-0.5);
-     * }
-     * 
-     * public void manualCollectorPivot() {
-     * collectorPivotL.set(0);
-     * }
-     * 
-     * public void stopPivotizing() {
-     * collectorPivotL.set(0);
-     * }
-     */
 }

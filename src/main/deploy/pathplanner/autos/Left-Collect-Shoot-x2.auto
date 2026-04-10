@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom-Collect"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Bottom-Collect-Shoot"
+            "pathName": "Left-Collect"
           }
         },
         {
@@ -23,71 +17,82 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "StartCollectAutoCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Collect-Forward"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Collect-Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopCollectAutoCommand"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "LimelightHoodAlign"
+                  "name": "ShootTrenchCommand"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 5.0
                 }
               }
             ]
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootCommand"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
-                }
-              }
-            ]
+            "pathName": "Left-Shoot-Collect"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StopShooterWheels"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PivotUp"
+            "name": "StartCollectAutoCommand"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Middle-Shoot-Climb"
+            "pathName": "Left-Shoot-Collect-Forward"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "MoveBackwardsVerySlightly"
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ClimbAuto"
+            "name": "StopCollectAutoCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Shoot-Collect-Shoot"
           }
         }
       ]
