@@ -34,13 +34,13 @@ import java.util.function.DoubleSupplier;
 public class ShooterSubsystem extends SubsystemBase {
   // Shooter flywheel constants
   private static final double DESIRED_REVERSE_VELOCITY = 60.0; // The desired rotations-per-second to run the shooter when in reverse
-  private static final double DESIRED_PASSING_VELOCITY = -45.0; // The desired rotations-per-second to run the shooter when passing
+  private static final double DESIRED_PASSING_VELOCITY = -50.0; // The desired rotations-per-second to run the shooter when passing
 
   private static final double DESIRED_SHOOTING_VELOCITY = -46.5; // The desired rotations-per-second to run the shooter when shooting
   private static final double DESIRED_SHOOT_CLOSE_VELOCITY = -40.0; // The desired rotations-per-second to run the shooter when close 
   private static final double DESIRED_SHOOT_CORNER_VELOCITY = -63.0; // -60.0 // The desired rotations-per-second to run the shooter when in corner 
   private static final double DESIRED_SHOOT_CLIMBER_VELOCITY = -51.0; // The desired rotations-per-second to run the shooter when at climb tower x:11.65, y: 6.25
-  private static final double DESIRED_SHOOT_TRENCH_VELOCITY = -56.0; // The desired rotations-per-second to run the shooter when at climb tower x:11.65, y: 6.25
+  private static final double DESIRED_SHOOT_TRENCH_VELOCITY = -55.0; // The desired rotations-per-second to run the shooter when at climb tower x:11.65, y: 6.25
 
 
   private static final double MINIMUM_PASSING_VELOCITY = -28.0; // The minimum velocity before the shooter is considerd "up-to-speed" for this mode

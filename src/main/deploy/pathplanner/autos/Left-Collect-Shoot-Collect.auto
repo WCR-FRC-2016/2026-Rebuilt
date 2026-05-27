@@ -7,6 +7,12 @@
         {
           "type": "path",
           "data": {
+            "pathName": "MoveBackPivotDown"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "Left-Collect"
           }
         },
@@ -68,25 +74,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Shoot-Collect"
+            "pathName": "1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Shoot-Collect-Forward"
+            "pathName": "2"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "StopCollectAutoCommand"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left-Shoot-Collect-Shoot"
           }
         }
       ]

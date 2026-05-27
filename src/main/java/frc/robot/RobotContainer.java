@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Auton;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.climber.ClimbAutoCommand;
+import frc.robot.commands.climber.ClimberStop;
+import frc.robot.commands.climber.ClimberUp;
 import frc.robot.commands.collector.PivotDown;
 import frc.robot.commands.collector.PivotUp;
 import frc.robot.commands.collector.StartCollectAutoCommand;
@@ -34,6 +36,19 @@ import java.io.File;
 import swervelib.SwerveInputStream;
 
 public class RobotContainer {
+        private enum DriveSpeed {
+                Competition(-1.0, -1.0),
+                Demonstration(-0.5, -0.5);
+
+                DriveSpeed(final double speedMultiplier, final double rotationMultiplier) {
+                        SpeedMultiplier = speedMultiplier;
+                        RotationMultiplier = rotationMultiplier;
+                }
+
+                final double SpeedMultiplier;
+                final double RotationMultiplier;
+        }
+
         private final Field2d m_field = new Field2d();
         private final CommandXboxController driverCommandXbox = new CommandXboxController(0);
         private final CommandXboxController manipulatorCommandXbox = new CommandXboxController(1);
@@ -49,11 +64,13 @@ public class RobotContainer {
         private final Trigger leftJoystickManualTrigger = new Trigger(
                         () -> Math.abs(manipulatorCommandXbox.getLeftY()) > 0.4);
 
+        private DriveSpeed currentDriveSpeed = DriveSpeed.Competition;
+
         SwerveInputStream driveAngularVelocity = SwerveInputStream.of(
                         drivebaseSubsystem.getSwerveDrive(),
-                        () -> driverCommandXbox.getLeftY() * -1,
-                        () -> driverCommandXbox.getLeftX() * -1)
-                        .withControllerRotationAxis(() -> driverCommandXbox.getRightX() * -1)
+                        () -> driverCommandXbox.getLeftY() * currentDriveSpeed.SpeedMultiplier,
+                        () -> driverCommandXbox.getLeftX() * currentDriveSpeed.SpeedMultiplier)
+                        .withControllerRotationAxis(() -> driverCommandXbox.getRightX() * currentDriveSpeed.RotationMultiplier)
                         .deadband(OperatorConstants.DEADBAND)
                         .scaleTranslation(0.8)
                         .allianceRelativeControl(true);
@@ -128,7 +145,8 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Agitate", Commands.runOnce(agitatorSubsystem::startAgitating));
                 NamedCommands.registerCommand("ClimbAuto", new ClimbAutoCommand(climberSubsystem));
                 NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem, agitatorSubsystem));
-                NamedCommands.registerCommand("ShootTrenchCommand", new ShootTrenchCommand(shooterSubsystem, agitatorSubsystem));
+                NamedCommands.registerCommand("ShootTrenchCommand",
+                                new ShootTrenchCommand(shooterSubsystem, agitatorSubsystem));
                 NamedCommands.registerCommand("StartCollectAutoCommand",
                                 new StartCollectAutoCommand(collectorSubsystem));
                 NamedCommands.registerCommand("StopCollectAutoCommand",
@@ -137,6 +155,10 @@ public class RobotContainer {
                                 new StartWaitStopCollectionAutoCommand(collectorSubsystem));
                 NamedCommands.registerCommand("PivotDown", new PivotDown(collectorSubsystem));
                 NamedCommands.registerCommand("PivotUp", new PivotUp(collectorSubsystem));
+                NamedCommands.registerCommand("ClimberUp", new ClimberUp(climberSubsystem));
+                NamedCommands.registerCommand("StopClimber", new ClimberStop(climberSubsystem));
+
+
 
         }
 
@@ -162,27 +184,25 @@ public class RobotContainer {
                                 .whileTrue(Commands.run(drivebaseSubsystem::lock, drivebaseSubsystem));
 
                 driverCommandXbox.y()
+                                .onTrue(Commands.runOnce(() -> {
+                                        currentDriveSpeed = (currentDriveSpeed == DriveSpeed.Competition) ? DriveSpeed.Demonstration : DriveSpeed.Competition;
+                                }));
+
+                driverCommandXbox.b()
                                 .onTrue(Commands.runOnce(collectorSubsystem::setPivotUp));
+
+                driverCommandXbox.a()
+                                .onTrue(Commands.runOnce(collectorSubsystem::setPivotDown));
+
         }
 
         private void bindManipulatorCompetitionControls() {
                 manipulatorCommandXbox.leftTrigger(0.2)
-                                .onTrue(Commands.runOnce(() -> {
-                                        collectorSubsystem.startCollecting();
-                                        collectorSubsystem.setPivotDown();
-                                }))
+                                .whileTrue(Commands.run(collectorSubsystem::startCollecting, collectorSubsystem))
                                 .onFalse(Commands.runOnce(collectorSubsystem::stopCollection));
 
                 manipulatorCommandXbox.rightTrigger(0.2)
-                                // .onTrue(Commands.runOnce(shooterSubsystem::setShooterWheelsShoot))
-                                .whileTrue(new LimelightPowerAlignCommand(drivebaseSubsystem, shooterSubsystem))
-                                .onTrue(Commands.runOnce(() -> {
-                                        collectorSubsystem.startBounce();
-                                }))
-                                .onFalse(Commands.runOnce(() -> {
-                                        shooterSubsystem.stopShooterWheels();
-                                        collectorSubsystem.stopBounce();
-                                }));
+                                .whileTrue(Commands.run(collectorSubsystem::setPivotDown));
 
                 manipulatorCommandXbox.leftBumper()
                                 .onTrue(Commands.runOnce(collectorSubsystem::startSpitting))
@@ -220,59 +240,42 @@ public class RobotContainer {
                                 .onFalse(Commands.runOnce(agitatorSubsystem::stopAgitating));
 
                 manipulatorCommandXbox.y()
-                                .onTrue(Commands.runOnce(collectorSubsystem::setPivotUp));
+                                .whileTrue(Commands.runOnce(collectorSubsystem::setPivotUp));
 
                 manipulatorCommandXbox.povUp()
                                 .onTrue(Commands.runOnce(() -> {
-                                        shooterSubsystem.setShooterWheelsShootTrench();
-                                        if (bDoBounce) {
-                                                collectorSubsystem.startBounce();
-                                        }
+                                        shooterSubsystem.setShooterWheelsPass();
                                 }))
                                 .onFalse(Commands.runOnce(() -> {
                                         shooterSubsystem.stopShooterWheels();
-                                        if (bDoBounce)
-                                        {
-                                                collectorSubsystem.stopBounce();
-                                        }
+
                                 }));
                 manipulatorCommandXbox.povDown()
                                 .onTrue(Commands.runOnce(() -> {
                                         shooterSubsystem.setShooterWheelsShootClimber();
-                                        if (bDoBounce) {
-                                                collectorSubsystem.startBounce();
-                                        }
+
                                 }))
                                 .onFalse(Commands.runOnce(() -> {
                                         shooterSubsystem.stopShooterWheels();
-                                        if (bDoBounce)
-                                        {
-                                                collectorSubsystem.stopBounce();
-                                        }
+
                                 }));
 
                 manipulatorCommandXbox.povRight()
                                 .onTrue(Commands.runOnce(() -> {
-                                        shooterSubsystem.setShooterWheelsShootCorner();
-                                        if (bDoBounce)
-                                        {
-                                                collectorSubsystem.startBounce();
-                                        }
+                                        shooterSubsystem.setShooterWheelsShootTrench();
+
                                 }))
                                 .onFalse(Commands.runOnce(() -> {
                                         shooterSubsystem.stopShooterWheels();
-                                        if (bDoBounce)
-                                        {
-                                                collectorSubsystem.stopBounce();
-                                        }
+
                                 }));
-               
+
                 manipulatorCommandXbox.povLeft()
-                        .onTrue(Commands.runOnce(() -> {
-                                // Invert the the bouncing state
-                                bDoBounce ^= true;
-                                System.out.println("Swapped state: " + bDoBounce);
-                        }));
+                                .onTrue(Commands.runOnce(() -> {
+                                        // Invert the the bouncing state
+                                        bDoBounce ^= true;
+                                        System.out.println("Swapped state: " + bDoBounce);
+                                }));
 
         }
 }

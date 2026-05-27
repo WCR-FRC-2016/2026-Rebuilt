@@ -3,47 +3,33 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.06,
-        "y": 5.0
+        "x": 2.5497159090909087,
+        "y": 7.456863636363637
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0600000000000018,
-        "y": 4.75
+        "x": 2.9435388788479617,
+        "y": 7.456863636363637
       },
       "isLocked": false,
-      "linkedName": "5"
+      "linkedName": "Kaden1"
     },
     {
       "anchor": {
-        "x": 1.06,
-        "y": 4.425
+        "x": 2.91,
+        "y": 7.374
       },
       "prevControl": {
-        "x": 1.06,
-        "y": 4.675
+        "x": 2.6111022727272726,
+        "y": 7.374
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "22"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 0.45,
-        "maxAcceleration": 1.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -56,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.37447688672282
+    "rotation": -63.01210941825152
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 89.75874668222974
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

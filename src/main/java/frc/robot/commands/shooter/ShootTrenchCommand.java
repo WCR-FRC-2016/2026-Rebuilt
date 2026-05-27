@@ -9,7 +9,7 @@ public class ShootTrenchCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private final AgitatorSubsystem agitatorSubsystem;
     Timer timer = new Timer();
-    final double SHOOTTIME = 3.0;
+    final double SHOOTTIME = 5.0;
 
     public ShootTrenchCommand(ShooterSubsystem shooter, AgitatorSubsystem agitator) {
         shooterSubsystem = shooter;

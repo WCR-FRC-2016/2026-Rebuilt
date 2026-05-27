@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Collect"
+            "pathName": "Right-Collect"
           }
         },
         {
@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Collect-Forward"
+            "pathName": "Right-Collect-Forward"
           }
         },
         {
@@ -37,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Collect-Shoot"
+            "pathName": "Right-Collect-Shoot"
           }
         },
         {
@@ -68,25 +68,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Shoot-Collect"
+            "pathName": "Right-Shoot-Collect"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Shoot-Collect-Forward"
+            "pathName": "Right-Shoot-Collect-Forward"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "StopCollectAutoCommand"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left-Shoot-Collect-Shoot"
           }
         }
       ]

@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.9,
-  "robotLength": 0.9,
+  "robotWidth": 0.84455,
+  "robotLength": 0.851,
   "holonomicMode": true,
   "pathFolders": [
     "Good Autos"
@@ -33,5 +33,7 @@
   "brModuleY": -0.273,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Hopper\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.5266,\"y\":0.0},\"size\":{\"width\":0.6731,\"length\":0.2023},\"borderRadius\":0.01,\"strokeWidth\":0.01,\"filled\":false}}"
+  ]
 }

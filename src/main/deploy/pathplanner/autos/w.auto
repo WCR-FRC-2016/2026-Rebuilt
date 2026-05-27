@@ -60,33 +60,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StartCollectAutoCommand"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Left-Shoot-Collect"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left-Shoot-Collect-Forward"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopCollectAutoCommand"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left-Shoot-Collect-Shoot"
+            "pathName": "1"
           }
         }
       ]

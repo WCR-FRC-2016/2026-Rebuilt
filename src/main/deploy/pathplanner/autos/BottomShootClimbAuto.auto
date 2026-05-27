@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "PivotDown"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -30,27 +36,21 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "PivotDown"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Middle-Shoot-Climb"
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "MoveBackwardsVerySlightly"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "PivotUp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MoveBackwardsVerySlightly"
           }
         },
         {

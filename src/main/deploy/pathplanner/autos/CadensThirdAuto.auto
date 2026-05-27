@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Collect"
+            "pathName": "KadenAutoStart"
           }
         },
         {
@@ -17,27 +17,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "StartCollectAutoCommand"
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Collect-Forward"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopCollectAutoCommand"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left-Collect-Shoot"
+            "pathName": "KadenAuto1"
           }
         },
         {
@@ -62,19 +50,25 @@
         {
           "type": "named",
           "data": {
+            "name": "StopShooterWheels"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "KadenAuto2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "StartCollectAutoCommand"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Shoot-Collect"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left-Shoot-Collect-Forward"
+            "pathName": "KadenAuto3"
           }
         },
         {
@@ -86,7 +80,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Shoot-Collect-Shoot"
+            "pathName": "KadenAuto4"
           }
         }
       ]

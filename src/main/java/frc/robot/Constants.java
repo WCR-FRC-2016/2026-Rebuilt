@@ -53,7 +53,6 @@ public final class Constants
     public static final double AGITATOR_SPEED = 0.90;
   }
 
-  // TODO: Recursively read the autonomous deploy directly and get the commands instead of hardcoding them here
   public static final class Auton {
     public static final String DEFAULT_AUTO_NAME = "Do Nothing";
 
@@ -73,18 +72,16 @@ public final class Constants
         "RightShoot",*/
         //"LeftMoveBack",
        // "Middle Shoot",
-       "Do Nothing",
-       "MoveForwardTest",
-       "MiddleClimbAuto",
-       "MiddleShootClimbAuto",
+        "MiddleShootClimbAuto",
         "BottomShootClimbAuto",
         "TopShootClimbAuto",
-        "simple",
-        "PivotTest",
-        "collectortest"
-
-
-
+        "Left-Collect-Shoot-Collect",
+        "Left-Collect-Shoot-x2",
+        "Right-Collect-Shoot-x2",
+        "w",
+        "CadensThirdAutoTest",
+        "CadensThirdAuto",
+        "test"
     };
   }
 

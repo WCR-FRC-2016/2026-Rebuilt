@@ -5,25 +5,19 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Middle-Shoot"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootCommand"
+                  "name": "ClimberUp"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.3
+                  "waitTime": 1.9
                 }
               }
             ]
@@ -32,19 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle-Shoot-Climb"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MoveBackwardsVerySlightly"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ClimbAuto"
+            "pathName": "VeryImportantLittleTwitch"
           }
         }
       ]
